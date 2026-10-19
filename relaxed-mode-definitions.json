@@ -1,0 +1,323 @@
+[
+  {
+    "mode_id": 96,
+    "name": "ConvoyanceGame",
+    "class": "SFConvoyanceGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 102,
+    "name": "ZombieHideSeekGame",
+    "class": "SFZombieHideSeekGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 1,
+    "name": "BlastingGame",
+    "class": "SFBlastingGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 53,
+    "name": "HardCoreSeizure",
+    "class": "SFHardcoreSeizureGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 52,
+    "name": "HardcoreEscape",
+    "class": "SFHardcoreEscapeGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 51,
+    "name": "HardcoreBlasting",
+    "class": "SFHardcoreBlastingGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 3,
+    "name": "SeizureGame",
+    "class": "SFSeizureGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 2,
+    "name": "EscapeGame",
+    "class": "SFEscapeGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 106,
+    "name": "SeizureGameSpy",
+    "class": "SFSeizureGameSpy",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 0,
+    "name": "TeamDeathGame",
+    "class": "SFTeamDeathGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 13,
+    "name": "DeathGame",
+    "class": "SFDeathGame",
+    "family": "ffa",
+    "round_based": false
+  },
+  {
+    "mode_id": 64,
+    "name": "SoloLeagueGame",
+    "class": "SFSoloLeagueGame",
+    "family": "ffa",
+    "round_based": false
+  },
+  {
+    "mode_id": 23,
+    "name": "DefenceGame",
+    "class": "SFDefenceGame",
+    "family": "friendly",
+    "round_based": false
+  },
+  {
+    "mode_id": 19,
+    "name": "SurvivalGame",
+    "class": "SFSurvivalGame",
+    "family": "friendly",
+    "round_based": false
+  },
+  {
+    "mode_id": 20,
+    "name": "ShooterDefenceGame",
+    "class": "SFShooterDefenceGame",
+    "family": "friendly",
+    "round_based": false
+  },
+  {
+    "mode_id": 7,
+    "name": "BeastGame",
+    "class": "SFBeastGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 10,
+    "name": "GlassGame",
+    "class": "SFGlassGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 33,
+    "name": "WarriorGame",
+    "class": "SFWarriorGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 12,
+    "name": "ThunderRunGame",
+    "class": "SFThunderRunGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 16,
+    "name": "CaptureGame",
+    "class": "SFCaptureGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 15,
+    "name": "FrontLineGame",
+    "class": "SFFrontLineGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 55,
+    "name": "SniperGame",
+    "class": "SFSniperGame",
+    "family": "team",
+    "round_based": true,
+    "fallback_mode": 1
+  },
+  {
+    "mode_id": 54,
+    "name": "SniperTDMGame",
+    "class": "SFSniperTDMGame",
+    "family": "team",
+    "round_based": false,
+    "fallback_mode": 0
+  },
+  {
+    "mode_id": 109,
+    "name": "AITeamDeathGame",
+    "class": "SFAITeamDeathGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 110,
+    "name": "AITeamDeathGameVs16",
+    "class": "SFAITeamDeathGameVs16",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 99,
+    "name": "RoundTDMGame",
+    "class": "SFRoundTDMGame",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 14,
+    "name": "SnowBallFightGame",
+    "class": "SFSnowballFightGame",
+    "family": "team",
+    "round_based": false,
+    "fallback_mode": 0
+  },
+  {
+    "mode_id": 101,
+    "name": "ZombieSurvivalGame",
+    "class": "SFZombieSurvivalGame",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 103,
+    "name": "ZombieSurvivalGameTwo",
+    "class": "SFZombieSurvivalGameTwo",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 114,
+    "name": "OnetoOneGame",
+    "class": "SFOnetoOneGame",
+    "family": "duel",
+    "round_based": true
+  },
+  {
+    "mode_id": 60,
+    "name": "TeamDeathGameVs16",
+    "class": "SFTeamDeathGameVs16",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 61,
+    "name": "BlastingGameVs16",
+    "class": "SFBlastingGameVs16",
+    "family": "team",
+    "round_based": true
+  },
+  {
+    "mode_id": 62,
+    "name": "EscapeGameVs16",
+    "class": "SFEscapeGameVs16",
+    "family": "team",
+    "round_based": true,
+    "fallback_mode": 2
+  },
+  {
+    "mode_id": 63,
+    "name": "SeizureGameVs16",
+    "class": "SFSeizureGameVs16",
+    "family": "team",
+    "round_based": true,
+    "fallback_mode": 3
+  },
+  {
+    "mode_id": 120,
+    "name": "SpecialWeaponGame",
+    "class": "SFSpecialWeaponGame",
+    "family": "team",
+    "round_based": true,
+    "fallback_mode": 1
+  },
+  {
+    "mode_id": 70,
+    "name": "ThirdPersonMode70",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 71,
+    "name": "ThirdPersonMode71",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 72,
+    "name": "ThirdPersonMode72",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 73,
+    "name": "ThirdPersonMode73",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 74,
+    "name": "ThirdPersonMode74",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 75,
+    "name": "ThirdPersonMode75",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 76,
+    "name": "ThirdPersonMode76",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 77,
+    "name": "ThirdPersonMode77",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 78,
+    "name": "ThirdPersonMode78",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  },
+  {
+    "mode_id": 79,
+    "name": "ThirdPersonMode79",
+    "class": "SFThirdPersonMode",
+    "family": "team",
+    "round_based": false
+  }
+]

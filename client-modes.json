@@ -1,0 +1,2904 @@
+{
+ "sources": {
+  "DefaultDataStore.ini": "c125b7aba2a60860fd2c745a20bf8437193cf9177a8abba1f0adaa4ea96de5d6",
+  "PMS/DefaultDataStore.ini": "e0665cb87791e940484cb38f58f14032be3a70a6779b05bb438fe4ac4873b43a"
+ },
+ "modes": {
+  "109": {
+   "name": "AITeamDeathGame",
+   "class": "SFAITeamDeathGame",
+   "maps": [
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk",
+     "navigation": "cargoship_AITDM_LOW.upk",
+     "package_sha256": "f071cb882ef347ec3d103eeb26903b09dc47c7becd05fbce60feaac79b1d0ca4",
+     "navigation_sha256": "5fa85bcbfa72dddfd676453d38b46508ddff19305d63380f37dc8d40ef53c0c4"
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "navigation": "Desertcamp_AITDM_LOW.upk",
+     "package_sha256": "ef452f1b0f75289bda052ffa856ecd693653c2571bc5096f1093a3c15faedae4",
+     "navigation_sha256": "e2fec28cc1d4bf2d26ccaa20998af40715a3a075b52d3d16cf9078d54b574ba6"
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "navigation": "uhlan_AITDM_LOW.upk",
+     "package_sha256": "0d3ab799e2d8473a2246b18ef60b183ad5528d9ddd619b5f2e2415efa9768ca8",
+     "navigation_sha256": "91cb374ec0d75a67b994c9f404ccc43a6cdc7cea75401fc3db63ab34e4a819da"
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk",
+     "navigation": "Dam_AITDM_LOW.upk",
+     "package_sha256": "c55f9032b4a3667dfd20802b9fcdb80c9e6b38eabbb3b1dd8e3e2e3e2fdd4901",
+     "navigation_sha256": "3cdb43a46bf59ec9249eff5ee71ba8421730bc6c9ecd32e75e687c45df96258a"
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk",
+     "navigation": "Burrow_AITDM_LOW.upk",
+     "package_sha256": "15a8f6e9297da81c5dbec5ff76e1e6ce4ac2ee8730f675d43ad3487515ab9607",
+     "navigation_sha256": "5aed0ce7bd643352fa1cfe2188ea022ee3eb989cd83b08b3df036a00e86f44eb"
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk",
+     "navigation": "Pokhran_AITDM_LOW.upk",
+     "package_sha256": "d0c100df13eb7096af7d91a069f83b0b6a4f159b2cb9c724cd0a6f6e489ac59b",
+     "navigation_sha256": "9e2ca00e472d224c53fce5924ef62d4a8606493ee7a2825831c7e7faada3a28e"
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "navigation": "Temple_AITDM_LOW.upk",
+     "package_sha256": "13124d8794c4e89715772642ed3f1299e66ff7d3cc91bdad06feb5b7a16cd78c",
+     "navigation_sha256": "b99d70e4c41b6562f5a5daf605dc571de9bcc997b0ec6277f2f7ba41b57b15f9"
+    },
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "navigation": "ryokan_AITDM_LOW.upk",
+     "package_sha256": "069bd368e752fe8aedf84a0f3b30b6b42a028298bfad7fc53ad4d7361450f7b0",
+     "navigation_sha256": "b04d374508869e74050dc3b5b7d43ead26b8a9a99dcc271fe170326c2e49762b"
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk",
+     "navigation": "13F_AITDM.upk",
+     "package_sha256": "cb6229f63ac6b1fb24027c8d2ce67af1245d60475f78f3688a3c609eb4f7f312",
+     "navigation_sha256": "f7c91d6b81de60727d7cfa0cc9411f168e0f9cc38ab4748f734b522c06489f85"
+    }
+   ]
+  },
+  "11": {
+   "name": "TutorialGame",
+   "class": "SFTutorialGame",
+   "maps": [
+    {
+     "id": 8,
+     "name": "Tutorial",
+     "package": "Tutorial_LOW.upk"
+    },
+    {
+     "id": 177,
+     "name": "Firingrange",
+     "package": "Firingrange_LOW.upk"
+    }
+   ]
+  },
+  "17": {
+   "name": "TrainingGame",
+   "class": "SFTrainingGame",
+   "maps": [
+    {
+     "id": 100,
+     "name": "Solartower",
+     "package": "solartower_LOW.upk"
+    },
+    {
+     "id": 146,
+     "name": "Luxor",
+     "package": "Luxor_LOW.upk"
+    },
+    {
+     "id": 195,
+     "name": "Satellite_Ranger",
+     "package": "Satellite_Ranger_LOW.upk"
+    },
+    {
+     "id": 190,
+     "name": "Sunrise",
+     "package": "Sunrise_LOW.upk"
+    },
+    {
+     "id": 105,
+     "name": "Rocket",
+     "package": "Rocket_LOW.upk"
+    },
+    {
+     "id": 194,
+     "name": "13_CASI",
+     "package": "13_CASI_LOW.upk"
+    },
+    {
+     "id": 90,
+     "name": "Drone",
+     "package": "Drone_LOW.upk"
+    },
+    {
+     "id": 193,
+     "name": "manas_XMAS",
+     "package": "manas_XMAS_LOW.upk"
+    },
+    {
+     "id": 29,
+     "name": "RussianFactory",
+     "package": "RussianFactory_LOW.upk"
+    },
+    {
+     "id": 43,
+     "name": "Uhlan_XMAS",
+     "package": "uhlan_XMAS_LOW.upk"
+    },
+    {
+     "id": 141,
+     "name": "Village",
+     "package": "Village_LOW.upk"
+    },
+    {
+     "id": 158,
+     "name": "Plaza",
+     "package": "Plaza_LOW.upk"
+    },
+    {
+     "id": 166,
+     "name": "Oldtrain",
+     "package": "Oldtrain_LOW.upk"
+    },
+    {
+     "id": 188,
+     "name": "Supplybase",
+     "package": "SupplyBase_LOW.upk"
+    },
+    {
+     "id": 157,
+     "name": "Mangrove",
+     "package": "Mangrove_LOW.upk"
+    },
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk"
+    },
+    {
+     "id": 189,
+     "name": "Harbor",
+     "package": "Harbor.upk"
+    },
+    {
+     "id": 178,
+     "name": "Alcatraz",
+     "package": "Alcatraz_LOW.upk"
+    },
+    {
+     "id": 69,
+     "name": "skywalker",
+     "package": "skywalker_LOW.upk"
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk"
+    },
+    {
+     "id": 109,
+     "name": "SafeHouse",
+     "package": "SafeHouse_LOW.upk"
+    },
+    {
+     "id": 185,
+     "name": "island_seizure",
+     "package": "island_seizure_LOW.upk"
+    },
+    {
+     "id": 187,
+     "name": "Colombiana",
+     "package": "colombiana_LOW.upk"
+    },
+    {
+     "id": 184,
+     "name": "hometown",
+     "package": "hometown_LOW.upk"
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk"
+    },
+    {
+     "id": 182,
+     "name": "turbulence",
+     "package": "turbulence_LOW.upk"
+    },
+    {
+     "id": 53,
+     "name": "Prison",
+     "package": "Prison_LOW.upk"
+    },
+    {
+     "id": 142,
+     "name": "Bank",
+     "package": "Bank_LOW.upk"
+    },
+    {
+     "id": 49,
+     "name": "Tower",
+     "package": "tower_LOW.upk"
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk"
+    },
+    {
+     "id": 0,
+     "name": "Vitoria",
+     "package": "Vitoria_LOW.upk"
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk"
+    },
+    {
+     "id": 163,
+     "name": "armory",
+     "package": "armory_LOW.upk"
+    },
+    {
+     "id": 133,
+     "name": "SeaCave",
+     "package": "SeaCave_LOW.upk"
+    },
+    {
+     "id": 161,
+     "name": "Scrimmage",
+     "package": "Scrimmage_LOW.upk"
+    },
+    {
+     "id": 84,
+     "name": "Mansion",
+     "package": "Mansion_LOW.upk"
+    },
+    {
+     "id": 156,
+     "name": "Bazaar",
+     "package": "Bazaar_LOW.upk"
+    },
+    {
+     "id": 108,
+     "name": "WhiteNight",
+     "package": "WhiteNight_LOW.upk"
+    },
+    {
+     "id": 67,
+     "name": "hospital",
+     "package": "hospital_LOW.upk"
+    },
+    {
+     "id": 110,
+     "name": "Castle",
+     "package": "Castle_LOW.upk"
+    },
+    {
+     "id": 93,
+     "name": "BlackHawkDown",
+     "package": "BlackHawkDown_LOW.upk"
+    },
+    {
+     "id": 101,
+     "name": "WatersideVillage",
+     "package": "WatersideVillage_LOW.upk"
+    },
+    {
+     "id": 150,
+     "name": "SunYatSenHall",
+     "package": "SunYatSenHall_LOW.upk"
+    },
+    {
+     "id": 80,
+     "name": "GhostTown",
+     "package": "GhostTown_LOW.upk"
+    },
+    {
+     "id": 89,
+     "name": "Base_camp",
+     "package": "Base_camp_LOW.upk"
+    },
+    {
+     "id": 17,
+     "name": "Missile",
+     "package": "missile_LOW.upk"
+    },
+    {
+     "id": 106,
+     "name": "HeavyRain_summer",
+     "package": "HeavyRain_summer_LOW.upk"
+    },
+    {
+     "id": 3,
+     "name": "Sugarcane",
+     "package": "Sugarcane_LOW.upk"
+    },
+    {
+     "id": 32,
+     "name": "Skyline",
+     "package": "Skyline_LOW.upk"
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk"
+    },
+    {
+     "id": 5,
+     "name": "Anaconda",
+     "package": "anaconda_LOW.upk"
+    },
+    {
+     "id": 20,
+     "name": "Satellite",
+     "package": "Satellite_LOW.upk"
+    },
+    {
+     "id": 26,
+     "name": "Peacehawk",
+     "package": "Peacehawk_LOW.upk"
+    },
+    {
+     "id": 37,
+     "name": "Embassy",
+     "package": "Embassy_LOW.upk"
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk"
+    },
+    {
+     "id": 27,
+     "name": "Guantanamo",
+     "package": "Guantanamo_LOW.upk"
+    },
+    {
+     "id": 6,
+     "name": "Strassebahn",
+     "package": "Strassebahn_LOW.upk"
+    },
+    {
+     "id": 4,
+     "name": "Biolab",
+     "package": "Biolab_LOW.upk"
+    },
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk"
+    },
+    {
+     "id": 72,
+     "name": "NerveGas",
+     "package": "NerveGas_LOW.upk"
+    },
+    {
+     "id": 11,
+     "name": "manas",
+     "package": "manas_LOW.upk"
+    },
+    {
+     "id": 2,
+     "name": "Shanghai",
+     "package": "Shanghai_LOW.upk"
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk"
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk"
+    },
+    {
+     "id": 88,
+     "name": "Factory",
+     "package": "Factory_LOW.upk"
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk"
+    },
+    {
+     "id": 59,
+     "name": "Checkmate",
+     "package": "Checkmate_LOW.upk"
+    },
+    {
+     "id": 63,
+     "name": "Riverside",
+     "package": "Riverside_LOW.upk"
+    },
+    {
+     "id": 112,
+     "name": "SubmarineBase",
+     "package": "SubmarineBase_LOW.upk"
+    },
+    {
+     "id": 148,
+     "name": "everland",
+     "package": "everland_LOW.upk"
+    },
+    {
+     "id": 138,
+     "name": "FlowerBed",
+     "package": "FlowerBed_LOW.upk"
+    },
+    {
+     "id": 94,
+     "name": "greenhouse",
+     "package": "greenhouse_LOW.upk"
+    },
+    {
+     "id": 81,
+     "name": "MonsterHouse",
+     "package": "MonsterHouse_LOW.upk"
+    },
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk"
+    },
+    {
+     "id": 173,
+     "name": "Fog",
+     "package": "fog_LOW.upk"
+    },
+    {
+     "id": 114,
+     "name": "PalaceMuseum",
+     "package": "PalaceMuseum_LOW.upk"
+    }
+   ]
+  },
+  "110": {
+   "name": "AITeamDeathGameVs16",
+   "class": "SFAITeamDeathGameVs16",
+   "maps": [
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk",
+     "navigation": "cargoship_AITDM_LOW.upk",
+     "package_sha256": "f071cb882ef347ec3d103eeb26903b09dc47c7becd05fbce60feaac79b1d0ca4",
+     "navigation_sha256": "5fa85bcbfa72dddfd676453d38b46508ddff19305d63380f37dc8d40ef53c0c4"
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "navigation": "Desertcamp_AITDM_LOW.upk",
+     "package_sha256": "ef452f1b0f75289bda052ffa856ecd693653c2571bc5096f1093a3c15faedae4",
+     "navigation_sha256": "e2fec28cc1d4bf2d26ccaa20998af40715a3a075b52d3d16cf9078d54b574ba6"
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "navigation": "uhlan_AITDM_LOW.upk",
+     "package_sha256": "0d3ab799e2d8473a2246b18ef60b183ad5528d9ddd619b5f2e2415efa9768ca8",
+     "navigation_sha256": "91cb374ec0d75a67b994c9f404ccc43a6cdc7cea75401fc3db63ab34e4a819da"
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk",
+     "navigation": "Dam_AITDM_LOW.upk",
+     "package_sha256": "c55f9032b4a3667dfd20802b9fcdb80c9e6b38eabbb3b1dd8e3e2e3e2fdd4901",
+     "navigation_sha256": "3cdb43a46bf59ec9249eff5ee71ba8421730bc6c9ecd32e75e687c45df96258a"
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk",
+     "navigation": "Burrow_AITDM_LOW.upk",
+     "package_sha256": "15a8f6e9297da81c5dbec5ff76e1e6ce4ac2ee8730f675d43ad3487515ab9607",
+     "navigation_sha256": "5aed0ce7bd643352fa1cfe2188ea022ee3eb989cd83b08b3df036a00e86f44eb"
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk",
+     "navigation": "Pokhran_AITDM_LOW.upk",
+     "package_sha256": "d0c100df13eb7096af7d91a069f83b0b6a4f159b2cb9c724cd0a6f6e489ac59b",
+     "navigation_sha256": "9e2ca00e472d224c53fce5924ef62d4a8606493ee7a2825831c7e7faada3a28e"
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "navigation": "Temple_AITDM_LOW.upk",
+     "package_sha256": "13124d8794c4e89715772642ed3f1299e66ff7d3cc91bdad06feb5b7a16cd78c",
+     "navigation_sha256": "b99d70e4c41b6562f5a5daf605dc571de9bcc997b0ec6277f2f7ba41b57b15f9"
+    },
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "navigation": "ryokan_AITDM_LOW.upk",
+     "package_sha256": "069bd368e752fe8aedf84a0f3b30b6b42a028298bfad7fc53ad4d7361450f7b0",
+     "navigation_sha256": "b04d374508869e74050dc3b5b7d43ead26b8a9a99dcc271fe170326c2e49762b"
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk",
+     "navigation": "13F_AITDM.upk",
+     "package_sha256": "cb6229f63ac6b1fb24027c8d2ce67af1245d60475f78f3688a3c609eb4f7f312",
+     "navigation_sha256": "f7c91d6b81de60727d7cfa0cc9411f168e0f9cc38ab4748f734b522c06489f85"
+    }
+   ]
+  },
+  "0": {
+   "name": "TeamDeathGame",
+   "class": "SFTeamDeathGame",
+   "maps": [
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "navigation": "ryokan_AITDM_LOW.upk",
+     "package_sha256": "069bd368e752fe8aedf84a0f3b30b6b42a028298bfad7fc53ad4d7361450f7b0",
+     "navigation_sha256": "b04d374508869e74050dc3b5b7d43ead26b8a9a99dcc271fe170326c2e49762b"
+    },
+    {
+     "id": 194,
+     "name": "13_CASI",
+     "package": "13_CASI_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 29,
+     "name": "RussianFactory",
+     "package": "RussianFactory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 43,
+     "name": "Uhlan_XMAS",
+     "package": "uhlan_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk",
+     "navigation": "13F_AITDM.upk",
+     "package_sha256": "cb6229f63ac6b1fb24027c8d2ce67af1245d60475f78f3688a3c609eb4f7f312",
+     "navigation_sha256": "f7c91d6b81de60727d7cfa0cc9411f168e0f9cc38ab4748f734b522c06489f85"
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk",
+     "navigation": "Pokhran_AITDM_LOW.upk",
+     "package_sha256": "d0c100df13eb7096af7d91a069f83b0b6a4f159b2cb9c724cd0a6f6e489ac59b",
+     "navigation_sha256": "9e2ca00e472d224c53fce5924ef62d4a8606493ee7a2825831c7e7faada3a28e"
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "navigation": "Temple_AITDM_LOW.upk",
+     "package_sha256": "13124d8794c4e89715772642ed3f1299e66ff7d3cc91bdad06feb5b7a16cd78c",
+     "navigation_sha256": "b99d70e4c41b6562f5a5daf605dc571de9bcc997b0ec6277f2f7ba41b57b15f9"
+    },
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk",
+     "navigation": "cargoship_AITDM_LOW.upk",
+     "package_sha256": "f071cb882ef347ec3d103eeb26903b09dc47c7becd05fbce60feaac79b1d0ca4",
+     "navigation_sha256": "5fa85bcbfa72dddfd676453d38b46508ddff19305d63380f37dc8d40ef53c0c4"
+    },
+    {
+     "id": 108,
+     "name": "WhiteNight",
+     "package": "WhiteNight_LOW.upk",
+     "package_sha256": "95ff4953e329c97875a54782ac739aa933d517c0a228e1a40c0562a13c1e0017",
+     "route_file": "routes/WhiteNight.json",
+     "route_sha256": "54424f21c9ac4d961341b93a8554205c1431a76f27af0931791c9356cf558f87",
+     "local_route_assistance": true
+    },
+    {
+     "id": 110,
+     "name": "Castle",
+     "package": "Castle_LOW.upk",
+     "package_sha256": "2f72eab578d440fb01a0e28467d8fd062e15b0a354f0f6711c6095914a39775a",
+     "route_file": "routes/Castle.json",
+     "route_sha256": "3e7a499ad674d553378d003d3a3d4cce9660b7b23dc38aad895d988b5a9440e5",
+     "local_route_assistance": true
+    },
+    {
+     "id": 93,
+     "name": "BlackHawkDown",
+     "package": "BlackHawkDown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 89,
+     "name": "Base_camp",
+     "package": "Base_camp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 106,
+     "name": "HeavyRain_summer",
+     "package": "HeavyRain_summer_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk",
+     "navigation": "Burrow_AITDM_LOW.upk",
+     "package_sha256": "15a8f6e9297da81c5dbec5ff76e1e6ce4ac2ee8730f675d43ad3487515ab9607",
+     "navigation_sha256": "5aed0ce7bd643352fa1cfe2188ea022ee3eb989cd83b08b3df036a00e86f44eb"
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk",
+     "navigation": "Dam_AITDM_LOW.upk",
+     "package_sha256": "c55f9032b4a3667dfd20802b9fcdb80c9e6b38eabbb3b1dd8e3e2e3e2fdd4901",
+     "navigation_sha256": "3cdb43a46bf59ec9249eff5ee71ba8421730bc6c9ecd32e75e687c45df96258a"
+    },
+    {
+     "id": 88,
+     "name": "Factory",
+     "package": "Factory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "navigation": "Desertcamp_AITDM_LOW.upk",
+     "package_sha256": "ef452f1b0f75289bda052ffa856ecd693653c2571bc5096f1093a3c15faedae4",
+     "navigation_sha256": "e2fec28cc1d4bf2d26ccaa20998af40715a3a075b52d3d16cf9078d54b574ba6"
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "navigation": "uhlan_AITDM_LOW.upk",
+     "package_sha256": "0d3ab799e2d8473a2246b18ef60b183ad5528d9ddd619b5f2e2415efa9768ca8",
+     "navigation_sha256": "91cb374ec0d75a67b994c9f404ccc43a6cdc7cea75401fc3db63ab34e4a819da"
+    },
+    {
+     "id": 63,
+     "name": "Riverside",
+     "package": "Riverside_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "60": {
+   "name": "TeamDeathGameVs16",
+   "class": "SFTeamDeathGameVs16",
+   "maps": [
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "navigation": "ryokan_AITDM_LOW.upk",
+     "package_sha256": "069bd368e752fe8aedf84a0f3b30b6b42a028298bfad7fc53ad4d7361450f7b0",
+     "navigation_sha256": "b04d374508869e74050dc3b5b7d43ead26b8a9a99dcc271fe170326c2e49762b"
+    },
+    {
+     "id": 194,
+     "name": "13_CASI",
+     "package": "13_CASI_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 29,
+     "name": "RussianFactory",
+     "package": "RussianFactory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 43,
+     "name": "Uhlan_XMAS",
+     "package": "uhlan_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk",
+     "navigation": "13F_AITDM.upk",
+     "package_sha256": "cb6229f63ac6b1fb24027c8d2ce67af1245d60475f78f3688a3c609eb4f7f312",
+     "navigation_sha256": "f7c91d6b81de60727d7cfa0cc9411f168e0f9cc38ab4748f734b522c06489f85"
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk",
+     "navigation": "Pokhran_AITDM_LOW.upk",
+     "package_sha256": "d0c100df13eb7096af7d91a069f83b0b6a4f159b2cb9c724cd0a6f6e489ac59b",
+     "navigation_sha256": "9e2ca00e472d224c53fce5924ef62d4a8606493ee7a2825831c7e7faada3a28e"
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "navigation": "Temple_AITDM_LOW.upk",
+     "package_sha256": "13124d8794c4e89715772642ed3f1299e66ff7d3cc91bdad06feb5b7a16cd78c",
+     "navigation_sha256": "b99d70e4c41b6562f5a5daf605dc571de9bcc997b0ec6277f2f7ba41b57b15f9"
+    },
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk",
+     "navigation": "cargoship_AITDM_LOW.upk",
+     "package_sha256": "f071cb882ef347ec3d103eeb26903b09dc47c7becd05fbce60feaac79b1d0ca4",
+     "navigation_sha256": "5fa85bcbfa72dddfd676453d38b46508ddff19305d63380f37dc8d40ef53c0c4"
+    },
+    {
+     "id": 108,
+     "name": "WhiteNight",
+     "package": "WhiteNight_LOW.upk",
+     "package_sha256": "95ff4953e329c97875a54782ac739aa933d517c0a228e1a40c0562a13c1e0017",
+     "route_file": "routes/WhiteNight.json",
+     "route_sha256": "54424f21c9ac4d961341b93a8554205c1431a76f27af0931791c9356cf558f87",
+     "local_route_assistance": true
+    },
+    {
+     "id": 110,
+     "name": "Castle",
+     "package": "Castle_LOW.upk",
+     "package_sha256": "2f72eab578d440fb01a0e28467d8fd062e15b0a354f0f6711c6095914a39775a",
+     "route_file": "routes/Castle.json",
+     "route_sha256": "3e7a499ad674d553378d003d3a3d4cce9660b7b23dc38aad895d988b5a9440e5",
+     "local_route_assistance": true
+    },
+    {
+     "id": 93,
+     "name": "BlackHawkDown",
+     "package": "BlackHawkDown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 89,
+     "name": "Base_camp",
+     "package": "Base_camp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 106,
+     "name": "HeavyRain_summer",
+     "package": "HeavyRain_summer_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk",
+     "navigation": "Burrow_AITDM_LOW.upk",
+     "package_sha256": "15a8f6e9297da81c5dbec5ff76e1e6ce4ac2ee8730f675d43ad3487515ab9607",
+     "navigation_sha256": "5aed0ce7bd643352fa1cfe2188ea022ee3eb989cd83b08b3df036a00e86f44eb"
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk",
+     "navigation": "Dam_AITDM_LOW.upk",
+     "package_sha256": "c55f9032b4a3667dfd20802b9fcdb80c9e6b38eabbb3b1dd8e3e2e3e2fdd4901",
+     "navigation_sha256": "3cdb43a46bf59ec9249eff5ee71ba8421730bc6c9ecd32e75e687c45df96258a"
+    },
+    {
+     "id": 88,
+     "name": "Factory",
+     "package": "Factory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "navigation": "Desertcamp_AITDM_LOW.upk",
+     "package_sha256": "ef452f1b0f75289bda052ffa856ecd693653c2571bc5096f1093a3c15faedae4",
+     "navigation_sha256": "e2fec28cc1d4bf2d26ccaa20998af40715a3a075b52d3d16cf9078d54b574ba6"
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "navigation": "uhlan_AITDM_LOW.upk",
+     "package_sha256": "0d3ab799e2d8473a2246b18ef60b183ad5528d9ddd619b5f2e2415efa9768ca8",
+     "navigation_sha256": "91cb374ec0d75a67b994c9f404ccc43a6cdc7cea75401fc3db63ab34e4a819da"
+    },
+    {
+     "id": 63,
+     "name": "Riverside",
+     "package": "Riverside_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "96": {
+   "name": "ConvoyanceGame",
+   "class": "SFConvoyanceGame",
+   "maps": [
+    {
+     "id": 117,
+     "name": "DustCity",
+     "package": "DustCity_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "102": {
+   "name": "ZombieHideSeekGame",
+   "class": "SFZombieHideSeekGame",
+   "maps": [
+    {
+     "id": 153,
+     "name": "Mansion_HideSeek",
+     "package": "Mansion_HideSeek_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "1": {
+   "name": "BlastingGame",
+   "class": "SFBlastingGame",
+   "maps": [
+    {
+     "id": 195,
+     "name": "Satellite_Ranger",
+     "package": "Satellite_Ranger_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 90,
+     "name": "Drone",
+     "package": "Drone_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 141,
+     "name": "Village",
+     "package": "Village_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 158,
+     "name": "Plaza",
+     "package": "Plaza_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 105,
+     "name": "Rocket",
+     "package": "Rocket_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 189,
+     "name": "Harbor",
+     "package": "Harbor.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 184,
+     "name": "hometown",
+     "package": "hometown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 0,
+     "name": "Vitoria",
+     "package": "Vitoria_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 163,
+     "name": "armory",
+     "package": "armory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 133,
+     "name": "SeaCave",
+     "package": "SeaCave_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 156,
+     "name": "Bazaar",
+     "package": "Bazaar_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 150,
+     "name": "SunYatSenHall",
+     "package": "SunYatSenHall_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 80,
+     "name": "GhostTown",
+     "package": "GhostTown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 17,
+     "name": "Missile",
+     "package": "missile_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 20,
+     "name": "Satellite",
+     "package": "Satellite_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 26,
+     "name": "Peacehawk",
+     "package": "Peacehawk_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 37,
+     "name": "Embassy",
+     "package": "Embassy_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 27,
+     "name": "Guantanamo",
+     "package": "Guantanamo_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 6,
+     "name": "Strassebahn",
+     "package": "Strassebahn_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "53": {
+   "name": "HardCoreSeizure",
+   "class": "SFHardcoreSeizureGame",
+   "maps": [
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "52": {
+   "name": "HardcoreEscape",
+   "class": "SFHardcoreEscapeGame",
+   "maps": [
+    {
+     "id": 11,
+     "name": "manas",
+     "package": "manas_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "51": {
+   "name": "HardcoreBlasting",
+   "class": "SFHardcoreBlastingGame",
+   "maps": [
+    {
+     "id": 20,
+     "name": "Satellite",
+     "package": "Satellite_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "3": {
+   "name": "SeizureGame",
+   "class": "SFSeizureGame",
+   "maps": [
+    {
+     "id": 138,
+     "name": "FlowerBed",
+     "package": "FlowerBed_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 100,
+     "name": "Solartower",
+     "package": "solartower_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 146,
+     "name": "Luxor",
+     "package": "Luxor_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 190,
+     "name": "Sunrise",
+     "package": "Sunrise_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 109,
+     "name": "SafeHouse",
+     "package": "SafeHouse_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 185,
+     "name": "island_seizure",
+     "package": "island_seizure_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 182,
+     "name": "turbulence",
+     "package": "turbulence_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 142,
+     "name": "Bank",
+     "package": "Bank_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 161,
+     "name": "Scrimmage",
+     "package": "Scrimmage_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 67,
+     "name": "hospital",
+     "package": "hospital_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 32,
+     "name": "Skyline",
+     "package": "Skyline_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 5,
+     "name": "Anaconda",
+     "package": "anaconda_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 4,
+     "name": "Biolab",
+     "package": "Biolab_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 72,
+     "name": "NerveGas",
+     "package": "NerveGas_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 114,
+     "name": "PalaceMuseum",
+     "package": "PalaceMuseum_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "2": {
+   "name": "EscapeGame",
+   "class": "SFEscapeGame",
+   "maps": [
+    {
+     "id": 112,
+     "name": "SubmarineBase",
+     "package": "SubmarineBase_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 193,
+     "name": "manas_XMAS",
+     "package": "manas_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 166,
+     "name": "Oldtrain",
+     "package": "Oldtrain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 157,
+     "name": "Mangrove",
+     "package": "Mangrove_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 53,
+     "name": "Prison",
+     "package": "Prison_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 84,
+     "name": "Mansion",
+     "package": "Mansion_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 101,
+     "name": "WatersideVillage",
+     "package": "WatersideVillage_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 3,
+     "name": "Sugarcane",
+     "package": "Sugarcane_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 11,
+     "name": "manas",
+     "package": "manas_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 2,
+     "name": "Shanghai",
+     "package": "Shanghai_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "106": {
+   "name": "SeizureGameSpy",
+   "class": "SFSeizureGameSpy",
+   "maps": [
+    {
+     "id": 187,
+     "name": "Colombiana",
+     "package": "colombiana_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "13": {
+   "name": "DeathGame",
+   "class": "SFDeathGame",
+   "maps": [
+    {
+     "id": 3,
+     "name": "Sugarcane",
+     "package": "Sugarcane_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 2,
+     "name": "Shanghai",
+     "package": "Shanghai_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 43,
+     "name": "Uhlan_XMAS",
+     "package": "uhlan_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "ffa",
+   "round_based": false
+  },
+  "64": {
+   "name": "SoloLeagueGame",
+   "class": "SFSoloLeagueGame",
+   "maps": [
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 2,
+     "name": "Shanghai",
+     "package": "Shanghai_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 11,
+     "name": "manas",
+     "package": "manas_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "ffa",
+   "round_based": false
+  },
+  "23": {
+   "name": "DefenceGame",
+   "class": "SFDefenceGame",
+   "maps": [
+    {
+     "id": 19,
+     "name": "MDefence",
+     "package": "MDefence_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "friendly",
+   "round_based": false
+  },
+  "19": {
+   "name": "SurvivalGame",
+   "class": "SFSurvivalGame",
+   "maps": [
+    {
+     "id": 18,
+     "name": "MStreet",
+     "package": "MStreet_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "friendly",
+   "round_based": false
+  },
+  "20": {
+   "name": "ShooterDefenceGame",
+   "class": "SFShooterDefenceGame",
+   "maps": [
+    {
+     "id": 82,
+     "name": "Shooter_level2",
+     "package": "Shooter_level2_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "friendly",
+   "round_based": false
+  },
+  "7": {
+   "name": "BeastGame",
+   "class": "SFBeastGame",
+   "maps": [
+    {
+     "id": 74,
+     "name": "manas_MH",
+     "package": "manas_MH_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "10": {
+   "name": "GlassGame",
+   "class": "SFGlassGame",
+   "maps": [
+    {
+     "id": 162,
+     "name": "Hexagamble",
+     "package": "Hexagamble_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 137,
+     "name": "Hexaleague",
+     "package": "Hexaleague_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 66,
+     "name": "Glass_Hexa",
+     "package": "Glass_Hexa_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "33": {
+   "name": "WarriorGame",
+   "class": "SFWarriorGame",
+   "maps": [
+    {
+     "id": 21,
+     "name": "valley",
+     "package": "valley_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false,
+   "native_hero_adapter": true,
+   "capacity_includes_human": true
+  },
+  "12": {
+   "name": "ThunderRunGame",
+   "class": "SFThunderRunGame",
+   "maps": [
+    {
+     "id": 41,
+     "name": "Bridge",
+     "package": "Bridge_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "16": {
+   "name": "CaptureGame",
+   "class": "SFCaptureGame",
+   "maps": [
+    {
+     "id": 49,
+     "name": "Tower",
+     "package": "tower_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "15": {
+   "name": "FrontLineGame",
+   "class": "SFFrontLineGame",
+   "maps": [
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "55": {
+   "name": "SniperGame",
+   "class": "SFSniperGame",
+   "maps": [
+    {
+     "id": 195,
+     "name": "Satellite_Ranger",
+     "package": "Satellite_Ranger_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 90,
+     "name": "Drone",
+     "package": "Drone_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 141,
+     "name": "Village",
+     "package": "Village_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 158,
+     "name": "Plaza",
+     "package": "Plaza_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 105,
+     "name": "Rocket",
+     "package": "Rocket_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 189,
+     "name": "Harbor",
+     "package": "Harbor.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 184,
+     "name": "hometown",
+     "package": "hometown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 0,
+     "name": "Vitoria",
+     "package": "Vitoria_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 163,
+     "name": "armory",
+     "package": "armory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 133,
+     "name": "SeaCave",
+     "package": "SeaCave_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 156,
+     "name": "Bazaar",
+     "package": "Bazaar_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 150,
+     "name": "SunYatSenHall",
+     "package": "SunYatSenHall_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 80,
+     "name": "GhostTown",
+     "package": "GhostTown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 17,
+     "name": "Missile",
+     "package": "missile_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 20,
+     "name": "Satellite",
+     "package": "Satellite_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 26,
+     "name": "Peacehawk",
+     "package": "Peacehawk_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 37,
+     "name": "Embassy",
+     "package": "Embassy_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 27,
+     "name": "Guantanamo",
+     "package": "Guantanamo_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 6,
+     "name": "Strassebahn",
+     "package": "Strassebahn_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "54": {
+   "name": "SniperTDMGame",
+   "class": "SFSniperTDMGame",
+   "maps": [
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 194,
+     "name": "13_CASI",
+     "package": "13_CASI_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 29,
+     "name": "RussianFactory",
+     "package": "RussianFactory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 43,
+     "name": "Uhlan_XMAS",
+     "package": "uhlan_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 108,
+     "name": "WhiteNight",
+     "package": "WhiteNight_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 110,
+     "name": "Castle",
+     "package": "Castle_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 93,
+     "name": "BlackHawkDown",
+     "package": "BlackHawkDown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 89,
+     "name": "Base_camp",
+     "package": "Base_camp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 106,
+     "name": "HeavyRain_summer",
+     "package": "HeavyRain_summer_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 88,
+     "name": "Factory",
+     "package": "Factory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 63,
+     "name": "Riverside",
+     "package": "Riverside_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "99": {
+   "name": "RoundTDMGame",
+   "class": "SFRoundTDMGame",
+   "maps": [
+    {
+     "id": 148,
+     "name": "Everland",
+     "package": "everland_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 94,
+     "name": "Greenhouse",
+     "package": "greenhouse_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 69,
+     "name": "skywalker",
+     "package": "skywalker_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 63,
+     "name": "Riverside",
+     "package": "Riverside_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 59,
+     "name": "Checkmate",
+     "package": "Checkmate_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 81,
+     "name": "MonsterHouse",
+     "package": "MonsterHouse_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 173,
+     "name": "Fog",
+     "package": "fog_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "14": {
+   "name": "SnowBallFightGame",
+   "class": "SFSnowballFightGame",
+   "maps": [
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 194,
+     "name": "13_CASI",
+     "package": "13_CASI_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 29,
+     "name": "RussianFactory",
+     "package": "RussianFactory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 43,
+     "name": "Uhlan_XMAS",
+     "package": "uhlan_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 127,
+     "name": "13F",
+     "package": "13F_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 25,
+     "name": "Pokhran",
+     "package": "Pokhran_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 44,
+     "name": "temple",
+     "package": "temple_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 165,
+     "name": "cargoship",
+     "package": "cargoship_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 108,
+     "name": "WhiteNight",
+     "package": "WhiteNight_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 110,
+     "name": "Castle",
+     "package": "Castle_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 93,
+     "name": "BlackHawkDown",
+     "package": "BlackHawkDown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 89,
+     "name": "Base_camp",
+     "package": "Base_camp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 106,
+     "name": "HeavyRain_summer",
+     "package": "HeavyRain_summer_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 42,
+     "name": "HeavyRain",
+     "package": "HeavyRain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 13,
+     "name": "Burrow",
+     "package": "Burrow_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 52,
+     "name": "Dam",
+     "package": "Dam_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 88,
+     "name": "Factory",
+     "package": "Factory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 10,
+     "name": "Uhlan",
+     "package": "uhlan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 63,
+     "name": "Riverside",
+     "package": "Riverside_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "101": {
+   "name": "ZombieSurvivalGame",
+   "class": "SFZombieSurvivalGame",
+   "maps": [
+    {
+     "id": 122,
+     "name": "DeathHospital",
+     "package": "DeathHospital_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "103": {
+   "name": "ZombieSurvivalGameTwo",
+   "class": "SFZombieSurvivalGameTwo",
+   "maps": [
+    {
+     "id": 172,
+     "name": "DeathStreet",
+     "package": "DeathStreet_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": false
+  },
+  "114": {
+   "name": "OnetoOneGame",
+   "class": "SFOnetoOneGame",
+   "maps": [
+    {
+     "id": 188,
+     "name": "Supplybase",
+     "package": "SupplyBase_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 178,
+     "name": "Alcatraz",
+     "package": "Alcatraz_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 183,
+     "name": "island",
+     "package": "island.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "duel",
+   "round_based": true
+  },
+  "61": {
+   "name": "BlastingGameVs16",
+   "class": "SFBlastingGameVs16",
+   "maps": [
+    {
+     "id": 105,
+     "name": "Rocket",
+     "package": "Rocket_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "62": {
+   "name": "EscapeGameVs16",
+   "class": "SFEscapeGameVs16",
+   "maps": [
+    {
+     "id": 112,
+     "name": "SubmarineBase",
+     "package": "SubmarineBase_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 193,
+     "name": "manas_XMAS",
+     "package": "manas_XMAS_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 166,
+     "name": "Oldtrain",
+     "package": "Oldtrain_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 157,
+     "name": "Mangrove",
+     "package": "Mangrove_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 53,
+     "name": "Prison",
+     "package": "Prison_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 84,
+     "name": "Mansion",
+     "package": "Mansion_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 101,
+     "name": "WatersideVillage",
+     "package": "WatersideVillage_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 3,
+     "name": "Sugarcane",
+     "package": "Sugarcane_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 11,
+     "name": "manas",
+     "package": "manas_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 2,
+     "name": "Shanghai",
+     "package": "Shanghai_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "63": {
+   "name": "SeizureGameVs16",
+   "class": "SFSeizureGameVs16",
+   "maps": [
+    {
+     "id": 138,
+     "name": "FlowerBed",
+     "package": "FlowerBed_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 100,
+     "name": "Solartower",
+     "package": "solartower_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 146,
+     "name": "Luxor",
+     "package": "Luxor_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 190,
+     "name": "Sunrise",
+     "package": "Sunrise_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 109,
+     "name": "SafeHouse",
+     "package": "SafeHouse_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 185,
+     "name": "island_seizure",
+     "package": "island_seizure_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 182,
+     "name": "turbulence",
+     "package": "turbulence_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 142,
+     "name": "Bank",
+     "package": "Bank_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 161,
+     "name": "Scrimmage",
+     "package": "Scrimmage_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 67,
+     "name": "hospital",
+     "package": "hospital_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 32,
+     "name": "Skyline",
+     "package": "Skyline_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 5,
+     "name": "Anaconda",
+     "package": "anaconda_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 4,
+     "name": "Biolab",
+     "package": "Biolab_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 51,
+     "name": "ryokan",
+     "package": "ryokan_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 72,
+     "name": "NerveGas",
+     "package": "NerveGas_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 114,
+     "name": "PalaceMuseum",
+     "package": "PalaceMuseum_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "120": {
+   "name": "SpecialWeaponGame",
+   "class": "SFSpecialWeaponGame",
+   "maps": [
+    {
+     "id": 195,
+     "name": "Satellite_Ranger",
+     "package": "Satellite_Ranger_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 90,
+     "name": "Drone",
+     "package": "Drone_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 141,
+     "name": "Village",
+     "package": "Village_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 158,
+     "name": "Plaza",
+     "package": "Plaza_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 105,
+     "name": "Rocket",
+     "package": "Rocket_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 189,
+     "name": "Harbor",
+     "package": "Harbor.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 184,
+     "name": "hometown",
+     "package": "hometown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 79,
+     "name": "Mosque",
+     "package": "Mosque_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 0,
+     "name": "Vitoria",
+     "package": "Vitoria_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 61,
+     "name": "RepairCenter",
+     "package": "RepairCenter_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 163,
+     "name": "armory",
+     "package": "armory_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 133,
+     "name": "SeaCave",
+     "package": "SeaCave_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 156,
+     "name": "Bazaar",
+     "package": "Bazaar_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 150,
+     "name": "SunYatSenHall",
+     "package": "SunYatSenHall_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 80,
+     "name": "GhostTown",
+     "package": "GhostTown_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 17,
+     "name": "Missile",
+     "package": "missile_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 20,
+     "name": "Satellite",
+     "package": "Satellite_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 26,
+     "name": "Peacehawk",
+     "package": "Peacehawk_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 37,
+     "name": "Embassy",
+     "package": "Embassy_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 1,
+     "name": "DesertCamp",
+     "package": "Desertcamp_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 27,
+     "name": "Guantanamo",
+     "package": "Guantanamo_LOW.upk",
+     "experimental_no_navigation": true
+    },
+    {
+     "id": 6,
+     "name": "Strassebahn",
+     "package": "Strassebahn_LOW.upk",
+     "experimental_no_navigation": true
+    }
+   ],
+   "experimental_local_bots": true,
+   "bot_family": "team",
+   "round_based": true
+  },
+  "70": {
+   "name": "ThirdPersonMode",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "74": {
+   "name": "ThirdPersonMode74",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "71": {
+   "name": "ThirdPersonMode71",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "72": {
+   "name": "ThirdPersonMode72",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "73": {
+   "name": "ThirdPersonMode73",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "75": {
+   "name": "ThirdPersonMode75",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "76": {
+   "name": "ThirdPersonMode76",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "77": {
+   "name": "ThirdPersonMode77",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "78": {
+   "name": "ThirdPersonMode78",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  },
+  "79": {
+   "name": "ThirdPersonMode79",
+   "class": "SFThirdPersonMode",
+   "maps": [],
+   "twn_dynamic": true
+  }
+ },
+ "other_ai_settings": {
+  "enabled": true,
+  "team_size": 5,
+  "large_team_size": 8,
+  "difficulty": 1,
+  "count_from_room_capacity": true
+ },
+ "native_large_ai_settings": {
+  "enabled": true,
+  "team_size": 16
+ },
+ "hero_mode_settings": {
+  "enabled": true,
+  "purchase_interval_seconds": 2,
+  "decision_interval_seconds": 0.25,
+  "character_ids": [
+   5730016,
+   5030054,
+   5030048,
+   5730024,
+   5030043,
+   5030038
+  ]
+ },
+ "relaxed_ai_settings": {
+  "enabled": true,
+  "team_size": 5,
+  "ffa_bots": 9,
+  "friendly_bots": 4,
+  "difficulty": 1,
+  "count_from_room_capacity": true
+ },
+ "twn_client": {
+  "root": "C:\\SpecialForce2\\SFGame",
+  "cooked_pc": "C:\\SpecialForce2\\SFGame\\CookedPCConsole",
+  "config": {
+   "DefaultDataStore.ini": "5dd3f873c35dc82914acabefd475da793153c806bbe80aa7139992cdc012546e",
+   "TWN/DefaultDataStore.ini": "285403b19c99fc6116035dc8e3044d515a5d1b77c57a295a33c26fa8e7f4d614"
+  },
+  "note": "TWN map/navigation files. Map entries above keep the PH test-client package names so the local audit check still passes; strip the _LOW suffix to get the TWN file name.",
+  "maps": {
+   "cargoship": {
+    "package": "cargoship.upk",
+    "package_sha256": "547552954aeccb47ded3e3b4cd0cc1a9183dcd7afab37b4861ed2ddfad2d1868",
+    "navigation": "cargoship_AITDM.upk",
+    "navigation_sha256": "e48ae1c13bcc17562a0b2602211b627d02f5ff21bbba25b874802f439a3d965e"
+   },
+   "DesertCamp": {
+    "package": "Desertcamp.upk",
+    "package_sha256": "b0b64ff7e5d8201ecef86d11e1d737b736da4efe32b6462dcbda42da2bc00fa7",
+    "navigation": "Desertcamp_AITDM.upk",
+    "navigation_sha256": "5a9975c5b7809167f0efc1ef4c77a757da7ef837e8bf7cdc63fc58d555594a66"
+   },
+   "Uhlan": {
+    "package": "uhlan.upk",
+    "package_sha256": "1f38ba835c3e00a9a684027ca104b0c320a8211a8b4f4f4a20989164cab622b2",
+    "navigation": "uhlan_AITDM.upk",
+    "navigation_sha256": "2a1f3367349d591dffec55fbaeaf707070389967b0d6d42da8cf8a4a6e7fb9fe"
+   },
+   "Dam": {
+    "package": "Dam.upk",
+    "package_sha256": "353adcaafe7b2a3b88527583ddaea18410216bb558d7e88dc1371ba54acad673",
+    "navigation": "Dam_AITDM.upk",
+    "navigation_sha256": "8c6eac8d7d2ad81f4a9bd5b9a60a00ed2c671583b3751f728f9d56b6d1cbbeaa"
+   },
+   "Burrow": {
+    "package": "Burrow.upk",
+    "package_sha256": "e91dc41fb7ca40c2922b32d45522ed304fc04f7a189cef7d6da4fd4e47e4bb09",
+    "navigation": "Burrow_AITDM.upk",
+    "navigation_sha256": "6133cefb0b333405b31183d88555f9b141d98ff147ac53f7569b2f1eeb7f1ef8"
+   },
+   "Pokhran": {
+    "package": "Pokhran.upk",
+    "package_sha256": "41dafe3de22b5e99d3e08b50a00e2b1a7282aabce683db65d5f4211ca0d814f4",
+    "navigation": "Pokhran_AITDM.upk",
+    "navigation_sha256": "d47ad5b0b2e4080f0303e8ac5402e911fd95de55efec6053e188e57d20f1633f"
+   },
+   "temple": {
+    "package": "temple.upk",
+    "package_sha256": "112cc06070cdc37c2de576ec5caa736390c8404ded65a7b51733fd2b1fa9ee2b",
+    "navigation": "Temple_AITDM.upk",
+    "navigation_sha256": "586d3b0573ddbd432f6dadf3143dbaa621ae0a89ed3353f9bcfc58cb90df93b3"
+   },
+   "ryokan": {
+    "package": "ryokan.upk",
+    "package_sha256": "a93263891042daea2ddd8a2c3ed9267e62a86df6394d9d9167aed5eef84cc75d",
+    "navigation": "ryokan_AITDM.upk",
+    "navigation_sha256": "56cd4ed4c279d1fddc95eea72b54e5988a0d61a39dc0a934be5a087774c27b71"
+   },
+   "13F": {
+    "package": "13F.upk",
+    "package_sha256": "7a4b8b319a1be37d8fdfd5dbc5760796e628608330ccc29bb542916274d2ab01",
+    "navigation": "13F_AITDM.upk",
+    "navigation_sha256": "f7c91d6b81de60727d7cfa0cc9411f168e0f9cc38ab4748f734b522c06489f85"
+   },
+   "Tutorial": {
+    "package": "Tutorial.upk",
+    "package_sha256": "dcab55a664f912418561149a01e94e1228d8cdf22813bf5a7682b6a9fe2eace8"
+   },
+   "Firingrange": {
+    "package": "Firingrange.upk",
+    "package_sha256": "aedac0ede9d5486eaf0d684078d819464315e0120ecb4688a101f71bac5e3373"
+   },
+   "Solartower": {
+    "package": "solartower.upk",
+    "package_sha256": "8bc1c4b496b505e3420208dd630e8850058c00fe383b5ba056e225739d47a134"
+   },
+   "Luxor": {
+    "package": "Luxor.upk",
+    "package_sha256": "e08cadce7789eceb2bfe930a98a0f64fac6f280428a329224935a190e19486a7"
+   },
+   "Satellite_Ranger": {
+    "package": "Satellite_Ranger.upk",
+    "package_sha256": "bb26d0c9ac47339e48f00738fecaf2086fd41a1491a2dddf90a46f6eebacf008"
+   },
+   "Sunrise": {
+    "package": "Sunrise.upk",
+    "package_sha256": "97f53511d74865d693bdfefc8d4da81515ed6b99108c1750690a041cddee71e2"
+   },
+   "Rocket": {
+    "package": "Rocket.upk",
+    "package_sha256": "abdfdbf8c1bc1c9455f2ba0a503de34f8dcf90f67dd648a0a4e2641cb7858f9c"
+   },
+   "13_CASI": {
+    "package": "13_CASI.upk",
+    "package_sha256": "922ea7e0f048f9135314ecf4f14f6900d5e3b9337456e7469291e06dcf763edc"
+   },
+   "Drone": {
+    "package": "Drone.upk",
+    "package_sha256": "a475fb7177cd7dbec1fc66352df6045b2922fc1d90a0169c9cff7b779bef307a"
+   },
+   "manas_XMAS": {
+    "package": "manas_XMAS.upk",
+    "package_sha256": "29a26c9b0a22847bb0a90ddb4fc74f50de0efc51fabd195da47ac81d9d65878b"
+   },
+   "RussianFactory": {
+    "package": "RussianFactory.upk",
+    "package_sha256": "2d2e6c792ccaf56e68f9f30c97e002a7d03b8b8dca247e338fd700c62047cf63"
+   },
+   "Uhlan_XMAS": {
+    "package": "uhlan_XMAS.upk",
+    "package_sha256": "fe895a22f3b149332d2ef023d778fecd0cbb9f991f98cd215abde450ffc11f35"
+   },
+   "Village": {
+    "package": "Village.upk",
+    "package_sha256": "21000094208c6790dd936b6b9633808b40e17c6f8afd493523b2c626520dec42"
+   },
+   "Plaza": {
+    "package": "Plaza.upk",
+    "package_sha256": "be5f0e1f186a4e11eb400ccf4f8a42e41fe45e16e4c906104a402937e4f077ca"
+   },
+   "Oldtrain": {
+    "package": "Oldtrain.upk",
+    "package_sha256": "4a5d9264bc2e5a3cb4108635efbc0fb37485792ed39916aa81c8199d5081e5cf"
+   },
+   "Supplybase": {
+    "package": "SupplyBase.upk",
+    "package_sha256": "ee43a33134a0639b8e2debe28973250c71f201498bd8b1f370f6ada12a216dd0"
+   },
+   "Mangrove": {
+    "package": "Mangrove.upk",
+    "package_sha256": "89739ebb43692bba00bbcd3b8cf65db63ed3fa90e8acf6369ee33038fc3b3b3a"
+   },
+   "Harbor": {
+    "package": "Harbor.upk",
+    "package_sha256": "0f9a1ec6221fb35897087032bbaf38435122421007f65fb05d297105e309ef79"
+   },
+   "Alcatraz": {
+    "package": "Alcatraz.upk",
+    "package_sha256": "eb655b45062ea807e538dcc6cf07766c654cbe82a0eb6845f47aa2934e791463"
+   },
+   "skywalker": {
+    "package": "skywalker.upk",
+    "package_sha256": "9ccb13420e671533914bb4ba6e27db7c6c293a642158080c3e8f82f0bfa4ed9f"
+   },
+   "SafeHouse": {
+    "package": "SafeHouse.upk",
+    "package_sha256": "365dc51fa052b04017e7ce9a5f5728500e43bbb3c3a175d83bee3832d9631090"
+   },
+   "island_seizure": {
+    "package": "island_seizure.upk",
+    "package_sha256": "300d5c438fb042fe565316f63714be51f34ee4e6ac130ccfac8408e2154fb99c"
+   },
+   "Colombiana": {
+    "package": "colombiana.upk",
+    "package_sha256": "e33341331b760d0480a784e4f40e1e1d62097af5b51114fd90d0ffcd5cfc9afa"
+   },
+   "hometown": {
+    "package": "hometown.upk",
+    "package_sha256": "2e04cdca071568499ddeb4f2fb098fca4f137642f6c95f4843b921db0dddf00e"
+   },
+   "turbulence": {
+    "package": "turbulence.upk",
+    "package_sha256": "85659daf667d330f18b787f0ab5496c04eaccc42d17d6242f0ee980cb11f1eb1"
+   },
+   "Prison": {
+    "package": "Prison.upk",
+    "package_sha256": "63c00fe4c3f5840d30731d094ea9179c0e6d297564d1c5ebc132bc4167236bfe"
+   },
+   "Bank": {
+    "package": "Bank.upk",
+    "package_sha256": "13030244eb347612ca9fd3d3e97a36bedb0f41af70d274c80bc3c2e1dd6a6da5"
+   },
+   "Tower": {
+    "package": "tower.upk",
+    "package_sha256": "db376726698060c7ba2f489cc3609b5b3cd21a1ebb7bd8e3b45b363bcd7b4abb"
+   },
+   "Mosque": {
+    "package": "Mosque.upk",
+    "package_sha256": "22318aadc390e517dcbb651f556fa61652a938eeda908d5ed9ba2bb144ff92f5"
+   },
+   "Vitoria": {
+    "package": "Vitoria.upk",
+    "package_sha256": "5bb590853e74080e0775e508472fcf6114cb815d631e802a46ebe7f1c54ef39c"
+   },
+   "RepairCenter": {
+    "package": "RepairCenter.upk",
+    "package_sha256": "a7d12932decb9827664117687030e1513df1f065bb7a33ee960f0442786f8aa2"
+   },
+   "armory": {
+    "package": "armory.upk",
+    "package_sha256": "bba4db554ecd0be461f869f68173e494bb4393f9a34d07a717977151c92121a2"
+   },
+   "SeaCave": {
+    "package": "SeaCave.upk",
+    "package_sha256": "1e69571cbaeaeb31fb73a3c92072e17ef3b5f9e2f1570ee032d95042b6a1de2e"
+   },
+   "Scrimmage": {
+    "package": "Scrimmage.upk",
+    "package_sha256": "0a4c103f9874a784affb244e4d6b17cbf0fe1e17a2647d476a624d8fd5227623"
+   },
+   "Mansion": {
+    "package": "Mansion.upk",
+    "package_sha256": "30a674e07b50d4d44812e344dbad473c23d1893c9bd5ffb6c21173d3ed653861"
+   },
+   "Bazaar": {
+    "package": "Bazaar.upk",
+    "package_sha256": "18c89a5c13b18790aa3119ba01438a928876b61dbaff2e176f4ac318e341cac7"
+   },
+   "WhiteNight": {
+    "package": "WhiteNight.upk",
+    "package_sha256": "806fe965fc6924b71e33c4ef2ddc8ece145eaec8a830eaba316d606d4de06707"
+   },
+   "hospital": {
+    "package": "hospital.upk",
+    "package_sha256": "b9cdcab96b8cd0169c8e2a4ec148c5ba808451d4d2f67c27e25684f644d4b950"
+   },
+   "Castle": {
+    "package": "Castle.upk",
+    "package_sha256": "7eaae7bd8c8ede3c877742c8f516f5ee1ead3c07c8660855c9a02999bb6d409e"
+   },
+   "BlackHawkDown": {
+    "package": "BlackHawkDown.upk",
+    "package_sha256": "b7bf466f77fc4a21002e4c12fe7982229431d9d22a2c7894883211d24c7c4221"
+   },
+   "WatersideVillage": {
+    "package": "WatersideVillage.upk",
+    "package_sha256": "51fb3e01b354888fa860e2a9d4ef7b7cd214ec2f86ae6b9fcf3c2db9d49afe0a"
+   },
+   "SunYatSenHall": {
+    "package": "SunYatSenHall.upk",
+    "package_sha256": "ad48d96d6e9747a3fe2920a2197aec78dc18b07c751a8e6527fd1aa1acf7588d"
+   },
+   "GhostTown": {
+    "package": "GhostTown.upk",
+    "package_sha256": "ad22dd334b1c4b6b679fac6e92eea747dae1b1b2e680d2ea8d6614be98dda674"
+   },
+   "Base_camp": {
+    "package": "Base_camp.upk",
+    "package_sha256": "3b66dad3f4784e99894f1a317a6c61c35f784c0aa6ff0306acf424e715b6a97e"
+   },
+   "Missile": {
+    "package": "missile.upk",
+    "package_sha256": "9a09323110f173e218e6049e388768021b0a5c3110045a4e7a03a251e6c8ca3c"
+   },
+   "HeavyRain_summer": {
+    "package": "HeavyRain_summer.upk",
+    "package_sha256": "b510b54af8287db93fac79403f4860cbf42d76cffa47cb842276ae720ffe5ce9"
+   },
+   "Sugarcane": {
+    "package": "Sugarcane.upk",
+    "package_sha256": "2e2ed53c5cc56871e9dd85c3d6b57261b44b463b9ce9c90bc242757535658881"
+   },
+   "Skyline": {
+    "package": "Skyline.upk",
+    "package_sha256": "4636d08c4003a2e999573ed8ec247db65fc795aa75e74bfa86119d9ee551763f"
+   },
+   "Anaconda": {
+    "package": "anaconda.upk",
+    "package_sha256": "eca776a88089b04da7a3bbd0dc5f09f710860cd81303144c9cd0e53e7ff08813"
+   },
+   "Satellite": {
+    "package": "Satellite.upk",
+    "package_sha256": "cd48f9161db66aa2cfc978fda0f5b44c4eebb8c5fe033c21e60aa43e07382e28"
+   },
+   "Peacehawk": {
+    "package": "Peacehawk.upk",
+    "package_sha256": "3f4d0ff37ca45baefcdb3be927215d5f46c3c8489e0ccf3a7658d32e4adf256e"
+   },
+   "Embassy": {
+    "package": "Embassy.upk",
+    "package_sha256": "bb4be72297fec34309b67443555f80c757c22a633d12ea768370e523a19deab4"
+   },
+   "Guantanamo": {
+    "package": "Guantanamo.upk",
+    "package_sha256": "5074790b857e9b623434bf4a64c83efd9473394f8d0a7f287d190fc42f34e660"
+   },
+   "Strassebahn": {
+    "package": "Strassebahn.upk",
+    "package_sha256": "48021ac44efde74d111516b724e55ba033fc582128c2c005b7c96832ec9bed32"
+   },
+   "Biolab": {
+    "package": "Biolab.upk",
+    "package_sha256": "19c89b98cc09535f57a2b5c3f623cbdfef171bf1e1c323fc657dd9e91c6162c8"
+   },
+   "NerveGas": {
+    "package": "NerveGas.upk",
+    "package_sha256": "2d93faacb5bcdb072e3002e8538f80b553daac02d055e113b215ea61ccfc8027"
+   },
+   "manas": {
+    "package": "manas.upk",
+    "package_sha256": "5a79453c57ad4c389002be36f91f41ceb501abd7c68cc958cede48d844457945"
+   },
+   "Shanghai": {
+    "package": "Shanghai.upk",
+    "package_sha256": "17d8521d92cdac05faa2cc456a984f5e8513983598ae049c0afc6a170210bfe1"
+   },
+   "Factory": {
+    "package": "Factory.upk",
+    "package_sha256": "ae2e830b1dea33cbe5322dd7fa30b247669bf3672c8039d2f906bc7f2e92f08b"
+   },
+   "Checkmate": {
+    "package": "Checkmate.upk",
+    "package_sha256": "cd90865e74e2a054ac21395620d78e9a715febe973f3d79e1eff3772d684299c"
+   },
+   "Riverside": {
+    "package": "Riverside.upk",
+    "package_sha256": "fb49115bb2bf9fb932902e350a72b9ecf30ba45e3f615653778409bb31b5294c"
+   },
+   "SubmarineBase": {
+    "package": "SubmarineBase.upk",
+    "package_sha256": "ee548aebcfc8b65d4aa91e26bb635f6523b329260ea5a4840e29a01fc36fb0e0"
+   },
+   "everland": {
+    "package": "everland.upk",
+    "package_sha256": "6ca42661a1cbfa880f8ed8d1be0c3793d97310d3a5a0ad1fc953e179a272b4b9"
+   },
+   "FlowerBed": {
+    "package": "FlowerBed.upk",
+    "package_sha256": "8d08fda44e89aceeeec23a858b908a2527e703e2c21845af4d6d72bb3e0dd84c"
+   },
+   "greenhouse": {
+    "package": "greenhouse.upk",
+    "package_sha256": "9d82d200b1eb79cdd0dd95c830c51127152ec91adc64510d6ef592fdb22dc829"
+   },
+   "MonsterHouse": {
+    "package": "MonsterHouse.upk",
+    "package_sha256": "1bdbb37e649563acf8ef0e7ae6239c7921701f7d232b81b9b426beca08980fc6"
+   },
+   "HeavyRain": {
+    "package": "HeavyRain.upk",
+    "package_sha256": "0ace139bd1b9ccda996512201195c1e0b0b28f587634c1104d238d6faa2a1afe"
+   },
+   "Fog": {
+    "package": "fog.upk",
+    "package_sha256": "d379229f042825070122545c89787b8a6c9efc1b51b9436a67915d473357b120"
+   },
+   "PalaceMuseum": {
+    "package": "PalaceMuseum.upk",
+    "package_sha256": "5705a5448a4dec13117440612ef9b98d819c7592d2dc0fc777eda5d8bdfd7ce4"
+   },
+   "DustCity": {
+    "package": "DustCity.upk",
+    "package_sha256": "c8fdb612974b9371cf33a9d6db4913953c433b34af89244390966aa8e6ccf239"
+   },
+   "Mansion_HideSeek": {
+    "package": "Mansion_HideSeek.upk",
+    "package_sha256": "db65234ff13a6063b78d4f76c32163db366be7e46d49c3a173799d66b78247e9"
+   },
+   "MDefence": {
+    "package": "MDefence.upk",
+    "package_sha256": "b8481e8a3a982b0fc13f39af8d4f715a44110804128539f3de025093d988408b"
+   },
+   "MStreet": {
+    "package": "MStreet.upk",
+    "package_sha256": "23d71f01327394e4ce63a6e3ff3fa52e6efd4539fa5ac3b20b0f3dd4e680e941"
+   },
+   "Shooter_level2": {
+    "package": "Shooter_level2.upk",
+    "package_sha256": "6f258739efd5326bf82b039942738d126764697fac9063b2118d4b703ea1baf7"
+   },
+   "manas_MH": {
+    "package": "manas_MH.upk",
+    "package_sha256": "ee30683be1c3f8e66278dfe0d0ac195475d23febeef8c74c45aa0032ca77f3e1"
+   },
+   "Hexagamble": {
+    "package": "Hexagamble.upk",
+    "package_sha256": "3970a53c0a5cb778df61334c3e299a6c77befb6c572f80898df459fa4addd9f1"
+   },
+   "Hexaleague": {
+    "package": "Hexaleague.upk",
+    "package_sha256": "603324ca141d7b187419ef86b8082006cbd9735ae75d174ba6a0e1f82d869677"
+   },
+   "Glass_Hexa": {
+    "package": "Glass_Hexa.upk",
+    "package_sha256": "d73a66ba665a775b6b775f28679c37886b7fc609b066d75fa9181eba0ad8601b"
+   },
+   "valley": {
+    "package": "valley.upk",
+    "package_sha256": "4654cee247cb36206f076dd5abcb13d2ad423665970af30bd30bde011f9fda3a"
+   },
+   "Bridge": {
+    "package": "Bridge.upk",
+    "package_sha256": "b0288fb73ff9b0bd61a5ae0a603fba61bacc1016b6b996ff61c55f1e8f5e04e7"
+   },
+   "Everland": {
+    "package": "everland.upk",
+    "package_sha256": "6ca42661a1cbfa880f8ed8d1be0c3793d97310d3a5a0ad1fc953e179a272b4b9"
+   },
+   "Greenhouse": {
+    "package": "greenhouse.upk",
+    "package_sha256": "9d82d200b1eb79cdd0dd95c830c51127152ec91adc64510d6ef592fdb22dc829"
+   },
+   "DeathHospital": {
+    "package": "DeathHospital.upk",
+    "package_sha256": "2410bf7cdda18f41c545a3dc20dcbe81b1304f78462364390f0e63be25e903e0"
+   },
+   "DeathStreet": {
+    "package": "DeathStreet.upk",
+    "package_sha256": "d5062c74decf187d3384cdf2f38f3c24d9eaf8bf771155c9463eaf452e37ef73"
+   },
+   "island": {
+    "package": "island.upk",
+    "package_sha256": "5a5e8be00fe4e5293a649908924ab4220ecdf3505408f6e0ca06856f547c69ba"
+   }
+  }
+ }
+}
