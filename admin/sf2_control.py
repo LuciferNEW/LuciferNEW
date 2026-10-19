@@ -389,8 +389,18 @@ def twn_start(ctrl, remote=False):
     def _twn_log_tail(n=25):
         try: return "\n".join(open(log_path, encoding="utf-8", errors="replace").read().splitlines()[-n:])
         except Exception: return ""
-    TWN["proc"] = subprocess.Popen([ctrl["twn_python"], "server.py", "--port", str(internal),
-                                    "--ready-file", ready], cwd=ctrl["twn_dir"],
+    # Launch the server exactly like the V4 pack's own launcher: same database
+    # (the pack's save\ DB, so the panel edits and the running server share one
+    # DB), same catalog, HTTP stats on 28081, plaintext responses. This makes
+    # the panel a drop-in single entry point — no need for the pack's launcher.
+    cmd = [ctrl["twn_python"], "server.py", "--port", str(internal),
+           "--http-port", "28081", "--response-encryption", "none",
+           "--database", twn_db_path(ctrl),
+           "--catalog", os.path.join(ctrl["twn_dir"], "catalog.json"),
+           "--ready-file", ready]
+    try: os.makedirs(os.path.dirname(twn_db_path(ctrl)), exist_ok=True)
+    except Exception: pass
+    TWN["proc"] = subprocess.Popen(cmd, cwd=ctrl["twn_dir"],
                                    stdout=logf, stderr=subprocess.STDOUT)
     t0 = time.time(); info = None
     while time.time() - t0 < 25:
