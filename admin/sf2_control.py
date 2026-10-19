@@ -462,6 +462,17 @@ def twn_db_path(ctrl):
     return cands[0]
 def twn_db_ready(ctrl): return os.path.exists(twn_db_path(ctrl))
 _TWN_FLD = {"sp": "SP", "cash": "Cash", "experience": "Exp", "exp": "Exp", "tp": "TP", "rank": "Rank"}
+# Every int/byte field in the profile (profile-schema.json). A non-integer in any
+# of these breaks the client's profile packet (cmd 122) -> shop/inventory break.
+_TWN_NUMERIC = {
+    "USN", "Rank", "SPGage", "Op", "SP", "TP", "armoryIdx", "AllPlayTime", "Exp",
+    "LadderPoint", "Kills", "Assists", "Deaths", "AttackRound", "AttackRoundWin",
+    "DefendRound", "DefendRoundWin", "RunAwayCount", "AllHitCount", "HeadShots",
+    "HeadHitCount", "CurrCount", "AllHitCharacter", "AllPlayGameCount",
+    "AllWinGameCount", "NametagImage", "CSN", "ClanLevel", "CSNToRequestClanJoin",
+    "Age", "Sex", "Coin", "CoinGauge", "CoinState", "CP",
+    "TagID[0]", "TagID[1]", "TagID[2]", "LuckyPoint", "Cash",
+}
 def twn_accounts(ctrl):
     import sqlite3
     p = twn_db_path(ctrl)
@@ -493,12 +504,12 @@ def twn_account_update(ctrl, usn, fields):
                 # fail to pack, which breaks the shop/inventory. Skip bad input.
                 try: pr[_TWN_FLD[k]] = int(str(v).strip())
                 except (TypeError, ValueError): continue
-        # Self-heal: coerce every known numeric field back to a valid int, in case
-        # an earlier edit (or another tool) left a string/blank there.
-        for _fld in ("SP", "Cash", "Exp", "TP", "Rank", "LuckyPoint", "LadderPoint",
-                     "Kills", "Deaths", "HeadShots", "Assists"):
-            if _fld in pr:
-                try: pr[_fld] = int(pr[_fld])
+        # Self-heal: coerce every numeric profile field back to a valid int, in
+        # case an earlier edit (or another tool) left a string/blank there — a
+        # non-int in an int field breaks the client's profile packet (cmd 122).
+        for _fld in list(pr.keys()):
+            if _fld in _TWN_NUMERIC and not isinstance(pr[_fld], int):
+                try: pr[_fld] = int(str(pr[_fld]).strip() or 0)
                 except (TypeError, ValueError): pr[_fld] = 0
         c.execute("UPDATE accounts SET profile=? WHERE usn=?", (json.dumps(pr, ensure_ascii=False), usn)); c.commit()
     finally: c.close()
