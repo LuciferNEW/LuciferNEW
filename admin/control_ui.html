@@ -250,6 +250,8 @@ input.n{width:84px}
         <label>獎池</label>
         <select id="poolsel" style="min-width:160px"></select>
         <button class="ghost" id="btnPoolReload">重新整理清單</button>
+        <button class="ghost" id="btnPoolCleanOne">此池清掉沒圖</button>
+        <button class="act" id="btnPoolCleanAll">全部獎池清掉沒圖（治轉蛋空白）</button>
         <span class="muted" id="poolstate"></span>
       </div>
       <div class="muted">選一個獎池 → 下方改每個獎品的<b>權重 weight</b>（機率＝權重/總和）、<b>稀有</b>、<b>刪除</b>，或<b>新增獎品</b>（填道具 id）。總權重建議湊 <b>10000</b>。改完按<b>儲存獎池</b>，<b>重啟台服 server</b> 生效。</div>
@@ -619,6 +621,15 @@ async function loadGacha(){const r=await api('/api/twn/pools','POST',{});
   $('#poolstate').textContent=`共 ${r.length} 個獎池`;
   if(r.length)openPool(sel.value);}
 $('#btnPoolReload')&&($('#btnPoolReload').onclick=loadGacha);
+$('#btnPoolCleanOne')&&($('#btnPoolCleanOne').onclick=async()=>{const code=$('#poolsel').value;if(!code)return;
+  if(!confirm(`清掉獎池 ${code} 裡「沒圖」的獎品？`))return;$('#poolstate').textContent='清理中…';
+  const r=await api('/api/twn/pool/clean','POST',{code});
+  $('#poolstate').textContent=r.error?r.error:r.note;toast(r.error||'已清理',!!r.error);if(!r.error)openPool(code);});
+$('#btnPoolCleanAll')&&($('#btnPoolCleanAll').onclick=async()=>{
+  if(!confirm('把「所有獎池」裡沒圖的獎品清掉（只留有圖的，權重重算 10000）？\n這樣開扭蛋就不會再空白。'))return;
+  $('#poolstate').textContent='全部清理中…（201 個池，稍等）';
+  const r=await api('/api/twn/pool/clean','POST',{});
+  $('#poolstate').textContent=r.error?r.error:r.note;toast(r.error||'已全部清理',!!r.error);loadGacha();});
 document.addEventListener('change',e=>{if(e.target.id==='poolsel')openPool(e.target.value);});
 async function openPool(code){const r=await api('/api/twn/pool','POST',{code});
   if(r.error){$('#pooltbl').textContent=r.error;return;}

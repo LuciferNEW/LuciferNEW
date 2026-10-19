@@ -829,6 +829,45 @@ def twn_pool_save(ctrl, code, prizes):
     warn = "" if total == 10000 else f"⚠ 總權重是 {total}，建議湊成 10000（抽獎機率才精準）。"
     return {"ok": True, "count": len(new), "total": total, "note": "已存 economy-data.json，重啟台服 server 生效。" + warn}
 
+def _norm_weights(prizes, target=10000):
+    tot = sum(p["weight"] for p in prizes) or 1
+    for p in prizes: p["weight"] = max(1, round(p["weight"] * target / tot))
+    diff = target - sum(p["weight"] for p in prizes)
+    if prizes: prizes[0]["weight"] = max(1, prizes[0]["weight"] + diff)
+    return prizes
+
+def twn_pool_clean(ctrl, code=None):
+    """Drop gacha prizes whose item has no client art (no icon / not cooked) so the
+    capsule result never shows blank/undefined boxes; re-normalise each pool to
+    total weight 10000. code=None cleans every pool."""
+    eco = twn_load_economy(ctrl)
+    if not eco: return {"error": "找不到 economy-data.json"}
+    cat = twn_load_catalog(ctrl); byid = {}
+    for c in cat:
+        try: byid[int(c.get("id"))] = c
+        except (TypeError, ValueError): pass
+    def good(iid):
+        c = byid.get(iid); return bool(c and c.get("icon") and c.get("cooked"))
+    fb = next((int(c["id"]) for c in cat if c.get("icon") and c.get("cooked")
+               and not str(c.get("class", "")).startswith(("SFCItem_Func", "SFCItem_Common"))), None)
+    pools = eco.get("pools") or {}
+    codes = [code] if code else list(pools.keys())
+    fixed = emptied = removed = 0
+    for cd in codes:
+        prizes = pools.get(cd)
+        if not prizes: continue
+        kept = [{"id": p["id"], "weight": p.get("weight", 1), "rare": bool(p.get("rare")), "source": "custom"}
+                for p in prizes if good(p.get("id"))]
+        if len(kept) != len(prizes):
+            removed += len(prizes) - len(kept)
+            if not kept and fb:
+                kept = [{"id": fb, "weight": 10000, "rare": False, "source": "custom"}]; emptied += 1
+            if kept: _norm_weights(kept)
+            pools[cd] = kept; fixed += 1
+    twn_save_economy(ctrl, eco)
+    return {"ok": True, "pools_fixed": fixed, "removed": removed, "emptied": emptied,
+            "note": f"已清理 {fixed} 個獎池、移除 {removed} 個沒圖獎品（權重重算 10000）。重啟台服 server 生效。"}
+
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
 def twn_db_path(ctrl):
     # Explicit override wins; else find the active DB. The V4 pack keeps it in
@@ -1157,6 +1196,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/pools" and twn_available(ctrl): return self._s(twn_pools(ctrl))
             if self.path == "/api/twn/pool" and twn_available(ctrl): return self._s(twn_pool_get(ctrl, b["code"]))
             if self.path == "/api/twn/pool/save" and twn_available(ctrl): return self._s(twn_pool_save(ctrl, b["code"], b.get("prizes", [])))
+            if self.path == "/api/twn/pool/clean" and twn_available(ctrl): return self._s(twn_pool_clean(ctrl, b.get("code")))
             if self.path == "/api/client/launch": return self._s(client_launch(ctrl, b.get("ip", "127.0.0.1")))
             if self.path == "/api/player/pack": return self._s(make_player_pack(ctrl, b.get("ip", "")))
             if self.path == "/api/player/zip": return self._s(make_player_zip(ctrl, b.get("ip", "")))
