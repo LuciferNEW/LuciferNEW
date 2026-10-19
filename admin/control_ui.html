@@ -172,6 +172,7 @@ input.n{width:84px}
       <div class="row">
         <button class="ghost" id="btnShopOnAll">搜尋結果全部上架</button>
         <button class="ghost" id="btnShopOffAll">全部下架</button>
+        <button class="ghost" id="btnShopDedup">上架去重（治商城卡）</button>
         <button class="act" id="btnShopSave">儲存變更</button>
         <span class="muted" id="shopstate"></span>
       </div>
@@ -471,7 +472,13 @@ document.addEventListener('click',e=>{
   if(e.target.id==='btnShopSave')shopSave(shopCollectVisible(),'已存');
   if(e.target.id==='btnShopOnAll'){const a=shopFiltered();if(a.length>500&&!confirm(`要把 ${a.length} 項全部上架嗎？`))return;shopSave(a.map(c=>({id:c.id,selling:true})),'已上架');}
   if(e.target.id==='btnShopOffAll'){const a=shopFiltered();if(a.length>500&&!confirm(`要把 ${a.length} 項全部下架嗎？`))return;shopSave(a.map(c=>({id:c.id,selling:false})),'已下架');}
+  if(e.target.id==='btnShopDedup'){if(!confirm('同一把槍(同圖)只留一個上架，其餘下架，解決商城卡頓。要執行嗎？'))return;shopDedup();}
 });
+async function shopDedup(){$('#shopstate').textContent='去重中…';
+  const r=await api('/api/shop/dedup','POST',{});
+  if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
+  $('#shopstate').textContent=`已下架重複 ${r.off} 項，保留 ${r.kept} 個，重啟 server 生效`;toast('已去重，重啟 server 生效');
+  CAT=null;await loadCat();renderShop();}
 
 // ---- pkg/gacha ----
 async function loadPkg(){const g=await api('/api/content/gacha');$('#gachabox').textContent=JSON.stringify(g,null,1);

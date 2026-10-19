@@ -493,6 +493,24 @@ def twn_shop_save(ctrl, changes):
     twn_save_catalog(ctrl, cat)
     return {"ok": True, "saved": n, "note": "已存 catalog.json；重啟台服 server 生效"}
 
+def twn_shop_dedup(ctrl, key="icon"):
+    """Keep only ONE on-sale entry per distinct weapon (same icon), take the rest
+    off sale. The client's shop sends every on-sale item (278), so duplicates are
+    the usual cause of a laggy in-game shop."""
+    cat = twn_load_catalog(ctrl)
+    seen = set(); off = 0; kept = 0
+    for c in cat:
+        if not c.get("shop_selling"):
+            continue
+        k = c.get(key) or c.get("code") or c.get("name") or ("id%s" % c.get("id"))
+        if k in seen:
+            c["shop_selling"] = False; off += 1
+        else:
+            seen.add(k); kept += 1
+    twn_save_catalog(ctrl, cat)
+    return {"ok": True, "off": off, "kept": kept,
+            "note": f"已把重複的 {off} 項下架，保留 {kept} 個不重複上架。重啟台服 server 生效，商城就不卡了。"}
+
 def _twn_weapon_pool(cat, scope):
     """Weapons the client can render (cooked), excluding functional/common items,
     characters and units. scope: 'icon' = distinct by icon (all have art),
@@ -1109,6 +1127,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/stop": return self._s(twn_stop(ctrl))
             if self.path == "/api/twn/unlock": return self._s(twn_unlock(ctrl, b.get("which", "content")))
             if self.path == "/api/shop/save" and twn_available(ctrl): return self._s(twn_shop_save(ctrl, b.get("changes", [])))
+            if self.path == "/api/shop/dedup" and twn_available(ctrl): return self._s(twn_shop_dedup(ctrl))
             if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
             if self.path == "/api/twn/give" and twn_available(ctrl): return self._s(twn_item_give(ctrl, int(b["usn"]), b["item_id"], b.get("count", 1)))
             if self.path == "/api/twn/clearbag" and twn_available(ctrl): return self._s(twn_clear_inventory(ctrl, int(b["usn"]), b.get("scope", "bag")))
