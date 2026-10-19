@@ -499,11 +499,29 @@ def _client_lang(ctrl):
         pass
     return cands[0] if cands else "EUR"
 
+def _resolve_client_exe(raw):
+    """Find sf2.exe from whatever client_exe points at: the exe itself, the
+    client root folder, or a folder holding Binaries\\Win32. Falls back from a
+    stale sf2_unpacked.exe path to sf2.exe in the same folder."""
+    if not raw:
+        return None
+    # a direct, existing exe path -> use it
+    if os.path.isfile(raw):
+        return raw
+    # a path to (possibly missing) sf2_unpacked.exe / sf2.exe -> try sf2.exe beside it
+    d = os.path.dirname(raw) if os.path.splitext(raw)[1] else raw
+    for cand in (os.path.join(d, "sf2.exe"),
+                 os.path.join(d, "Binaries", "Win32", "sf2.exe")):
+        if os.path.isfile(cand):
+            return cand
+    return None
+
 def client_launch(ctrl, ip="127.0.0.1"):
     """Our own launcher: start the player's real client pointed at the server.
     Language is auto-detected from which Startup_<LANG>.upk exists (this client is EUR)."""
-    exe = ctrl["client_exe"]
-    if not os.path.exists(exe): return {"error": f"客端找不到：{exe}（在設定改 client_exe）"}
+    exe = _resolve_client_exe(ctrl.get("client_exe"))
+    if not exe:
+        return {"error": f"客端找不到 sf2.exe：{ctrl.get('client_exe')}（在設定把 client_exe 指到 ...\\Binaries\\Win32\\sf2.exe）"}
     lang = _client_lang(ctrl)
     args = [exe, "SFFrontEnd_new",
             f"-ServerIP={ip}", "-ServerPort=28080",
@@ -513,8 +531,12 @@ def client_launch(ctrl, ip="127.0.0.1"):
             "-NoSplash", "-nomoviestartup", "-windowed",
             f"-ResX={ctrl.get('client_resx',1280)}", f"-ResY={ctrl.get('client_resy',720)}"]
     try:
-        subprocess.Popen(args, cwd=os.path.dirname(exe))
-        return {"ok": True, "cmd": " ".join(args)}
+        # DETACHED_PROCESS so the client keeps running after the panel exits,
+        # and so it does not inherit this process' console (matches the proven
+        # standalone launcher; avoids the XIGNCODE init issues seen otherwise).
+        flags = 0x00000008 if os.name == "nt" else 0
+        subprocess.Popen(args, cwd=os.path.dirname(exe), creationflags=flags, close_fds=True)
+        return {"ok": True, "cmd": " ".join(args), "exe": exe}
     except Exception as e:
         return {"error": f"啟動失敗：{e}"}
 PLAYER_BAT = r"""@echo off
