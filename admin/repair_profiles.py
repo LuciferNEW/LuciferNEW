@@ -1,4 +1,4 @@
-"""One-shot repair: coerce every numeric profile field in local-lobby.sqlite3
+r"""One-shot repair: coerce every numeric profile field in local-lobby.sqlite3
 back to a valid integer. A blank/string value in an int/byte field makes the
 client's profile packet (cmd 122) fail to pack, which breaks the shop/inventory
 ("buying doesn't go into the backpack"). Run it with the server STOPPED.
