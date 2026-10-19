@@ -166,7 +166,7 @@ input.n{width:84px}
     <div class="card">
       <h3>道具搜尋 / 上架 / 改價</h3>
       <div class="row"><input id="shopq" placeholder="搜尋 id / code / 名稱" style="flex:1;min-width:200px">
-        <label><input type="checkbox" id="shoponly"> 只看未上架</label>
+        <label>顯示<select id="shopfilter"><option value="all">全部</option><option value="on">只看有上架</option><option value="off">只看未上架</option></select></label>
         <label><input type="checkbox" id="shopdedup" checked> 同名/同圖去重</label>
         <label>排序<select id="shopsort"><option value="id">id</option><option value="name">名稱</option><option value="code">code</option></select></label></div>
       <div class="row">
@@ -446,9 +446,9 @@ async function doUnlock(which){$('#unlockstate').textContent='套用中…';
   const r=await api('/api/unlock','POST',{which});
   $('#unlockstate').textContent=r.error?r.error:`已上架 ${r.shop_fields} 項 → 去 Build 重打包`;toast(r.error||'已套用，去 Build 重打包',!!r.error);}
 async function loadShop(){CAT=null;await loadCat();renderShop();}
-['#shopq','#shoponly','#shopdedup','#shopsort'].forEach(s=>document.addEventListener('input',e=>{if(e.target.matches(s))renderShop();}));
-function shopFiltered(){if(!CAT)return [];const q=$('#shopq').value.toLowerCase(),only=$('#shoponly').checked,sort=$('#shopsort').value;
-  let a=CAT.filter(c=>(!only||!c.selling)&&(!q||(''+c.id).includes(q)||(c.code||'').toLowerCase().includes(q)||(c.name||'').toLowerCase().includes(q)));
+['#shopq','#shopfilter','#shopdedup','#shopsort'].forEach(s=>document.addEventListener('input',e=>{if(e.target.matches(s))renderShop();}));
+function shopFiltered(){if(!CAT)return [];const q=$('#shopq').value.toLowerCase(),f=($('#shopfilter')||{}).value||'all',sort=$('#shopsort').value;
+  let a=CAT.filter(c=>(f==='all'||(f==='on'&&c.selling)||(f==='off'&&!c.selling))&&(!q||(''+c.id).includes(q)||(c.code||'').toLowerCase().includes(q)||(c.name||'').toLowerCase().includes(q)));
   a.sort((x,y)=>sort==='name'?(''+x.name).localeCompare(''+y.name,'zh-Hant'):sort==='code'?(''+x.code).localeCompare(''+y.code):(x.id-y.id));
   return a;}
 // Group by icon (fallback code/id) when dedup is on; each group = one row that
