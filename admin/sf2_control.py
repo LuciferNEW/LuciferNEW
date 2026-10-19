@@ -476,6 +476,65 @@ def twn_shop_save(ctrl, changes):
     json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
     return {"ok": True, "saved": n, "note": "已存 catalog.json；重啟台服 server 生效"}
 
+def _twn_weapon_pool(cat, scope):
+    """Weapons the client can render (cooked), excluding functional/common items,
+    characters and units. scope: 'icon' = distinct by icon (all have art),
+    'class' = distinct by weapon class, 'all' = every cooked weapon."""
+    def is_unit(c): return str(c.get("code", ""))[:3] in ("ECU", "PCU", "RCU")
+    def is_func(c): return str(c.get("class", "")).startswith(("SFCItem_Func", "SFCItem_Common"))
+    weapons = [c for c in cat if c.get("cooked") and not is_func(c)
+               and not is_unit(c) and not c.get("is_pmc")]
+    if scope == "all":
+        return weapons
+    key = "icon" if scope == "icon" else "class"
+    seen, out = set(), []
+    for c in weapons:
+        k = c.get(key)
+        if scope == "icon" and not k:   # need an icon so it shows in the bag
+            continue
+        if k and k not in seen:
+            seen.add(k); out.append(c)
+    return out
+
+def twn_gm_grant(ctrl, usn, scope="icon", maxmoney=True):
+    """GM helper: drop every weapon in the chosen pool into an account's bag
+    (used=0), using inventory.py's own insert shape, and max the wallet."""
+    import sqlite3
+    p = twn_catalog_path(ctrl)
+    if not os.path.exists(p): return {"error": "找不到 catalog.json"}
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再執行（避免與執行中的存檔衝突）"}
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立（先進遊戲登入一次建立帳號）"}
+    cat = json.load(open(p, encoding="utf-8"))
+    pool = _twn_weapon_pool(cat, scope)
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        row = con.execute("SELECT profile FROM accounts WHERE usn=?", (usn,)).fetchone()
+        if not row: return {"error": f"找不到帳號 usn={usn}（先在遊戲登入建立）"}
+        owned = {r[0] for r in con.execute("SELECT DISTINCT item_id FROM inventory WHERE usn=?", (usn,))}
+        added = 0
+        for c in pool:
+            try: iid = int(c.get("id"))
+            except (TypeError, ValueError): continue
+            if iid in owned: continue
+            con.execute("INSERT INTO inventory(usn,item_id,used) VALUES(?,?,0)", (usn, iid))
+            owned.add(iid); added += 1
+        if maxmoney:
+            pr = json.loads(row[0]) if row[0] else {}
+            pr["SP"] = 2000000000; pr["Cash"] = 2000000000; pr["TP"] = 99999
+            for k in list(pr.keys()):
+                if k in _TWN_NUMERIC and not isinstance(pr[k], int):
+                    try: pr[k] = int(str(pr[k]).strip() or 0)
+                    except (TypeError, ValueError): pr[k] = 0
+            con.execute("UPDATE accounts SET profile=? WHERE usn=?",
+                        (json.dumps(pr, ensure_ascii=False), usn))
+        con.commit()
+    finally: con.close()
+    return {"ok": True, "added": added, "pool": len(pool),
+            "note": f"已加 {added} 把槍到背包（範圍 {scope}，池 {len(pool)} 項）。重啟台服 server 後登入生效。"
+                    + ("" if added <= 2500 else " ⚠ 數量很多，登入可能變慢，若卡住請改用較小範圍或刪帳號重來。")}
+
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
 def twn_db_path(ctrl):
     # Explicit override wins; else find the active DB. The V4 pack keeps it in
@@ -788,6 +847,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/stop": return self._s(twn_stop(ctrl))
             if self.path == "/api/twn/unlock": return self._s(twn_unlock(ctrl, b.get("which", "content")))
             if self.path == "/api/shop/save" and twn_available(ctrl): return self._s(twn_shop_save(ctrl, b.get("changes", [])))
+            if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
             if self.path == "/api/client/launch": return self._s(client_launch(ctrl, b.get("ip", "127.0.0.1")))
             if self.path == "/api/player/pack": return self._s(make_player_pack(ctrl, b.get("ip", "")))
             if self.path == "/api/player/zip": return self._s(make_player_zip(ctrl, b.get("ip", "")))

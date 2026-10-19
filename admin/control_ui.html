@@ -103,6 +103,20 @@ textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace
       <div class="row"><label>新帳號</label><input id="nlogin" placeholder="login" class="n"><input id="npw" placeholder="password" class="n">
         <label><input type="checkbox" id="nseed"> 給新手道具</label><button class="ghost" id="btnCreate">建立</button></div>
     </div>
+    <div class="card">
+      <h3>GM 工具（台服）</h3>
+      <div class="row">
+        <label>給槍範圍</label>
+        <select id="gmscope">
+          <option value="icon">去重·有圖（約 1915 把，建議）</option>
+          <option value="class">去重·依類別（約 2674 把）</option>
+          <option value="all">全部 cooked（約 12324 把，可能卡登入）</option>
+        </select>
+        <label><input type="checkbox" id="gmmoney" checked> 同時拉滿 SP/Cash/TP</label>
+      </div>
+      <div class="muted">在下方帳號列按「GM給槍」把整池武器塞進該帳號背包。<b>執行前先在「伺服器」分頁關掉 server</b>，執行後重啟 server 再登入。數量越多登入越慢；先用「去重·有圖」。</div>
+      <div class="muted" id="gmstate"></div>
+    </div>
     <div class="card"><h3>帳號</h3><div id="acctbl" class="muted">先開啟 save.db</div></div>
   </section>
 
@@ -293,10 +307,16 @@ async function loadAccts(){const a=await api('/api/accounts');if(a.error)return 
    <td><input class="n sp" value="${x.sp}" data-id="${x.id}" data-f="sp"></td>
    <td><input class="n cash" value="${x.cash}" data-id="${x.id}" data-f="cash"></td>
    <td><input class="n" value="${x.experience}" data-id="${x.id}" data-f="experience"></td>
-   <td><button class="ghost" onclick="saveAcct(${x.id})">存</button></td></tr>`);
+   <td><button class="ghost" onclick="saveAcct(${x.id})">存</button>
+       <button class="ghost" onclick="gmGrant(${x.id})">GM給槍</button></td></tr>`);
   $('#acctbl').innerHTML=h+'</table>';}
-window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"]`).forEach(i=>f[i.dataset.f]=+i.value);
+window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"][data-f]`).forEach(i=>f[i.dataset.f]=+i.value);
   await api('/api/account/update','POST',{id,fields:f});toast('已存 #'+id);};
+window.gmGrant=async id=>{const scope=$('#gmscope').value,maxmoney=$('#gmmoney').checked;
+  if(!confirm(`要把武器池(${scope})全部塞進帳號 #${id} 的背包嗎？\n請先關掉 server。`))return;
+  $('#gmstate').textContent='處理中…（數量多會跑幾秒）';
+  const r=await api('/api/twn/gm','POST',{usn:id,scope,maxmoney});
+  $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||`已給 ${r.added} 把槍`,!!r.error);loadAccts();};
 
 // ---- shop ----
 let CAT=null;
