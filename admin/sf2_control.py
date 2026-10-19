@@ -63,6 +63,13 @@ def local_ip():
     except Exception:
         return "127.0.0.1"
 
+def _port_open(port, host="127.0.0.1", timeout=0.4):
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
 def _rewrite_frames(buf, ip):
     old = struct.pack("<H", len("127.0.0.1")+1) + b"127.0.0.1\x00"
     new = struct.pack("<H", len(ip)+1) + ip.encode() + b"\x00"
@@ -168,9 +175,15 @@ def server_status(ctrl):
             "ext_ports": [ctrl["lobby"], ctrl["messenger"], ctrl["clan"]], "player_args": args}
 
 def server_log(ctrl, n=120):
-    p = os.path.join(ctrl["data"], "SFOffline.log")
-    try: return {"log": "\n".join(open(p, encoding="utf-8", errors="replace").read().splitlines()[-n:])}
-    except Exception: return {"log": "(no log yet)"}
+    # Show whichever log has content: SFOffline (備用路線) or the TWN server.
+    for p in (os.path.join(ctrl["data"], "SFOffline.log"),
+              os.path.join(ctrl["twn_dir"], "twn_server.log")):
+        try:
+            lines = open(p, encoding="utf-8", errors="replace").read().splitlines()
+            if lines:
+                return {"log": os.path.basename(p) + ":\n" + "\n".join(lines[-n:])}
+        except Exception: pass
+    return {"log": "(no log yet)"}
 
 # ---------------- config editor (Blowfish) ----------------
 def cfg_list(ctrl):
@@ -368,16 +381,28 @@ def twn_start(ctrl, remote=False):
     ready = os.path.join(ctrl["twn_dir"], "_ready.json")
     try: os.remove(ready)
     except Exception: pass
+    # Capture the emulator's stdout/stderr so import errors / tracebacks are
+    # visible instead of vanishing (and so the panel can show them).
+    log_path = os.path.join(ctrl["twn_dir"], "twn_server.log")
+    try: logf = open(log_path, "w", encoding="utf-8", errors="replace")
+    except Exception: logf = subprocess.DEVNULL
+    def _twn_log_tail(n=25):
+        try: return "\n".join(open(log_path, encoding="utf-8", errors="replace").read().splitlines()[-n:])
+        except Exception: return ""
     TWN["proc"] = subprocess.Popen([ctrl["twn_python"], "server.py", "--port", str(internal),
-                                    "--ready-file", ready], cwd=ctrl["twn_dir"])
+                                    "--ready-file", ready], cwd=ctrl["twn_dir"],
+                                   stdout=logf, stderr=subprocess.STDOUT)
     t0 = time.time(); info = None
     while time.time() - t0 < 25:
         if os.path.exists(ready):
             try: info = json.load(open(ready, encoding="utf-8")); break
             except Exception: pass
         if TWN["proc"].poll() is not None:
-            return {"error": "server.py 啟動後就結束了，看它的視窗訊息"}
+            return {"error": "server.py 啟動後就結束了（多半是缺檔或 import 失敗）。\n"
+                             f"log：{log_path}\n\n{_twn_log_tail()}"}
         time.sleep(0.4)
+    if info is None:
+        return {"error": f"server.py 25 秒內沒就緒。log：{log_path}\n\n{_twn_log_tail()}"}
     TWN["ready"] = info
     if remote:
         # 28080: lobby/game -> emulator (rewrite advertised 127.0.0.1 -> your IP)
@@ -534,6 +559,19 @@ def client_launch(ctrl, ip="127.0.0.1"):
     exe = _resolve_client_exe(ctrl.get("client_exe"))
     if not exe:
         return {"error": f"客端找不到 sf2.exe：{ctrl.get('client_exe')}（在設定把 client_exe 指到 ...\\Binaries\\Win32\\sf2.exe）"}
+    # The client hangs ("not responding") if the lobby isn't answering on 28080.
+    # For local play, make sure the TWN server is up first (auto-start it).
+    if ip in ("127.0.0.1", "localhost") and not _port_open(28080):
+        if not twn_available(ctrl):
+            return {"error": f"大廳 28080 沒開，且找不到 TWN server。請先按「開(本機測試)」，或把 server 放到 {ctrl['twn_dir']}。"}
+        started = twn_start(ctrl, remote=False)
+        if isinstance(started, dict) and started.get("error"):
+            return {"error": "自動開 server 失敗：\n" + started["error"]}
+        for _ in range(30):  # wait up to ~6s for the lobby to accept connections
+            if _port_open(28080): break
+            time.sleep(0.2)
+        if not _port_open(28080):
+            return {"error": "TWN server 起來了但大廳 28080 還沒開，請看 twn_server.log。"}
     lang = _client_lang(ctrl)
     args = [exe, "SFFrontEnd_new",
             f"-ServerIP={ip}", "-ServerPort=28080",
