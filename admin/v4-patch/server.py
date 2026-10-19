@@ -67,6 +67,11 @@ class Lobby:
         # a room when someone else joins/leaves/changes slot. Maps usn ->
         # (writer, encrypted). Populated by serve_client after each request.
         self.connections={}
+        # PATCH(reconnect): usn -> scheduled "leave the room" timer handle.
+        # When a socket drops we defer the room-leave by a grace period so a
+        # brief XIGNCODE/VPN blip (or a reconnect racing the old socket's
+        # teardown) does not hand the host's room away and lock them out.
+        self.pending_leave={}
         # Which layout the 262 (synthesis) reply uses; switchable in-game with
         # the chat command "!resp 1|2|3" so the success popup can be probed
         # without restarting the server. 3 mirrors the 196 package-open reply,
@@ -228,6 +233,31 @@ class Lobby:
                 for packet in self.roster_packets(number,enc):writer.write(packet)
             except Exception:
                 logging.exception('roster push failed for usn=%s',member)
+
+    def cancel_pending_leave(self, usn):
+        # PATCH(reconnect): a live connection for this player is back, so drop
+        # any grace-period removal scheduled when an earlier socket closed.
+        handle=self.pending_leave.pop(usn,None)
+        if handle is not None:handle.cancel()
+
+    def schedule_leave(self, usn, delay=30):
+        # PATCH(reconnect): do not remove a player from their room the instant
+        # a socket closes. Wait a short grace period; if they are back by then
+        # (same account reconnects) keep them and their room ownership. Only a
+        # genuine, lasting disconnect migrates the room to whoever remains.
+        self.cancel_pending_leave(usn)
+        try:
+            loop=asyncio.get_running_loop()
+        except RuntimeError:
+            self.leave(usn);return
+        self.pending_leave[usn]=loop.call_later(delay,self._grace_leave,usn)
+
+    def _grace_leave(self, usn):
+        self.pending_leave.pop(usn,None)
+        # Reconnected in time -> a live connection exists, so keep the player.
+        if usn in self.connections:return
+        try:self.leave(usn)
+        except Exception:logging.exception('grace leave failed for usn=%s',usn)
 
     def handle(self, command, reader, usn, encrypted):
         def reply(fields=(), result=1):return response(command,fields,result,encrypted)
@@ -484,6 +514,7 @@ async def serve_client(reader, writer, lobby, mode):
                 # the lobby can push room updates to this player.
                 if usn is not None:
                     lobby.connections[usn]=(writer,encrypted_response())
+                    lobby.cancel_pending_leave(usn)
                 elif previous_usn is not None:
                     lobby.connections.pop(previous_usn,None)
             except (BusinessError,InventoryError,BattleError,PracticeError) as error:
@@ -501,12 +532,14 @@ async def serve_client(reader, writer, lobby, mode):
     except (ProtocolError,UnicodeDecodeError,struct.error) as error:logging.info('invalid packet: %s',error)
     finally:
         if usn is not None:
-            # PATCH(multiplayer): drop the connection BEFORE leave() so the
-            # leaver is never counted among the push recipients, then leave()
-            # refreshes whoever remains.
-            lobby.connections.pop(usn,None)
-            lobby.leave(usn)
+            # PATCH(reconnect): only clear the map entry if it still points at
+            # THIS socket -- a newer reconnect may already own it, and clobbering
+            # that would strand the live connection. Then DEFER the room-leave
+            # so a quick reconnect keeps the room instead of losing it.
+            if lobby.connections.get(usn) and lobby.connections[usn][0] is writer:
+                lobby.connections.pop(usn,None)
             lobby.channel_members.pop(usn,None);lobby.practice.active.pop(usn,None)
+            lobby.schedule_leave(usn)
         logging.info('connection closed local_usn=%s',usn)
         writer.close()
         try:await writer.wait_closed()
