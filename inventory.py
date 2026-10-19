@@ -1,10 +1,19 @@
 """Persistent local loadouts and a single TP ledger for every shop purchase."""
 import json
+import logging
 import sqlite3
 from wire import response
 
 INITIAL_TOKENS = 99999
+# A brand-new local character starts with full CASH and SP so the capsule shop
+# and lottery are immediately usable.  2e9 is inside the client's signed int32
+# range while still showing as "full" in the wallet UI.
+STARTING_CASH = 2_000_000_000
+STARTING_SP = 2_000_000_000
 STARTER_IDS = [1730010,1030040,1010030,1110010,1120010,1130010,1080009]
+# One A/B/C/D part per recipe; seed a ledger so 製作 is usable without the
+# (unsold) material coupons. Disassembly still tops it up.
+STARTING_COMBINE_PARTS = (10, 10, 10, 10)
 END_DATE = '20991231235959'
 
 class InventoryError(ValueError):pass
@@ -38,15 +47,23 @@ class Inventory:
     def ensure_account(self,usn):
         profile=json.loads(self.db.execute('SELECT profile FROM accounts WHERE usn=?',(usn,)).fetchone()[0])
         if profile.get('LocalSchema')==2:
+            changed=False
             if 'Cash' not in profile:
-                profile['Cash']=0
+                profile['Cash']=0;changed=True
+            if len(profile.get('CombineParts') or [])!=4:
+                # 259 recipes ask for one A/B/C/D part each, but the material
+                # coupons are not sold in the local shop, so a save without a
+                # parts ledger leaves 製作 permanently disabled (0/1, red X).
+                profile['CombineParts']=list(STARTING_COMBINE_PARTS);changed=True
+            if changed:
                 with self.db:self.save_profile(usn,profile)
             return
         for item_id in STARTER_IDS:
             if item_id not in self.catalog:raise InventoryError(f'Recovered catalog is missing starter {item_id}')
         with self.db:
-            profile.update(LocalSchema=2,CodeName='LocalPlayer',TP=INITIAL_TOKENS,SP=0,Cash=0,Age=20,Sex=0,
+            profile.update(LocalSchema=2,CodeName='LocalPlayer',TP=INITIAL_TOKENS,SP=STARTING_SP,Cash=STARTING_CASH,Age=20,Sex=0,
                 UnitItemCode=self.catalog[STARTER_IDS[0]]['code'],armoryIdx=1,
+                CombineParts=list(STARTING_COMBINE_PARTS),
                 LongTimeMainWeaponItemCode=self.catalog[STARTER_IDS[1]]['code'])
             self.save_profile(usn,profile)
             serials=[]
@@ -140,8 +157,50 @@ class Inventory:
         if bought:fields += [('int',1),('int',profile.get('Cash',0)),('int',0),('int',profile['LuckyPoint'])]
         return fields
 
+    def list_packets(self,usn,encrypted):
+        """Push 123/124 inventory lists so the client refreshes after a use."""
+        packets=[]
+        rows=self.db.execute('SELECT item_id,MIN(serial) AS serial,COUNT(*) AS quantity FROM inventory '
+                             'WHERE usn=? AND used=0 GROUP BY item_id ORDER BY serial',(usn,)).fetchall()
+        packets.append(response(123,[('short',len(rows))],2,encrypted))
+        for row in rows:
+            packets.append(response(123,[('int',row['item_id']),('int',row['quantity']),
+                                         ('long',row['serial'])],1,encrypted))
+        rows=self.db.execute('SELECT * FROM inventory WHERE usn=? AND used=1 ORDER BY serial',(usn,)).fetchall()
+        packets.append(response(124,[('short',len(rows))],2,encrypted))
+        for row in rows:
+            packets.append(response(124,[('long',row['serial']),('string',self.catalog[row['item_id']]['code']),
+                ('string',row['expires']),('int',row['durability']),('int',100),('string',row['properties']),
+                ('int',row['item_id'])],1,encrypted))
+        return packets
+
     def handle(self,command,reader,usn,profile,encrypted):
         def reply(fields=(),result=1):return response(command,fields,result,encrypted)
+        if command==405:
+            # Weapon disassembly: consume one owned copy of the requested
+            # weapon and add crafting parts to the character ledger.
+            item_id=reader.get('int')
+            reader.offset=len(reader.payload)
+            row=self.db.execute('SELECT * FROM inventory WHERE usn=? AND item_id=? ORDER BY used,serial LIMIT 1',
+                                (usn,item_id)).fetchone()
+            parts=list(profile.get('CombineParts',[0]*4))
+            if len(parts)!=4:parts=[0]*4
+            if row is None:
+                # The client still lists an already-disassembled weapon until
+                # its equipment page refreshes. Acknowledge instead of raising
+                # so the UI does not pop "Error 405".
+                logging.info('local disassemble usn=%s item=%s already consumed',usn,item_id)
+                return [reply([('int',n) for n in parts])]
+            with self.db:
+                self.db.execute('DELETE FROM inventory WHERE serial=? AND usn=?',(row['serial'],usn))
+                parts=[min(999,p+10) for p in parts]
+                profile['CombineParts']=parts;self.save_profile(usn,profile)
+            self.release_empty_stack(usn,item_id)
+            logging.info('local disassemble usn=%s item=%s parts=%s',usn,item_id,parts)
+            packets=[reply([('int',n) for n in parts]),
+                     response(258,[('int',n) for n in parts],1,encrypted)]
+            packets+=self.list_packets(usn,encrypted)
+            return packets
         if command==124:
             rows=self.db.execute('SELECT * FROM inventory WHERE usn=? AND used=1 ORDER BY serial',(usn,)).fetchall()
             return [reply([('short',len(rows))],2)]+[reply([
@@ -183,29 +242,78 @@ class Inventory:
             if row is None:
                 return [reply()],usn
             serial=row['serial']
+            effects=self.special.meta.get(row['item_id'],{}) if self.special else {}
+            consume=bool(effects.get('add_sp') or effects.get('exchange_tp'))
             with self.db:
                 if self.special:self.special.activate(usn,row,option,profile)
-                self.db.execute('UPDATE inventory SET used=1 WHERE serial=?',(serial,))
+                if consume:
+                    # Consumables (SP/TP cards, crafting parts) are consumed
+                    # instead of being marked equipped; leaving them in the
+                    # equipped list broke the client's inventory parsing.
+                    self.db.execute('DELETE FROM inventory WHERE serial=?',(serial,))
+                else:
+                    self.db.execute('UPDATE inventory SET used=1 WHERE serial=?',(serial,))
                 item=self.catalog[row['item_id']]
                 if item['code'][:3] in ['ECU','PCU','RCU']:
                     self.db.execute('INSERT OR IGNORE INTO unit_equipment VALUES(?,?,?)',
                         (usn,item['code'],json.dumps([serial]+[0]*15)))
             self.release_empty_stack(usn,row['item_id'])
+            if consume:
+                fresh=self.lobby.profile(usn)
+                return [reply()]+self.special.refresh(fresh,encrypted)
             row=self.owned(usn,serial,True)
             packets=[reply([('int',row['item_id']),('long',serial),('string',row['expires']),('int',row['durability'])])]
-            if self.special:
-                effects=self.special.meta.get(row['item_id'],{})
-                if effects.get('add_sp') or effects.get('exchange_tp'):
-                    packets+=self.special.refresh(profile,encrypted)
+            # Push 123/124 so the used weapon leaves the warehouse's "not used"
+            # list immediately (consumables are deleted and never reach here).
+            packets+=self.list_packets(usn,encrypted)
             return packets
         if command in (196,265):
-            handle=reader.get('long');row=self.unused(usn,handle);serial=row['serial']
+            handle=reader.get('long')
+            try:row=self.unused(usn,handle)
+            except InventoryError:
+                if command==196 and self.special:
+                    try:awarded=self.special.use_capsule(usn,handle)
+                    except InventoryError:return [reply([('short',0)],2)]
+                    packets=[reply([('short',len(awarded))],2)]
+                    for item_row in awarded:
+                        packets.append(reply([('int',item_row['item_id']),('string','Y' if item_row['used'] else 'N'),
+                            ('long',item_row['serial']),('string',END_DATE),('int',100),('int',1)]))
+                    return packets
+                # Stale/unknown unused handle: acknowledge an empty package
+                # instead of surfacing ErrorID 1 in the client UI.
+                return [reply([('short',0)],2)]
+            serial=row['serial']
+            if command==196 and self.special:
+                meta=self.special.meta.get(row['item_id'],{})
+                if meta.get('capsules'):
+                    # Capsule coupon: draw the prizes and report them as the
+                    # package contents so the client's "use item" flow works.
+                    reader.require_end()
+                    awarded=self.special.use_coupon(usn,row)
+                    packets=[reply([('short',len(awarded))],2)]
+                    for item_row in awarded:
+                        packets.append(reply([('int',item_row['item_id']),('string','Y' if item_row['used'] else 'N'),
+                            ('long',item_row['serial']),('string',END_DATE),('int',100),('int',1)]))
+                    return packets
             contents=self.catalog[row['item_id']].get('contents',[])
             if command==265:
                 selected=reader.get('int')
                 contents=[item for item in contents if item['id']==selected]
             reader.require_end()
-            if not contents:raise InventoryError('Package contents are not present in this client')
+            if not contents:
+                cls=str(self.catalog[row['item_id']].get('class',''))
+                if command==196 and self.special and cls.startswith('SFCItem_Func_PKG_'):
+                    # Client-side lottery package without a contents table
+                    # (e.g. 足球王者轉蛋包): open one default pool prize.
+                    awarded=self.special.use_package_draw(usn,row)
+                    packets=[reply([('short',len(awarded))],2)]
+                    for item_row in awarded:
+                        packets.append(reply([('int',item_row['item_id']),('string','Y' if item_row['used'] else 'N'),
+                            ('long',item_row['serial']),('string',END_DATE),('int',100),('int',1)]))
+                    return packets
+                # Client-only boxes/capsules have no contents table here;
+                # return an empty success so the UI can close normally.
+                return [reply([('short',0)],2)]
             if any(item['id'] not in self.catalog or not 1<=item['count']<=1000 for item in contents):
                 raise InventoryError('Invalid package contents')
             count=sum(item['count'] for item in contents)
@@ -277,11 +385,24 @@ class Inventory:
             return [reply()]
         if command==256:
             code=reader.get('string');reader.require_end()
+            logging.info('pmc cmd=256 code=%r',code)
             if code:
                 activated=self.db.execute('SELECT item_id FROM inventory WHERE usn=? AND used=1',(usn,)).fetchall()
-                if not any(self.catalog[row['item_id']]['code']==code and
-                           self.catalog[row['item_id']].get('is_pmc',False) for row in activated):
+                match=next((row['item_id'] for row in activated
+                            if self.catalog[row['item_id']]['code']==code),None)
+                coupon=match is not None and str(self.catalog[match].get('class','')).startswith('SFCItem_Func_Provide')
+                if match is None or not (self.catalog[match].get('is_pmc') or coupon):
+                    logging.warning('pmc cmd=256 rejected code=%r owned=%r',code,
+                        [(row['item_id'],self.catalog[row['item_id']]['code'],
+                          bool(self.catalog[row['item_id']].get('is_pmc'))) for row in activated])
                     raise InventoryError('PMC character must be owned and activated before equipping')
+                if not self.catalog[match].get('is_pmc'):
+                    # Some character coupons are only flagged is_pmc on one of
+                    # their catalog rows; the copy the shop/pool hands out can
+                    # miss the flag (PWF0030 紅蓮: 5090122 flagged, 5778701 not).
+                    # A Provide* coupon with a matching owned code is a PMC.
+                    logging.warning('pmc cmd=256 unflagged coupon item=%s code=%r class=%r',
+                                    match,code,self.catalog[match].get('class'))
             # PMC overlays use their own profile field; empty code unequips them.
             # The success handler commits the pending client selection without reading fields.
             profile['PmcCode']=code

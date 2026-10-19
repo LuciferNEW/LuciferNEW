@@ -10,7 +10,7 @@ import os
 import sqlite3
 import struct
 from wire import Reader, Writer, ProtocolError, make_frame, response, decrypt_payload, MAX_PAYLOAD
-from inventory import Inventory, InventoryError
+from inventory import Inventory, InventoryError, STARTING_CASH, STARTING_SP
 from http_stats import serve_stats
 from battle import Battle, BattleError
 from client_modes import load_modes, load_other_ai_settings,load_relaxed_ai_settings,load_native_large_ai_settings,load_hero_mode_settings
@@ -62,6 +62,11 @@ class Lobby:
         self.member_status={}
         self.member_slots={}
         self.channel_members={}
+        # Which layout the 262 (synthesis) reply uses; switchable in-game with
+        # the chat command "!resp 1|2|3" so the success popup can be probed
+        # without restarting the server. 3 mirrors the 196 package-open reply,
+        # the only reward layout this client is known to render as a window.
+        self.craft_response_variant=3
         self.modes=load_modes()
         self.other_ai_settings=load_other_ai_settings()
         self.native_large_ai_settings=load_native_large_ai_settings()
@@ -80,7 +85,7 @@ class Lobby:
             return existing['usn']
         usn = self.db.execute('SELECT COALESCE(MAX(usn),100000)+1 FROM accounts').fetchone()[0]
         profile = {f['name']:('' if f['type']=='string' else 0) for f in SCHEMA}
-        profile.update(USN=usn,CodeName=name,Rank=1,SP=0,TP=99999,Age=20)
+        profile.update(USN=usn,CodeName=name,Rank=1,SP=STARTING_SP,TP=99999,Cash=STARTING_CASH,Age=20)
         with self.db:self.db.execute('INSERT INTO accounts VALUES(?,?,?)',(usn,name,json.dumps(profile)))
         self.inventory.ensure_account(usn)
         return usn
@@ -214,9 +219,27 @@ class Lobby:
         if command==105:
             scope=reader.get('byte');reader.get('int');message=reader.get('string');reader.get('int');reader.require_end()
             if len(message)>100:raise BusinessError('chat message too long')
+            raw=message.strip()
+            command_word=raw.split()[0] if raw else ''
+            if command_word in ('!抽奖','!抽獎','抽奖','抽獎'):
+                count=1
+                parts=raw.split()
+                if len(parts)>1 and parts[1].isdigit():count=max(1,min(50,int(parts[1])))
+                names=self.economy.chat_draw(usn,count)
+                shown='、'.join(names[:6])+(' 等 %d 件'%len(names) if len(names)>6 else '')
+                message=f'抽獎獲得：{shown}'
+                scope=0;name='系統'
+            elif command_word in ('!resp','!制作弹窗','!弹窗'):
+                parts=raw.split()
+                if len(parts)>1 and parts[1].isdigit():
+                    self.craft_response_variant=max(1,min(5,int(parts[1])))
+                message=f'craft response variant = {self.craft_response_variant}'
+                scope=0;name='系統'
+            else:
+                name=profile['CodeName']
             # Single-player local echo; no external messenger or publisher service.
             event=Writer()
-            for kind,value in [('byte',scope),('string',profile['CodeName']),('string',message),
+            for kind,value in [('byte',scope),('string',name),('string',message),
                                ('byte',0),('byte',0),('string','')]:event.add(kind,value)
             return [event.frame(500,encrypted),reply()],usn
         if command==122:
@@ -346,9 +369,19 @@ class Lobby:
             # A nonempty table completion triggers SetItemSellingTag in this client.
             # Keep the static SP=0 / TP=1 prices; identify a few local featured items.
             featured=[1010010, 1010020, 1010030, 1010040, 1010050, 1010070, 1010078, 1020010, 1020020, 1020030, 1020040, 1020042, 1020050, 1030010, 1030020, 1030027, 1030030, 1030040, 1030048, 1030050, 1030060, 1030070, 1030072, 1030080, 1030090, 1030100, 1030102, 1030110, 1030120, 1040010, 1040020, 1040030, 1040040, 1040041, 1050010, 1050012, 1050020, 1050030, 1050040, 1050050, 1050060, 1050070, 1060010, 1060020, 1060030, 1060037, 1060040, 1060050, 1070010, 1080008, 1110010, 1120010, 1130010, 1410010, 1500015, 1500016, 1500017, 1500018, 1500515, 1500516, 1500517, 1500518, 1501015, 1501016, 1501017, 1501018, 1502015, 1502016, 1502017, 1502018, 1502515, 1502516, 1502517, 1502518, 1503025, 1503026, 1503027, 1503028, 1510013, 1510014, 1510021, 1510023, 1510024, 1510025, 1510030, 1510032, 1510033, 1510034, 1510036, 1510037, 1510038, 1510040, 1510041, 1510042, 1510044, 1510045, 1510046, 1510048, 1510049, 1510050, 1510052, 1510053, 1510054, 1510056, 1510057, 1510058, 1510060, 1510061, 1510062, 1510063, 1510064, 1510065, 1510066, 1510067, 1510068, 1510069, 1510513, 1510514, 1510521, 1510523, 1510524, 1510525, 1510531, 1510533, 1510534, 1510535, 1510537, 1510538, 1510539, 1510541, 1510542, 1510543, 1510545, 1510546, 1510547, 1510549, 1510550, 1510551, 1510553, 1510554, 1510555, 1510557, 1510558, 1510559, 1510561, 1510562, 1510563, 1510564, 1510565, 1510566, 1510567, 1510568, 1510569, 1510570, 1511011, 1511013, 1511014, 1511015, 1511017, 1511018, 1511019, 1511021, 1511022, 1511023, 1511025, 1511026, 1511027, 1511029, 1511030, 1511031, 1511033, 1511034, 1511035, 1511037, 1511038, 1511039, 1511041, 1511042, 1511045, 1511046, 1511047, 1511048, 1511049, 1511050, 1511051, 1511052, 1511053, 1511056, 1511057, 1512011, 1512013, 1512014, 1512015, 1512021, 1512023, 1512024, 1512025, 1512027, 1512028, 1512029, 1512031, 1512032, 1512033, 1512035, 1512036, 1512037, 1512039, 1512040, 1512041, 1512043, 1512044, 1512045, 1512047, 1512048, 1512049, 1512051, 1512052, 1512053, 1512054, 1512055, 1512056, 1512057, 1512058, 1512059, 1512060, 1512063, 1512064, 1512509, 1512511, 1512513, 1512514, 1512515, 1512517, 1512518, 1512519, 1512521, 1512522, 1512523, 1512525, 1512526, 1512527, 1512529, 1512530, 1512531, 1512533, 1512534, 1512535, 1512537, 1512538, 1512539, 1512541, 1512542, 1512543, 1512544, 1512545, 1512546, 1512547, 1512548, 1512549, 1512550, 1512553, 1512554, 1513021, 1513023, 1513024, 1513025, 1513031, 1513033, 1513034, 1513035, 1513037, 1513038, 1513039, 1513041, 1513042, 1513043, 1513045, 1513046, 1513047, 1513049, 1513050, 1513051, 1513053, 1513054, 1513055, 1513057, 1513058, 1513059, 1513061, 1513062, 1513063, 1513064, 1513065, 1513066, 1513067, 1513068, 1513069, 1513070, 1513071, 1513073, 1513074, 1513075, 1513077, 1513078, 1513079, 1513081, 1513082, 1513083, 1513085, 1513086, 1513087, 1513088, 1513089, 1513090, 1513093, 1513094, 1519010, 1519011, 1520011, 1520013, 1520014, 1520015, 1520017, 1520018, 1520019, 1520020, 1520021, 1520023, 1520024, 1520025, 1520027, 1520028, 1520031, 1520033, 1520034, 1520035, 1520037, 1520038, 1520041, 1520043, 1520044, 1520045, 1520047, 1520048, 1520049, 1520050, 1520051, 1520053, 1520054, 1520055, 1520057, 1520058, 1520059, 1520061, 1520062, 1520063, 1520064, 1520079, 1520081, 1520082, 1520083, 1520085, 1520086, 1520087, 1520089, 1520090, 1520091, 1520093, 1520094, 1520095, 1520097, 1520098, 1520100, 1520102, 1520103, 1520104, 1520106, 1520107, 1520108, 1520110, 1520111, 1520112, 1520114, 1520115, 1520116, 1520117, 1520118, 1520119, 1520120, 1520121, 1520122, 1520123, 1520124, 1520125, 1520511, 1520513, 1520514, 1520515, 1520541, 1520543, 1520544, 1520545, 1521015, 1521016, 1521017, 1521018, 1521115, 1522011, 1522013, 1522014, 1522015, 1522515, 1522525, 1530009, 1530010, 1530011, 1530013, 1530014, 1530015, 1530024, 1530025, 1530031, 1530033, 1530034, 1530035, 1530044, 1530045, 1530051, 1530053, 1530054, 1530521, 1530523, 1530524, 1531015, 1531025, 1531031, 1531033, 1531034, 1532011, 1532013, 1532014, 1532015, 1532024, 1532025, 1532031, 1532033, 1532034, 1532515, 1532525, 1532531, 1532533, 1532534, 1533021, 1533023, 1533024, 1533028, 1533029, 1533031, 1533032, 1533033, 1533034, 1533035, 1533041, 1533043, 1533044, 1550031, 1550033, 1550034, 1550035, 1550061, 1550063, 1550064, 1550065, 1550531, 1550533, 1550534, 1550535, 1550561, 1550563, 1550564, 1550565, 1551015, 1551025, 1552011, 1552013, 1552014, 1552015, 1552021, 1552023, 1552024, 1552025, 1552515, 1552525, 1553021, 1553023, 1553024, 1553025, 1553031, 1553033, 1553034, 1553035, 1560021, 1560023, 1560024, 1560025, 1560031, 1560033, 1560034, 1560035, 1560041, 1560043, 1560044, 1560045, 1560051, 1560053, 1560054, 1560055, 1561015, 1561025, 1562011, 1562013, 1562014, 1562015, 1562021, 1562023, 1562024, 1562025, 1562515, 1562525, 1563021, 1563023, 1563024, 1563025, 1563027, 1563028, 1580011, 1580013, 1580014, 1580015, 1580021, 1580023, 1580024, 1580025, 1580031, 1580033, 1580034, 1580035, 1580041, 1580043, 1580044, 1580045, 1580046, 1580047, 1581015, 1582515, 1590021, 1590023, 1590024, 1590025, 1590031, 1590033, 1590034, 1590035, 1590521, 1590523, 1590524, 1590525, 1590531, 1590533, 1590534, 1590535, 1591015, 1591025, 1592011, 1592013, 1592014, 1592015, 1592021, 1592023, 1592024, 1592025, 1592515, 1592525, 1593021, 1593023, 1593024, 1593025, 1593031, 1593033, 1593034, 1593035, 1600021, 1600023, 1600024, 1600025, 1600031, 1600033, 1600034, 1600035, 1600051, 1600053, 1600054, 1600055, 1600061, 1600063, 1600064, 1600065, 1601015, 1601025, 1602515, 1603021, 1603023, 1603024, 1603025, 1603027, 1603028, 1605011, 1605013, 1605014, 1605021, 1605023, 1605024, 1605025, 1605031, 1605033, 1605034, 1605035, 1605041, 1605043, 1605044, 1605045, 1605051, 1605053, 1605054, 1605055, 1605061, 1605063, 1605064, 1605065, 1609010, 1609011, 1609017, 1610011, 1610013, 1610014, 1610021, 1610023, 1610024, 1610025, 1610511, 1610513, 1610514, 1611025, 1612011, 1612013, 1612014, 1612015, 1613021, 1613023, 1613024, 1613025, 1613027, 1613028, 1613036, 1613037, 1613039, 1620091, 1620093, 1620094, 1620095, 1620101, 1620103, 1620104, 1620105, 1620511, 1620513, 1620514, 1620515, 1622011, 1622013, 1622014, 1622015, 1622515, 1630011, 1630013, 1630014, 1630015, 1730010, 1730020, 1730030, 1730050, 1730060, 1730080, 1900010, 1900013, 2000028, 2000055, 2000057, 2000061, 2000063, 2000065, 2000067, 2000069, 2000071, 2000073, 2000075, 2000077, 2000079, 2000081, 2000083, 2000088, 2000090, 2000092, 2000094, 2000096, 2000098, 2000100, 2000102, 2000106, 2000108, 2000112, 2000114, 2000116, 2000118, 2000120, 2000121, 2000122, 2000123, 2000124, 2000126, 2000127, 2000128, 2000129, 2000130, 2000131, 2000132, 2000133, 2000134, 2000135, 2000136, 2000137, 2000138, 2000139, 2000140, 2000141, 2000142, 2000143, 2000144, 2000145, 2000146, 2000147, 2000148, 2000149, 2000150, 2000153, 2000154, 2000155, 2000156, 2000158, 2000159, 2000160, 2000161, 2000162, 2000163, 2000164, 2000165, 2000166, 2000167, 2000168, 2000169, 2000170, 2000171, 2000172, 2000173, 2000174, 2000175, 2000176, 2000177, 2000178, 2000179, 2000180, 2000181, 2000182, 2010103, 2010104, 2010118, 2010119, 2010120, 2010203, 2010204, 2020026, 2020027, 2020028, 2030045, 2030046, 2030047, 2030070, 2090002, 2090003, 2090006, 2090007, 2090012, 2090013, 2090018, 2090019, 2090020, 2090035, 2090042, 2090043, 2110010, 2110020, 2110030, 2110040, 2110070, 2110072, 2110073, 2110075, 2110078, 2110079, 2110080, 2110086, 2110087, 2110088, 2110091, 2110094, 2110097, 2110109, 2110111, 2110112, 2110119, 2110121, 2110122, 2110125, 2110126, 2110129, 2110130, 2110146, 2110163, 2110164, 2110167, 2110168, 2110171, 2110172, 2110177, 2110180, 2110181, 2110182, 2110192, 2110193, 2110218, 2111173, 2220004, 2220012, 2220016, 2220058, 2220094, 2220098, 2220109, 2220115, 2220133, 2220137, 2220143, 2220156, 2220159, 2220164, 2220173]
-            return [reply([('short',len(featured))],2)]+[reply([
-                ('int',item_id),('string','S'),('int',0),('string','NEW'),('int',0),
-                ('string',''),('string',''),('string','O')]) for item_id in featured],usn
+            # Capsule coupons are intentionally omitted: opening the TWN
+            # Gashapon screen hangs on the unrecovered protocol 211, so the
+            # shop no longer exposes a button that leads into that dead end.
+            # Lottery is done through the chat command instead.
+            # 278 is also PKT_GetItemTableInfo: the client builds its item
+            # mapping from this list. Sending only the featured set left
+            # weapons such as the Steampunk SVCh without an ItemClass, which
+            # is why the craft detail panel showed all zeros.
+            items=sorted(self.catalog)
+            return [reply([('short',len(items))],2)]+[reply([
+                ('int',item_id),('string',self.catalog[item_id].get('sell_type') or 'S'),
+                ('int',self.catalog[item_id].get('price',0)),('string','NEW'),('int',0),
+                ('string',''),('string',''),('string','O')]) for item_id in items],usn
         if command==194:return [reply([('int',profile.get('Cash',0))])],usn
         if command==401:return [reply([('int',profile['TP'])])],usn
         if command==138:return [reply([('int',profile['SP'])])],usn
@@ -368,12 +401,15 @@ class Lobby:
         # GetInt(2) consumes the next scalar; its argument is not a field offset.
         # A date string here is misread as an enormous array length by the client.
         if command==417:return [reply([('int',0)])],usn
-        if command in [119,154,200,202,204,239,244,245,271,279,280,283,287,288,289,290,291,292,293,299,400,402]:
+        if command in [119,154,200,202,204,239,244,245,271,279,280,283,287,288,289,290,291,292,293,299,400,402,405]:
+            if command in (290,291,292,293,405):
+                logging.info('craft cmd=%s payload=%s',command,reader.payload.hex())
             return [reply()],usn
         if command==102:
             self.leave(usn)
             self.channel_members.pop(usn,None);self.practice.active.pop(usn,None)
             return [reply()],None
+        logging.info('unsupported cmd=%s payload=%s',command,reader.payload.hex())
         raise BusinessError(f'unsupported prototype protocol {command}')
 
 async def serve_client(reader, writer, lobby, mode):
@@ -400,6 +436,11 @@ async def serve_client(reader, writer, lobby, mode):
             except (BusinessError,InventoryError,BattleError,PracticeError) as error:
                 logging.info('request rejected: %s',error)
                 packets=[response(command,[('byte',getattr(error,'code',1))],0,encrypted_response())]
+            except Exception:
+                # Keep the local session alive so a server-side bug is visible
+                # in the log instead of silently dropping the client to login.
+                logging.exception('unhandled request protocol=%d local_usn=%s',command,usn)
+                packets=[response(command,[('byte',1)],0,encrypted_response())]
             logging.info('response protocol=%d frames=%d encrypted=%s',command,len(packets),encrypted_response())
             for packet in packets:writer.write(packet)
             await writer.drain()
@@ -420,11 +461,11 @@ async def run(args):
     build_files={name:hashlib.sha256((BASE/name).read_bytes()).hexdigest() for name in (*BUILD_FILES,'../local_routes.py','../local_relaxed_modes.py','../local_hero_mode.py',*sorted(route_files))}
     catalog=json.loads(Path(args.catalog).read_text(encoding='utf-8'))
     lobby=Lobby(args.database,catalog)
-    server=await asyncio.start_server(lambda r,w:serve_client(r,w,lobby,args.response_encryption),'127.0.0.1',args.port)
+    server=await asyncio.start_server(lambda r,w:serve_client(r,w,lobby,args.response_encryption),args.host,args.port)
     http=None
     try:
         if args.http_port is not None:
-            http=await asyncio.start_server(lambda r,w:serve_stats(r,w,lobby),'127.0.0.1',args.http_port,limit=8192)
+            http=await asyncio.start_server(lambda r,w:serve_stats(r,w,lobby),args.host,args.http_port,limit=8192)
     except Exception:
         server.close();await server.wait_closed();lobby.db.close();raise
     http_info=f'; HTTP 127.0.0.1:{http.sockets[0].getsockname()[1]}' if http else ''
@@ -432,7 +473,7 @@ async def run(args):
         (BASE.parent/'evidence/local-server-runtime.json').write_text(json.dumps(
             {'pid':os.getpid(), 'files':build_files, 'started':datetime.datetime.now().isoformat(timespec='seconds')},
             indent=2),encoding='utf-8')
-    print(f'LISTENING 127.0.0.1:{server.sockets[0].getsockname()[1]}{http_info}; local lobby ready; shop 1 TP, capsule packs 1 TP per capsule',flush=True)
+    print(f'LISTENING {args.host}:{server.sockets[0].getsockname()[1]}{http_info}; local lobby ready; shop 1 TP, capsule packs 1 TP per capsule',flush=True)
     if args.ready_file:
         ready=Path(args.ready_file);temporary=ready.with_suffix('.tmp')
         temporary.write_text(json.dumps({'pid':os.getpid(),'port':server.sockets[0].getsockname()[1],
@@ -445,6 +486,7 @@ async def run(args):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--host',default='127.0.0.1')
     parser.add_argument('--port',type=int,default=28080)
     parser.add_argument('--http-port',type=int,help='Enable local weapon statistics HTTP on loopback')
     parser.add_argument('--database',default=str(BASE/'local-lobby.sqlite3'))
