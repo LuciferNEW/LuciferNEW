@@ -537,17 +537,20 @@ def _client_lang(ctrl):
     return cands[0] if cands else "EUR"
 
 def _resolve_client_exe(raw):
-    """Find sf2.exe from whatever client_exe points at: the exe itself, the
-    client root folder, or a folder holding Binaries\\Win32. Falls back from a
-    stale sf2_unpacked.exe path to sf2.exe in the same folder."""
+    """Find the client exe from whatever client_exe points at: the exe itself,
+    the client root folder, or a folder holding Binaries\\Win32. Prefers the
+    emulator-compatible sf2_unpacked.exe when present, else sf2.exe."""
     if not raw:
         return None
     # a direct, existing exe path -> use it
     if os.path.isfile(raw):
         return raw
-    # a path to (possibly missing) sf2_unpacked.exe / sf2.exe -> try sf2.exe beside it
+    # a folder, or a path whose exe is missing -> look for a client exe nearby,
+    # preferring sf2_unpacked.exe (the build this server emulator speaks).
     d = os.path.dirname(raw) if os.path.splitext(raw)[1] else raw
-    for cand in (os.path.join(d, "sf2.exe"),
+    for cand in (os.path.join(d, "sf2_unpacked.exe"),
+                 os.path.join(d, "Binaries", "Win32", "sf2_unpacked.exe"),
+                 os.path.join(d, "sf2.exe"),
                  os.path.join(d, "Binaries", "Win32", "sf2.exe")):
         if os.path.isfile(cand):
             return cand

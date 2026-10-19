@@ -8,7 +8,7 @@
   "reskin_dir": "D:\\sf2_project\\reskin",
   "twn_dir": "D:\\sf2_project\\twn_server\\server",
   "twn_python": "py",
-  "client_exe": "C:\\MangoT5\\SpecialForce2\\Binaries\\Win32\\sf2.exe",
+  "client_exe": "D:\\sf\\Binaries\\Win32\\sf2_unpacked.exe",
   "client_lang": "auto",
   "lobby": 28000,
   "messenger": 28001,
