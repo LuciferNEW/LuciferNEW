@@ -1,0 +1,12 @@
+
+******** Loading object Material3'rif_famas_texture.famas_holloween_m' ********
+
+ERROR: Serializing behind stopper (B8FE+10000 > BD78)
+FFileReader::Serialize: File=rif_famas_texture.upk <- FString<< <- TArray::Serialize: 6/26 <- SerializeFMaterialResource <- LoadObject: Material3'rif_famas_texture.famas_holloween_m', pos=B8FE, ver=904/14, game=ue3 <- UObject::EndLoad <- LoadWholePackage: rif_famas_texture.upk <- ExportPackages <- Main: umodel_build=1590
+
+
+******** Loading object Material3'rif_famas_texture.famas_holloween_m' ********
+
+ERROR: Serializing behind stopper (B8FE+10000 > BD78)
+FFileReader::Serialize: File=rif_famas_texture.upk <- FString<< <- TArray::Serialize: 6/26 <- SerializeFMaterialResource <- LoadObject: Material3'rif_famas_texture.famas_holloween_m', pos=B8FE, ver=904/14, game=ue3 <- UObject::EndLoad <- LoadWholePackage: rif_famas_texture.upk <- ExportPackages <- Main: umodel_build=1590
+

@@ -1,0 +1,546 @@
+# The items SFOffline gives every player; `dotnet run --project SFConfig.Tool -- offline-seed .` writes
+# this file again (SFConfig.Tool/OfflineSeed.cs). ItemId, count, class, name.
+1010011	1	SFCItem_INFINITY_Lucie	Infinity Lucie
+1010031	1	SFCItem_M92FS_White	Beretta M92FS White
+1010079	1	SFCItem_K5	K5
+1020013	1	SFCItem_M870_EOTech	M870+EOTech
+1020015	1	SFCItem_M870_Snow	M870 SnowWhite
+1020017	1	SFCItem_M870_knockback_Giganteus	M870 Giganteus
+1020018	1	SFCItem_M870_knockback_FXGiganteus	M870 GiganteusFX
+1020042	1	SFCItem_SAIGA12_Phyton	SAIGA-12 Python
+1020050	1	SFCItem_USAS12	USAS 12
+1030014	1	SFCItem_M4A1_ACOG_ICEJam	M4A1+ACOG+ICE
+1030026	1	SFCItem_SCARH_EOTech_Leopard	SCAR-H Leopard
+1030034	1	SFCItem_AK103_ACOG_ICEJam	AK103+ACOG+ICE
+1030041	1	SFCItem_HK417_PC	HK417-NetCafe
+1030048	1	SFCItem_HK417_JabberWock	HK417 Jabberwock
+1030054	1	SFCItem_FAMAS_Snake	FAMAS Orochi
+1030061	1	SFCItem_K2_ACOG_ICEJam	K2+ACOG+ICE
+1030066	1	SFCItem_K2_EOTech_GROM	K2+EOTech+GROM
+1030067	1	SFCItem_K2_Pearl	K2 BlackPearl
+1030069	1	SFCItem_K2_Fissure	K2 Fissure
+1030073	1	SFCItem_AUGA3_EOTech_Cullet	AUG A3 Cullet
+1030074	1	SFCItem_AUGA3_EOTech_SerbianBlueTiger	AUG A3 BlueTiger
+1030081	1	SFCItem_SCARL_EOTech_Generic	SCAR-L Generic
+1030082	1	SFCItem_SCARL_EOTech_USADesert	SCAR-L USADesert
+1030091	1	SFCItem_Type89_EOTech	Type89 EOTech
+1030092	1	SFCItem_Type89_EOTech_ICHI	Type89 ICHI
+1030102	1	SFCItem_SIG551_IronGun	SIG551 IronGun
+1030111	1	SFCItem_M14EBR_Venom	M14 EBR Venom
+1030122	1	SFCItem_G36C_BatGun	G36C BatGun
+1030202	1	SFCItem_FAMAS_Halloween	FAMAS Halloween
+1030502	1	SFCItem_M4A1_Gladius	M4A1 Gladius
+1030506	1	SFCItem_M4A1_EOTech_GROM	M4A1+EOTech+GROM
+1030510	1	SFCItem_M4A1_EOTech_BlackEdition	M4A1 (BlackEdition)
+1030515	1	SFCItem_M4A1_Lucie	M4A1 Lusie
+1030517	1	SFCItem_M4A1_EOTech_Golden	M4A1 (LightningGold)
+1030551	1	SFCItem_AK103_Reptile	AK103 Reptile
+1030560	1	SFCItem_AK103_EOTech_SilverFX	AK103 (LightningSilver)
+1030700	1	SFCItem_K2_KrakenFX	K2 KrakenFX
+1040012	1	SFCItem_HK23E_EOTech	HK23E EOTech
+1040013	1	SFCItem_HK23E_SCAR	HK23E SCAR
+1040021	1	SFCItem_MinimiSPW_MagUp_Fissure	M249 SPW Fissure
+1040022	1	SFCItem_MinimiSPW_MagUp_FXFissure	M249 SPW FissureFX
+1040031	1	SFCItem_L86A1_Stinger	Stinger L86A1
+1040033	1	SFCItem_L86A1_SnowMan	L86A1 SnowMan
+1040041	1	SFCItem_K3_Naga	K3 NAGA
+1040051	1	SFCItem_RPK74_Drake	RPK-74 Drake
+1040053	1	SFCItem_MG4_BlackWidow	MG4 Black Widow
+1050012	1	SFCItem_P90_Fury	P90 Fury
+1050023	1	SFCItem_MP5K_Blade	Blade MP5K
+1050026	1	SFCItem_MP5K_OPENDot	MP5K+OpenDot
+1050028	1	SFCItem_MP5K_OPENDot_BlackEdition	MP5K (BlackEdition)
+1050033	1	SFCItem_MP7A1_Valentine	MP7A1 Valentine
+1050036	1	SFCItem_MP7A1_Leopard	MP7A1 Leopard
+1050046	1	SFCItem_KrissV_OPENDot_FissureFX	Kriss SV OpenDot Fissure FX
+1050051	1	SFCItem_UMP45_OPENDOT_Generic	UMP45 Generic
+1050062	1	SFCItem_Scorpion_Prism	SCORPION Prism
+1050063	1	SFCItem_Scorpion_BigTigerpat	SCORPION BigTiger
+1050070	1	SFCItem_PP2000_Titan	PP2000 Titan
+1050501	1	SFCItem_MP5K_OPENDot_FissureFX	MP5K FX
+1050513	1	SFCItem_MP5K_Silencer	MP5K Skull
+1060014	1	SFCItem_CZ700_S2S_ICEJam	CZ 700+S2S+ICE
+1060019	1	SFCItem_CZ700_Captain	Captain CZ700
+1060022	1	SFCItem_AWP_WHITE	AWP+WHITE
+1060033	1	SFCItem_CheyTac_BLUE	CheyTac+BLUE
+1060035	1	SFCItem_CheyTac_GROM	CheyTac+GROM
+1060037	1	SFCItem_CheyTac_MS1	CheyTac BigDipper
+1060039	1	SFCItem_CheyTac_S2S_Leopard	CheyTac M200 Leopard
+1060044	1	SFCItem_PSG1_DIGITAL	PSG1+DIGITAL
+1060051	1	SFCItem_SR25_S2S_Zebra	SR25 Zebra
+1060500	1	SFCItem_CZ700_SniperMode	CZ700 (LowGrade)
+1060600	1	SFCItem_CheyTac_S2S_NavyBlueDigital	CheyTac M200 NavyBlue
+1079990	1	SFCItem_ST10	Knife
+1080001	1	SFCItem_Tomahawk	Tomahawk
+1080006	1	SFCItem_Crossbow_Explosion	Crossbow-Explo
+1080007	1	SFCItem_Tomahawk_WarriorMode	Tomahawk (Hero)
+1080025	1	SFCItem_Bow_Candy	Composite Bow Candy
+1110017	1	SFCItem_M67_Lucie	M67 Lucie
+1521019	1	SFCItem_SAS_CombatJacket_D	SAS Combat Jacket-D
+1530054	1	SFCItem_Common_Sunglass_C	Delta Sunglass C
+1535012	1	SFCItem_Common_Sunglass_Bizzare	Common Sunglass (Bizzare)
+1553040	1	SFCItem_Common_Shirts_Python	Common Python Shirts
+1580048	1	SFCItem_Common_CombatGlove_D	UDT Combat Glove-D
+1580054	1	SFCItem_Common_MilitaryWatch_Carrera	Common Military Watch (CARRERA)
+1613038	1	SFCItem_Common_CombatBoots_D	UDT Combat Boots-D
+1630015	1	SFCItem_Deltaforce_CombatHelmet_D	Delta Combat Helmet-D
+1630515	1	SFCItem_Spetsnaz_CombatHelmet_D	Spetsnaz Combat Helmet-D
+1631015	1	SFCItem_SAS_CombatHelmet_D	SAS Combat Helmet-D
+1632015	1	SFCItem_GIGN_CombatHelmet_D	GIGN Combat Helmet-D
+1632515	1	SFCItem_GAFE_CombatHelmet_D	GAFE Combat Helmet-D
+1633025	1	SFCItem_UDT_CombatHelmet_D	UDT Combat Helmet-D
+1650015	1	SFCItem_Deltaforce_CombatJacket_D	Delta Combat Jacket-D
+1650515	1	SFCItem_Spetsnaz_CombatJacket_D	Spetsnaz Combat Jacket-D
+1652015	1	SFCItem_GIGN_CombatJacket_D	GIGN Combat jacket-D
+1652515	1	SFCItem_GAFE_CombatJacket_D	GAFE Combat Jacket-D
+1653025	1	SFCItem_UDT_CombatJacket_D	UDT Combat jacket-D
+1670015	1	SFCItem_Deltaforce_CombatPants_D	Delta Combat Pants-D
+1670515	1	SFCItem_Spetsnaz_CombatPants_D	Spetsnaz Combat Pants-D
+1671015	1	SFCItem_SAS_CombatPants_D	SAS Combat Pants-D
+1672015	1	SFCItem_GIGN_CombatPants_D	GIGN Combat pants-D
+1672515	1	SFCItem_GAFE_CombatPants_D	GAFE Combat Pants-D
+1673025	1	SFCItem_UDT_CombatPants_D	UDT Combat pants-D
+2000199	1	SFCItem_Kukri_PC	Kukri-NetCafe
+2090038	1	SFCItem_Func_ProvideJackKnife	Amor Coupon
+2090040	1	SFCItem_Func_ProvideBradPitt	Jackie Cogan Coupon
+2110010	10	SFCItem_Func_ChangeCodename	Change Codename
+2110081	1	SFCItem_Func_ColorCodeName	Color Codename
+2110119	10	SFCItem_Func_ChangeSpecialCodeName	Symbol_Change Codename
+2110165	1	SFCItem_Func_ColorCodeNameV2	Rainbow Codename
+2220098	10	SFCItem_Func_WeaponCamo_GOLD	CAMO GOLD
+2220152	10	SFCItem_Func_WeaponCamo_Valentine	CAMO Valentine
+2220156	10	SFCItem_Func_WeaponCamo_Frozen	CAMO Frozen
+4000020	1	SFCItem_BNLLI_ShotGunMode	Benelli M4 (LowGrade)
+4000071	1	SFCItem_Dagger	Dagger
+4000123	1	SFCItem_CheyTac_SnowFX	CheyTac M200 Snow FX
+4000159	1	SFCItem_XM8_EOTech_BlackIce	XM8 EOTech Black Ice
+4000216	1	SFCItem_UMP45_OPENDot	UMP45+OpenDot
+4000357	1	SFCItem_INFINITY_Heart	Infinity Heart
+4000398	1	SFCItem_UMP45_OPENDot_Cherry	UMP45 OpenDot Cherry FX
+4000461	1	SFCItem_Luger	Luger
+4000467	1	SFCItem_STG44	STG-44
+4000491	1	SFCItem_FRF2_WaveFX	FR-F2 WaveFX
+4000517	1	SFCItem_UMP45_UnderCover	UMP45 UnderCover
+4000533	1	SFCItem_GALIL_ComicBoom	GALIL Comic Boom
+4000666	1	SFCItem_CheyTac_BlackEdition	CheyTac M200 Black
+4000675	1	SFCItem_KrissV_OPENDot_BlackEdition	Kriss V OpenDot Black
+4000715	1	SFCItem_M40A1_ShootingDead	M40A1 Shooting Dead
+4000726	1	SFCItem_SIG551_EOTech_Cullet	SIG551 EOTech Cullet
+4000729	1	SFCItem_SIG551_EOTech_BlackIce	SIG551 EOTech Black Ice
+4000732	1	SFCItem_KrissV_Eotech_Black	Kriss V EOTech Black
+4000735	1	SFCItem_SAIGA12_OpenDot_Kraken	SAIGA 12 OpenDot Kraken
+4000748	1	SFCItem_AWP_Phoenix	AWP Phoenix
+4000818	1	SFCItem_P90_Squash	P90 Squash
+4000925	1	SFCItem_UMP45_OPENDOT_Icejam	UMP45 OpenDot ICEJam
+4000958	1	SFCItem_AN94_Atlantis	AN-94 Atlantis
+4000970	1	SFCItem_M4A1_EOTech	M4A1+EOTech
+4002200	1	SFCItem_FAMAS_Sharko	FAMAS Sharko
+4003300	1	SFCItem_Kunai	Kunai
+4004800	1	SFCItem_G36C_EOTech_EggFX	G36C EOTech EggFX
+4004930	1	SFCItem_FAMAS_ACOG_Cullet	FAMAS ACOG Cullet
+4005030	1	SFCItem_FAMAS_EOtech_Mosaic	FAMAS EOTech Mosaic
+4007600	1	SFCItem_MinimiSPW_Monster	M249 SPW Monster
+4020017	1	SFCItem_INFINITY_Phyton	Infinity Python
+4030003	1	SFCItem_HK417_EOTech	HK417+EOTech
+4030025	1	SFCItem_M4A1_AlienWare_Blue_ChangeLogo	M4A1 Star Blue
+4030026	1	SFCItem_M4A1_AlienWare_Red_ChangeLogo	M4A1 Star Red
+4030027	1	SFCItem_M4A1_AlienWare_Yellow_ChangeLogo	M4A1 Star Yellow
+4030028	1	SFCItem_M4A1_AlienWare_White_ChangeLogo	M4A1 Star White
+4030069	1	SFCItem_M4A1_Highroller	M4A1 Supreme
+4030090	1	SFCItem_M4A1_EOTech_GiganteusFX	M4A1 Giganteus FX
+4030157	1	SFCItem_SIG551_EOTech	SIG551 Eotech
+4030159	1	SFCItem_M4A1_WhiteTiger	M4A1 White Tiger
+4030339	1	SFCItem_HK417_EOTech_Paisley	HK417 EOTech Paisley
+4030350	1	SFCItem_HK417_EOTech_Kraken	HK417 EOTech Kraken
+4050022	1	SFCItem_KrissV_RedDesert	KRISS SuperV Reddesert
+4050045	1	SFCItem_KrissV_BumbleBee	Kriss V Honeybee
+4050052	1	SFCItem_Bizon	Bizon
+4050096	1	SFCItem_PP2000_RudolphFX	PP2000 Rudolph
+4060028	1	SFCItem_FRF2_Sweetie	FR-F2 Sweetie
+4060085	1	SFCItem_CheyTac_Aurora	CheyTac M200 Aurora
+4060091	1	SFCItem_CZ700_RudolphFX	CZ700 RudolphFX
+4080048	1	SFCItem_MetalHammer	Metal Hammer
+4111500	1	SFCItem_BowieKnife	Bowie Knife
+4114000	1	SFCItem_AK103_EOTech	AK103+EOTech
+4114100	1	SFCItem_G36C_EOTech	G36C Eotech
+4114200	1	SFCItem_SCARH_EOTech	SCAR-H Eotech
+4114300	1	SFCItem_AUGA3_EOTech	AUG A3 Eotech
+4114700	1	SFCItem_K2_EOTech	K2+EOTech
+4116530	1	SFCItem_M67_Pumpkin	M67 Pumpkin
+4116700	1	SFCItem_FoldingFan	Folding Fan
+4116900	1	SFCItem_FAMAS_Eotech	FAMAS Eotech
+4117000	1	SFCItem_SIG551_Halloween	SIG551 Halloween
+4117100	1	SFCItem_HK417_Halloween	HK417 Halloween
+4117200	1	SFCItem_SCARL_EOTech	SCAR-L Eotech
+4117300	1	SFCItem_PSG1_Halloween	PSG 1 Halloween
+4117500	1	SFCItem_KrissV_Halloween	Kriss V Halloween
+4117600	1	SFCItem_Benelli_Halloween	Benelli M4 Halloween
+4117830	1	SFCItem_M67_Halloween	M67 Halloween
+4117900	1	SFCItem_XM8_EOTech	XM8 Eotech
+4118000	1	SFCItem_M16A3_Eotech	M16A3 Eotech
+4118130	1	SFCItem_FRF2_Candy	FR-F2 Candy
+4118230	1	SFCItem_FRF2_Mamba	FR-F2 Mamba
+4118330	1	SFCItem_UMP45_OPENDot_Iceage	UMP45 OpenDot Iceage
+4121500	1	SFCItem_T65K2	T65K2
+4121600	1	SFCItem_M67_BabyStunner	M67 Baby Stunner
+4400000	1	SFCItem_AK103_Nuke	AK103 Nuke
+4403330	1	SFCItem_FAMAS_Eotech_Puzzle	FAMAS Eotech Puzzle
+4403430	1	SFCItem_K2_EOTech_Fissure	K2 Eotech Fissure
+4403530	1	SFCItem_SIG551_EOTech_Fissure	SIG551 Eotech Fissure
+4403630	1	SFCItem_AK103_EOTech_Giganteus	AK103 EOTech Giganteus
+4403800	1	SFCItem_Kunai_Icicle	Kunai Icicle
+4404000	1	SFCItem_CSLS06_Shengtian_Red	CS/LS 06 Red Dragon
+4405030	1	SFCItem_MG4_Opendot_BlackIce	MG4 OpenDot BlackIce
+4405100	1	SFCItem_QBZ97_ACOG_RudolphFX	QBZ97 Acog Rudolph FX
+4405330	1	SFCItem_AK103_BlueStripes	AK103 Blue Stripes
+4405430	1	SFCItem_FAMAS_BlueStripes	FAMAS Blue Stirpes
+4405530	1	SFCItem_AWP_BlueStripes	AWP Blue Stripes
+4405600	1	SFCItem_INFINITY_BlueStripes	Infinity Blue Stripes
+4405700	1	SFCItem_Jericho941_BlueStripes	Jericho 941 Blue Stripes
+4406100	1	SFCItem_K2_Allstars	K2 Allstars 2014
+4406200	1	SFCItem_HK417_Allstars	HK417 Allstars 2014
+4406300	1	SFCItem_CZ700_Allstars	CZ700 Allstars
+4406630	1	SFCItem_FAMAS_ACOG_Mosaic	FAMAS Acog Mosaic
+4407330	1	SFCItem_QBZ97_Eotech_Fissure	QBZ97+EOTech+Fissure
+4407430	1	SFCItem_QBZ97_Eotech_Giganteus	QBZ97+EOTech+Giganteus
+4407530	1	SFCItem_QBZ97_Eotech_LightningsilverFx	QBZ97+EOTech+Silver Lightnig FX
+4407600	1	SFCItem_QBZ97_Tempesto	QBZ97 Tempesto
+4407730	1	SFCItem_PP2000_BluePottery	PP2000 Blue Pottery
+4407830	1	SFCItem_PP2000_ICHI	PP2000 ICHI
+4407930	1	SFCItem_PP2000_Matrix	PP2000 Matrix
+4410600	1	SFCItem_G36C_Redvital	G36C Red Vital
+4412830	1	SFCItem_HK417_EOTech_BlackEdition	HK417 EOTech Black
+4414430	1	SFCItem_M40A1_Mamba	M40A1 Mamba
+4419400	1	SFCItem_CheyTac_EggFx	CheyTac M200 Egg FX
+4419500	1	SFCItem_XM8_EggFx	XM8 Egg FX
+4419600	1	SFCItem_M4A1_EggFx	M4A1 Egg FX
+4419700	1	SFCItem_KrissV_EggFx	Kriss V Egg FX
+4419800	1	SFCItem_SCARH_EggFx	SCAR-H Egg FX
+4419900	1	SFCItem_M16A3_EggFx	M16A3 Egg FX
+4420030	1	SFCItem_AWP_Black	AWP Black
+4420130	1	SFCItem_AWP_Matrix	AWP Matrix
+4420230	1	SFCItem_G36C_EOTech_LightningsilverFx	G36C EOTech Lightning Silver FX
+4420330	1	SFCItem_G36C_EOTech_Matrix	G36C EOTech Matrix
+4420430	1	SFCItem_G36C_EOTech_GiganteusFx	G36C EOTech Giganteus FX
+4422500	1	SFCItem_AUGA3_iGun	AUG A3 Trooper
+4427200	1	SFCItem_XM8_Marine	XM8 Marine
+4432800	1	SFCItem_FAMAS_Gladius	FAMAS Gladius
+4432900	1	SFCItem_G36C_Gladius	G36C Gladius
+4433000	1	SFCItem_M40A1_Gladius	M40A1 Gladius
+4433200	1	SFCItem_SAR21_Circuit	SAR-21 Circuit
+4445030	1	SFCItem_CZ700_BlueStripes	CZ700 Blue Stripes
+4445130	1	SFCItem_G36C_Aurora	G36C Aurora
+4445230	1	SFCItem_G36C_BlueStripes	G36C Blue Stripes
+4445330	1	SFCItem_HK417_BlueStripes	HK417 Blue Stripes
+4445430	1	SFCItem_K2_BlueStripes	K2 Blue Stripes
+4445530	1	SFCItem_XM8_EOTech_Puzzle	XM8 EOTech Puzzle
+4445630	1	SFCItem_XM8_EOTech_Matrix	XM8 EOTech Matrix
+4445730	1	SFCItem_G36C_Puzzle	G36C Puzzle
+4446800	1	SFCItem_FAMAS_ProleagueLogo	FAMAS Pro League 2015
+4446900	1	SFCItem_CZ700_ProleagueLogo	CZ700 Pro League 2015
+4447000	1	SFCItem_G36C_ProleagueLogo	G36C Pro League 2015
+4447100	1	SFCItem_HK417_ProleagueLogo	HK417 Pro League 2015
+4447200	1	SFCItem_K2_ProleagueLogo	K2 Pro League 2015
+4448800	1	SFCItem_Barret_Siege	M82A1 Barrett Siege
+4452800	1	SFCItem_ACR_EOTech_VirusPurpleFX	ACR EOTech VirusPurpleFX
+4453000	1	SFCItem_G36C_SFWC	G36C SFWC
+4453100	1	SFCItem_FAMAS_SFWC	FAMAS SFWC
+4453200	1	SFCItem_CheyTac_SFWC	CheyTac SFWC
+4453300	1	SFCItem_MetalHammer_SFWC	Metal Hammer SFWC
+4453430	1	SFCItem_M40A1_Puzzle	M40A1 Puzzle
+4453530	1	SFCItem_M40A1_Bluepottery	M40A1 Blue Pottery
+4453630	1	SFCItem_MinimiSPW_OpenDot_Puzzle	M249 SPW OpenDot Puzzle
+4453730	1	SFCItem_MinimiSPW_OpenDot_Mamba	M249 SPW OpenDot Mamba
+4453830	1	SFCItem_MinimiSPW_OpenDot_Bluepottery	M249 SPW OpenDot Bluepottery
+4453930	1	SFCItem_Galil_Acog_Puzzle	GALIL ACOG Puzzle
+4454030	1	SFCItem_Galil_Acog_Mamba	GALIL ACOG Mamba
+4454130	1	SFCItem_Galil_Acog_Bluepottery	GALIL ACOG BluePottery
+4459500	1	SFCItem_FAMAS_Waterblaster	FAMAS Water Blaster
+4459800	1	SFCItem_UMP45_Blackpearl	UMP45 Blackpearl
+4460130	1	SFCItem_AN94_AimPoint_GreenHillFx	AN-94 AimPoint GreenHill FX
+4460230	1	SFCItem_AN94_AimPoint_Cancel	AN-94 AimPoint Cancer
+4460330	1	SFCItem_AN94_AimPoint_Flock	AN-94 AimPoint Flock
+4460430	1	SFCItem_P90_OpenDot_GreenHillFX	P90 OpenDot GreenHill FX
+4460530	1	SFCItem_P90_OpenDot_Cancel	P90 OpenDot Cancer
+4460630	1	SFCItem_P90_OpenDot_Flock	P90 OpenDot Flock
+4465230	1	SFCItem_M4A1_EOTech_Perfume	M4A1 EOTech Perfume
+4468800	1	SFCItem_ACR_Haunted	ACR Haunted
+4468930	1	SFCItem_CheyTac_BlueStripes	CheyTac M200 Blue Stripes
+4469030	1	SFCItem_AUGA3_EOTech_GreenHillFX	AUG A3 EOTech GreenHill FX
+4469130	1	SFCItem_AUGA3_EOTech_Cancel	AUG A3 EOTech Cancer
+4469230	1	SFCItem_AUGA3_EOTech_Flock	AUG A3 EOTech Flock
+4469300	1	SFCItem_CheyTac_ProLeagueLogo	CheyTac M200 Pro League
+4469400	1	SFCItem_AK103_ProLeagueLogo	AK103 Pro League 2015
+4469500	1	SFCItem_AWP_ProleagueLogo	AWP Pro League 2015
+4471200	1	SFCItem_Ultimax_Rider	Ultimax Rider
+4475200	1	SFCItem_TRG_IronGun	TRG IronGun
+4475430	1	SFCItem_SAR21_Opendot_LightningsilverFX	SAR-21 OpenDot LightningSilverFX
+4475530	1	SFCItem_SAR21_Opendot_BlackIce	SAR-21 OpenDot BlackIce
+4475630	1	SFCItem_SAR21_Opendot_Fissure	SAR-21 OpenDot Fissure
+4475730	1	SFCItem_Barret_LightningsilverFX	M82A1 Barrett LightningSilverFX
+4475830	1	SFCItem_Barret_BlackIce	M82A1 Barrett BlackIce
+4475930	1	SFCItem_Barret_Fissure	M82A1 Barrett Fissure
+4477600	1	SFCItem_Christmascane	Christmas Cane
+4479230	1	SFCItem_CZ700_S2S_CircuitFX	CZ700 CircuitFX
+4479630	1	SFCItem_M4A1_EOTech_LightningsilverFX	M4A1 LightningSilver FX
+4479730	1	SFCItem_M4A1_EOTech_Matrix	M4A1 Matrix
+4479800	1	SFCItem_ACR_Highroller	ACR Supreme
+4481600	1	SFCItem_MP40	MP40
+4482100	1	SFCItem_CheyTac_Crescent	CheyTac M200 Crescent
+4485900	1	SFCItem_CAT	M1A0
+4485903	1	SFCItem_CAT2	M1A0
+4485906	1	SFCItem_CAT4	M1A0
+4486000	1	SFCItem_M67_Catfood	Cat Food
+4486100	1	SFCItem_Baseball_Catball	Kitty Ball
+4486700	1	SFCItem_M4A1_Fallenangel	M4A1 Fallenangel
+4488830	1	SFCItem_UMP45_EOTech_Aurora	UMP45 EOTech Aurora
+4488930	1	SFCItem_UMP45_EOTech_NavyBlueDigital	UMP45 EOTech NavyBlueDigital
+4489030	1	SFCItem_UMP45_EOTech_Frozen	UMP45 EOTech IceAge
+4489130	1	SFCItem_CheyTac_Leopard	CheyTac M200 Leopard
+4489200	1	SFCItem_M4A1_Highroller_Skull	M4A1 Supreme Skull
+4491700	1	SFCItem_CheyTac_Songkran	CheyTac M200 Water
+4493600	1	SFCItem_XM8_Gothloli	XM8 Gothloli
+4496000	1	SFCItem_M67_Gravity	M67 Gravity
+4496100	1	SFCItem_ACR_Highroller_Skull	ACR Supreme Skull
+4496330	1	SFCItem_CSLS06_EOTech_Aurora	CS/LS 06 EOTech Aurora
+4496430	1	SFCITem_CSLS06_EOTech_NavyBlueDigital	CS/LS 06 EOTech NavyBlueDigital
+4496530	1	SFCItem_CSLS06_EOTech_IceAge	CS/LS 06 EOTech IceAge
+4496600	1	SFCItem_CSLS06_EOTech_VirusPurpleFX	CS/LS 06 EOTech VirusPurpleFX
+4496700	1	SFCItem_FAMAS_EOTech_VirusPurpleFX	FAMAS EOTech VirusPurpleFX
+4496800	1	SFCItem_G36C_EOTech_VirusPurpleFX	G36C EOTech VirusPurpleFX
+4496900	1	SFCItem_HK417_EOTech_VirusPurpleFX	HK417 EOTech VirusPurpleFX
+4497500	1	SFCItem_ARX160	ARX160
+4497900	1	SFCItem_MP7A1_ACOG_Naga	MP7A1 Naga
+4500200	1	SFCItem_CZ700_S2S_Naga	CZ700 Naga
+4500300	1	SFCItem_RedRose	Red Rose
+4502000	1	SFCItem_CheyTac_Highroller_Skull	CheyTac M200 Supreme Skull
+4503100	1	SFCItem_ARX160_GhostRider	ARX 160 Rider
+4504800	1	SFCItem_M92FS_SFWC	Beretta M92FS SFWC
+4505200	1	SFCItem_M67_BigWaterBalloon	M67 Waterballoon
+4505300	1	SFCItem_Baseball_WaterBalloon	Small Waterballoon
+4505700	1	SFCItem_CSLS06_EOTech_WaterwaveFX	CS/LS 06 EOTech WaterwaveFX
+4505800	1	SFCItem_FAMAS_EOTech_WaterwaveFX	FAMAS EOTech WaterwaveFX
+4505900	1	SFCItem_HK417_EOTech_WaterwaveFX	HK417 EOTech WaterwaveFX
+4506000	1	SFCItem_G36C_EOTech_WaterwaveFX	G36C EOTech WaterwaveFX
+4506100	1	SFCItem_ACR_EOTech_WaterwaveFX	ACR EOTech WaterwaveFX
+4509000	1	SFCItem_MurderKnife	Knife
+4510400	1	SFCItem_Katana_Aurora	Katana Aurora
+4512430	1	SFCItem_FAMAS_ACOG_Puzzle	FAMAS Acog Puzzle
+4512530	1	SFCItem_CheyTac_LightningSilverFX	CheyTac LightningSilver FX
+4512630	1	SFCItem_CheyTac_Blackice	CheyTac BlackIce
+4514100	1	SFCItem_Kar98k	Kar-98k
+4515100	1	SFCItem_M67_StickGrenade	M67 StickGrenade
+4515200	1	SFCItem_M92FS_Dual_Skull	Beretta M92FS Skull Supreme
+4515201	1	SFCItem_M92FS_Highroller	Beretta M92FS Skull Supreme
+4515330	1	SFCItem_TRG_Leopard	TRG Leopard
+4515430	1	SFCItem_TRG_NavyBlueDigital	TRG NavyBlueDigital
+4515530	1	SFCItem_TRG_Black	TRG Black
+4519500	1	SFCItem_HK417_EOTech_MapleFX	HK417 EOTech MapleFX
+4519600	1	SFCItem_G36C_EOTech_MapleFX	G36C EOTech MapleFX
+4519700	1	SFCItem_FAMAS_EOTech_MapleFX	FAMAS MapleFX
+4519800	1	SFCItem_CSLS06_EOTech_MapleFX	CS/LS 06 EOTech MapleFX
+4519900	1	SFCItem_ACR_EOTech_MapleFX	ACR EOTech MapleFX
+4520100	1	SFCItem_HK417_mod3A_EOTech_Horror	HK417 Haunted
+4523900	1	SFCItem_FNFS2000	FNF2000
+4527200	1	SFCItem_M4A1_EOTech_SnowfallFX	M4A1 EOTech Snowfall FX
+4527400	1	SFCItem_HK417_EOTech_SnowfallFX	HK417 EOTech Snowfall FX
+4527500	1	SFCItem_G36C_EOTech_SnowfallFX	G36C EOTech Snowfall FX
+4527600	1	SFCItem_FAMAS_EOTech_SnowfallFX	FAMAS EOTech Snowfall FX
+4527700	1	SFCItem_SAR21_EOTech_SnowfallFX	SAR-21 EOTech Snowfall FX
+4527800	1	SFCItem_K1_EOTech_SnowfallFX	K1 EOTech Snowfall FX
+4527900	1	SFCItem_M4A1_Opendot_SnowFX	M4A1 Opendot Snow FX
+4528100	1	SFCItem_HK417_Opendot_SnowFX	HK417 Opendot Snow FX
+4528200	1	SFCItem_G36C_Opendot_SnowFX	G36C Opendot Snow FX
+4528300	1	SFCItem_FAMAS_Opendot_SnowFX	FAMAS Opendot Snow FX
+4528400	1	SFCItem_SAR21_Opendot_SnowFX	SAR-21 Opendot Snow FX
+4528500	1	SFCItem_K1_Opendot_SnowFX	K1 Opendot Snow FX
+4528700	1	SFCItem_SIG551_Highroller_Skull	SIG551 Skull Supreme
+4528800	1	SFCItem_UMP45_Highroller_Skull	UMP45 Skull Supreme
+4528930	1	SFCItem_ARX160_EOTech_Rainbow	ARX 160 Rainbow
+4529030	1	SFCItem_ARX160_EOTech_LunaFX	ARX 160 LunaFX
+4529130	1	SFCItem_ARX160_EOTech_CircuitFX	ARX 160 CircuitFX
+4529230	1	SFCItem_CZ700_S2S_Rainbow	CZ700 Rainbow
+4529330	1	SFCItem_CZ700_S2S_LunaFX	CZ700 LunaFX
+4529400	1	SFCItem_CZ700_S4M	CZ700 Flame
+4529500	1	SFCItem_HK417_EOTech_S4M	HK417 EOTech Flame
+4529600	1	SFCItem_FAMAS_EOTech_S4M	FAMAS EOTech Flame
+4529730	1	SFCItem_HK417_S4M	HK417 Flame
+4529830	1	SFCItem_FAMAS_S4M	FAMAS Flame
+4529900	1	SFCItem_FNF2000_Predator	FNF2000 Predator
+4534400	1	SFCItem_HK417_Proleaguelogo_Reflex	HK417 Proleague Reflex
+4534500	1	SFCItem_K2_Proleaguelogo_Reflex	K2 Proleague Reflex
+4534600	1	SFCItem_FAMAS_Proleaguelogo_Reflex	FAMAS Proleague reflex
+4534700	1	SFCItem_G36C_Proleaguelogo_Reflex	G36C Proleague Reflex
+4550306	1	SFCItem_Common_Shirts_EuroBeta	Common CloseBeta Shirts
+4550323	1	SFCItem_Common_Shirts_EuroClansde	Clans.de 셔츠
+4550397	1	SFCItem_Common_Shirts_EuroGotSkill	GotSkill Shirts
+4550433	1	SFCItem_Common_Shirts_Austria	Austria Shirts
+4550437	1	SFCItem_Common_Shirts_Belgium	Belgium Shirts
+4550441	1	SFCItem_Common_Shirts_BosniaH	BosniaHerzegowina Shirts
+4550445	1	SFCItem_Common_Shirts_Croatia	Croatia Shirts
+4550449	1	SFCItem_Common_Shirts_England	England Shirts
+4550453	1	SFCItem_Common_Shirts_Finland	Finland Shirts
+4550457	1	SFCItem_Common_Shirts_France	France Shirts
+4550461	1	SFCItem_Common_Shirts_Germany	Germany Shirts
+4550465	1	SFCItem_Common_Shirts_Greece	Greece Shirts
+4550466	1	SFCItem_Common_Shirts_Italy	Italy Shirts
+4550470	1	SFCItem_Common_Shirts_Netherlands	Netherlands Shirts
+4550474	1	SFCItem_Common_Shirts_Poland	Poland Shirts
+4550478	1	SFCItem_Common_Shirts_Portugal	Portugal Shirts
+4550482	1	SFCItem_Common_Shirts_Russia	Russia Shirts
+4550486	1	SFCItem_Common_Shirts_Spain	Spain Shirts
+4550490	1	SFCItem_Common_Shirts_Sweden	Sweden Shirts
+4550494	1	SFCItem_Common_Shirts_Swiss	Switzerland Shirts
+4550498	1	SFCItem_Common_Shirts_Turkey	Turkey Shirts
+4564800	1	SFCItem_AK103_ProLeagueLogo_Reflex	AK103 Pro League Reflex
+4564900	1	SFCItem_Bizon_EOTech_Chicken	Bizon Chicken
+4565000	1	SFCItem_AK103_EOTech_Chicken	AK103 Chicken
+4566200	1	SFCItem_TRG_Chicken	TRG Chicken
+4567230	1	SFCItem_FNFS2000_EOTech_CircuitFX	FNF2000 EOTech CircuitFX
+4568830	1	SFCItem_FNFS2000_Opendot_MelodyFX	FNF2000 Opendot MelodyFX
+4568930	1	SFCItem_FNFS2000_EOTech_OrangewebFX	FNF2000 EOTech OrangewebFX
+4570900	1	SFCItem_FAMAS_EOTech_EggFX	FAMAS EOTech EggFX
+4571030	1	SFCItem_FAMAS_EOTech_Rush	FAMAS EOTech Rush
+4571100	1	SFCItem_FAMAS_Opendot_EggFX	FAMAS Opendot EggFX
+4571230	1	SFCItem_G36C_EOTech_Snake	G36C EOTech Snake
+4571300	1	SFCItem_G36C_Opendot_EggFX	G36C Opendot EggFX
+4571400	1	SFCItem_GALIL_EOTech_EggFX	GALIL EOTech EggFX
+4571500	1	SFCItem_GALIL_Opendot_EggFX	GALIL Opendot EggFX
+4571600	1	SFCItem_HK417_EOTech_EggFX	HK417 EOTech EggFX
+4571700	1	SFCItem_HK417_Opendot_EggFX	HK417 Opendot EggFX
+4571800	1	SFCItem_K1_EOTech_EggFX	K1 EOTech EggFX
+4571900	1	SFCItem_K1_Opendot_EggFX	K1 Opendot EggFX
+4572030	1	SFCItem_M40A1_USMC	M40A1 USMC
+4572100	1	SFCItem_M4A1_EOTech_EggFX	M4A1 EOTech EggFX
+4572200	1	SFCItem_M4A1_Opendot_EggFX	M4A1 Opendot EggFX
+4572330	1	SFCItem_MP7A1_ButterflyFX	MP7A1 ButterflyFX
+4572430	1	SFCItem_MP7A1_VirusFX	MP7A1 VirusFX
+4576630	1	SFCItem_MinimiSPW_EOTech_BrokenGlass	M249 EOTech BrokenGlass
+4576730	1	SFCItem_HK23E_Opendot_Amethyst	HK23E Opendot Amethyst
+4576830	1	SFCItem_K3_EOTech_GalaxyFX	K3 EOTech GalaxyFX
+4580500	1	SFCItem_STG44_RW	STG-44 RW
+4580600	1	SFCItem_STG44_RW_Silencer	STG-44 RW Silencer
+4580700	1	SFCItem_STG44_Reflex	STG-44 Reflex
+4580800	1	SFCItem_MP40_RW	MP40 RW
+4580900	1	SFCItem_MP40_RW_Silencer	MP40 RW Silencer
+4581000	1	SFCItem_MP40_Reflex	MP40 Reflex
+4581830	1	SFCItem_AK103_EOTech_EggFX	AK103 EOTech EggFx
+4581930	1	SFCItem_Bizon_EOTech_EggFX	Bizon EOTech EggFX
+4582030	1	SFCItem_TRG_EggFX	TRG EggFX
+4590032	1	SFCItem_Common_Rabbitmask	토끼 마스크
+4900011	1	SFCItem_Common_GoalkeeperGloves	Goalkeeper Gloves
+4933000	1	SFCItem_Common_Shirts_Allstar2014	Allstars 2014 Shirt
+4937030	1	SFCItem_Common_ShemaleMask	Common Solo Mask
+4951000	1	SFCItem_Common_Shirts_Clansweb	Clansweb Shirt
+4952000	1	SFCItem_Common_Shirts_ESL_Proleague	ESL Pro League 2015 Shirt
+5009000	1	SFCItem_Common_Shirts_SFWC	SFWC Tank top
+5014000	1	SFCItem_GIGN_Shirts_SFWC	SFWC Tank top
+5015000	1	SFCItem_Common_SFWCglove	SFWC Glove
+5016000	1	SFCItem_Common_SFWCBandana	SFWC Bandana
+5017000	1	SFCItem_Common_SFWCCap	SFWC Cap
+5018000	1	SFCItem_Common_Shirts_Paysafecard	Paysafecard Shirt
+5021000	1	SFCItem_Common_Shorts_Red	Red Shorts
+5022000	1	SFCItem_Common_Shorts_Blue	Blue Shorts
+5023000	1	SFCItem_Common_Tube_Crocodile	Crocodile tube
+5024000	1	SFCItem_Common_Tube_Duck	Duck tube
+5026000	1	SFCItem_Common_Towel_Duck	Duck towel
+5029000	1	SFCItem_Common_CrocodileMask	Crocodile Mask
+5030000	1	SFCItem_Common_DuckMask	Duck Mask
+5036000	1	SFCItem_GIGN_Towel_Duck	Duck towel
+5037000	1	SFCItem_Common_Towel_Crocodile	Crocodile towel
+5040029	1	SFCItem_Func_EnhancedCrosshair	Crosshair Change
+5042000	1	SFCItem_GIGN_Towel_Crocodile	Crocodile towel
+5048000	1	SFCItem_GIGN_Shorts_Red	Red Shorts
+5053000	1	SFCItem_GIGN_Shorts_Blue	Blue Shorts
+5058000	1	SFCItem_Common_Badguymask	Piero Mask
+5074000	1	SFCItem_Common_SummerHat_Red	Summer Hat Red
+5075000	1	SFCItem_Common_SummerHat_Blue	Summer Hat Blue
+5076000	1	SFCItem_Common_SummerBag_Red	Summer Bag Red
+5077000	1	SFCItem_Common_SummerBag_Yellow	Summer Bag Yellow
+5078000	1	SFCItem_Common_Aquashoes_Blue	Summer Shoes Blue
+5079000	1	SFCItem_Common_Aquashoes_Green	Summer Shoes Green
+5080000	1	SFCItem_Common_shorts_StripeBlue	Blue Stripe Shorts
+5085000	1	SFCItem_GIGN_Shorts_StripeBlue	Blue Stripe Shorts
+5086000	1	SFCItem_Common_shorts_StripeGreen	Green Stripe Shorts
+5090003	1	SFCItem_Func_ProvideXiah	Xiah Coupon
+5090090	1	SFCItem_Func_ProvideBlackMamba	Black Mamba Coupon
+5090103	1	SFCItem_Func_ProvideSpetsnaz_Vympel	Vympel Coupon
+5090126	1	SFCItem_Func_ProvideHongLian	Hong Lian Coupon
+5090133	1	SFCItem_Func_ProvideKelly	Kelly Coupon
+5092032	1	SFCItem_Func_ProvideSakura	Sakura Coupon
+5094000	1	SFCItem_GIGN_Shorts_StripeGreen	Green Stripe Shorts
+5096000	1	SFCItem_GIGN_SummerBag_Red	Summer Bag Red
+5097000	1	SFCItem_GIGN_SummerBag_Yellow	Summer Bag Yellow
+5098000	1	SFCItem_Common_Shirts_Romania	Romania Shirts
+5120002	1	SFCItem_Common_HorseMask_White	Whitehorsemask
+5143000	1	SFCItem_Func_ProvideSakura_Summer	Sakura Beach Wear Coupon
+5163000	1	SFCItem_Func_ProvideSnowWhite	Snow White
+5164000	1	SFCItem_Func_ProvideGothloli	Gothloli Coupon
+5170000	1	SFCItem_Func_ProvideMurderer	Murderer Coupon
+5174000	1	SFCItem_Func_ProvideDesertSniper	DesertSniper Coupon
+5220036	10	SFCItem_Func_WeaponCamo_Puzzle	CAMO Puzzle
+5220047	10	SFCItem_Func_WeaponCamo_LargeWall	CAMO Largewall
+5220084	10	SFCItem_Func_WeaponCamo_Halloween	CAMO Halloween
+5220108	10	SFCItem_Func_WeaponCamo_WhiteLine	CAMO WhiteLine
+5220148	10	SFCItem_Func_WeaponCamo_Cherry	CAMO Cherry FX
+5220175	10	SFCItem_Func_WeaponCamo_Brindled	CAMO Brindled
+5220182	10	SFCItem_Func_WeaponCamo_Chinese	CAMO Chinese
+5220186	10	SFCItem_Func_WeaponCamo_Hexagon	CAMO Hexagon
+5220189	10	SFCItem_Func_WeaponCamo_Panda	CAMO Panda
+5220194	10	SFCItem_Func_WeaponCamo_Pink2	CAMO Pink2
+5220198	10	SFCItem_Func_WeaponCamo_Rush	CAMO Rush
+5220206	10	SFCItem_Func_WeaponCamo_Winter	CAMO Winter
+5220214	10	SFCItem_Func_WeaponCamo_GalaxyFX	CAMO GalaxyFX
+5220300	10	SFCItem_Func_WeaponCamo_Horse	CAMO Horse
+5220900	10	SFCItem_Func_WeaponCamo_Metalicred	CAMO Metallic Red
+5221400	10	SFCItem_Func_WeaponCamo_SilentNight	Camo SilentNight
+5221500	10	SFCItem_Func_WeaponCamo_ShineTreeFX	Camo ShineTree FX
+5221630	10	SFCItem_Func_WeaponCamo_Ice	Camo IceCube
+5221700	10	SFCItem_Func_WeaponCamo_BlueStripes	Camo Blue Stripe
+5221800	10	SFCItem_Func_WeaponCamo_ConfettiFX	CAMO ConfettiFX
+5223000	10	SFCItem_Func_WeaponCamo_RedFortuneFX	CAMO RedFortuneFX
+5224000	10	SFCItem_Func_WeaponCamo_ButterflyFX	CAMO ButterflyFX
+5225000	10	SFCItem_Func_WeaponCamo_IceEmerald	CAMO IceEmerald
+5226000	10	SFCItem_Func_WeaponCamo_IceRuby	CAMO IceRuby
+5227000	10	SFCItem_Func_WeaponCamo_IceSapphire	CAMO IceSapphire
+5229030	1	SFCItem_Func_RandomWeaponProbabilityUp	Elite Random Box
+5230000	10	SFCItem_Func_WeaponCamo_popblossom	CAMO Popblossom
+5232000	10	SFCItem_Func_WeaponCamo_VirusFX	CAMO VirusFX
+5234001	10	SFCItem_Func_WeaponCamo_VirusPurpleFX	CAMO Purple Virus FX
+5236000	10	SFCItem_Func_WeaponCamo_Tropical	CAMO Tropical
+5237000	10	SFCItem_Func_WeaponCamo_Rainbow	CAMO Rainbow FX
+5238000	1	SFCItem_Func_ProvideBlackMamba_BeachWear	Black Mamba Beach Wear Coupon
+5238030	10	SFCItem_Func_WeaponCamo_LightningGreenFX	CAMO LightninggreenFX
+5239000	10	SFCItem_Func_WeaponCamo_LightningRedFX	CAMO LightningredFX
+5240000	10	SFCItem_Func_WeaponCamo_Peony	CAMO Peony
+5243000	10	SFCItem_Func_WeaponCamo_DeadwalkPurpleFX	CAMO Deadwalk PurpleFX
+5244000	10	SFCItem_Func_WeaponCamo_DeadwalkYellowFX	CAMO Deadwalk YellowFX
+5252000	10	SFCItem_Func_WeaponCamo_Flecktarn	CAMO Flectarn
+5253000	10	SFCItem_Func_WeaponCamo_Chocolatechip	CAMO Chocolatechip
+5260000	10	SFCItem_Func_WeaponCamo_Africa	CAMO Africa
+5261000	10	SFCItem_Func_WeaponCamo_SnowWhite_BlueFX	CAMO SnowWhite BlueFX
+5262000	10	SFCItem_Func_WeaponCamo_SnowWhite_GreenFX	CAMO Snowwhite GreenFX
+5265000	10	SFCItem_Func_WeaponCamo_RisingFX	CAMO RisingFX
+5266000	10	SFCItem_Func_WeaponCamo_LightningVioletFX	CAMO LightningvioletFX
+5267000	10	SFCItem_Func_WeaponCamo_BlueHeart	CAMO Blueheart
+5269000	10	SFCItem_Func_WeaponCamo_RainbowWave	CAMO Songkran
+5270000	10	SFCItem_Func_WeaponCamo_Willow	CAMO Willow
+5271000	10	SFCItem_Func_WeaponCamo_Diamond	CAMO Diamond
+5272000	10	SFCItem_Func_WeaponCamo_CatFX	CAMO Kitty FX
+5274000	10	SFCItem_Func_WeaponCamo_Euro2016	CAMO Soccer 2016
+5275000	10	SFCItem_Func_WeaponCamo_MemorialDay	CAMO Memorialday
+5278000	10	SFCItem_Func_WeaponCamo_WindFX	CAMO Wind FX
+5279000	10	SFCItem_Func_WeaponCamo_WatermelonFX	CAMO Watermelon FX
+5281000	10	SFCItem_Func_WeaponCamo_GoldMedalFX	CAMO GoldmedalFX
+5282000	10	SFCItem_Func_WeaponCamo_MelodyFX	CAMO MelodyFX
+5283000	10	SFCItem_Func_WeaponCamo_Korean	CAMO Korean
+5284000	10	SFCItem_Func_WeaponCamo_KoreanFX	CAMO KoreanFX
+5288000	10	SFCItem_Func_WeaponCamo_s4m	CAMO Flame
+5289000	10	SFCItem_Func_WeaponCamo_SantaFX	CAMO SantaFX
+5290000	10	SFCItem_Func_WeaponCamo_Christmas2016	CAMO Christmas2016
+5310000	1	SFCItem_Common_ChickenMask	Chicken Mask
+5311000	1	SFCItem_Common_ChickenBody	Chicken Jacket
+5312000	1	SFCItem_Common_ChickenPants	Chicken Pants
+5313000	1	SFCItem_Common_ChickenBoots	Chicken Shoes
+5745100	1	SFCItem_CheyTac_MagUP	CheyTac M200 Medicine MagUP
+5746700	10	SFCItem_Func_WeaponCamo_Medicine	CAMO Medicine

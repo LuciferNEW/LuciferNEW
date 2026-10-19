@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SF2 Control Center</title>
+<style>
+:root{--bg:#0d1014;--panel:#151a21;--panel2:#1b222c;--line:#283241;--ink:#e7ecf3;--dim:#8a97a8;
+ --accent:#ff7a2f;--blue:#3fa7ff;--good:#43d17a;--bad:#ff5c6a;--sp:#ffd24a;--cash:#ff5c8a;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,"Segoe UI","Microsoft JhengHei",system-ui,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+h1{font-size:16px;margin:0}h1 b{color:var(--accent)}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav button{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:8px;padding:7px 13px;font-size:13px;cursor:pointer}
+.nav button.on{background:var(--accent);border-color:var(--accent);color:#120a04;font-weight:600}
+.srvdot{margin-left:auto;display:flex;align-items:center;gap:7px;color:var(--dim);font-size:12.5px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--bad)}.dot.on{background:var(--good);box-shadow:0 0 8px var(--good)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+section{display:none}section.on{display:block}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:14px}
+button.act{background:var(--accent);border:none;color:#120a04;font-weight:600;border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px}
+button.ghost{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px}
+button.danger{background:#3a1b20;border:1px solid var(--bad);color:var(--bad)}
+input,select,textarea{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:7px;padding:7px 10px;font-size:13px;font-family:inherit}
+input.n{width:92px}
+label{color:var(--dim);font-size:12.5px;margin-right:4px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--dim);font-weight:500}
+pre{background:#0a0d11;border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;max-height:320px;font-size:12px;white-space:pre-wrap;word-break:break-word}
+.big{font-family:ui-monospace,Consolas,monospace;background:#0a0d11;border:1px solid var(--line);border-radius:8px;padding:10px;user-select:all;word-break:break-all;font-size:12.5px;color:var(--blue)}
+.ok{color:var(--good)}.err{color:var(--bad)}.muted{color:var(--dim);font-size:12.5px}
+.sp{color:var(--sp)}.cash{color:var(--cash)}
+.pill{font-size:11px;padding:2px 8px;border-radius:12px;background:var(--panel2);color:var(--dim)}
+textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.toast{position:fixed;right:16px;bottom:16px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:13px;display:none;z-index:9}
+</style>
+</head>
+<body>
+<header>
+  <h1><b>SF2</b> Control Center</h1>
+  <div class="nav" id="nav"></div>
+  <div class="srvdot"><span class="dot" id="srvdot"></span><span id="srvtxt">伺服器未啟動</span></div>
+</header>
+<main>
+  <!-- 伺服器 -->
+  <section id="s-server" class="on">
+    <div class="card" id="twncard" style="border-left:3px solid var(--good)">
+      <h3>台服 Server（完整版 · 還原專案）<span class="pill" id="twnavail">偵測中…</span></h3>
+      <div class="row">
+        <button class="act" id="btnTwnLocal">▶ 開(本機測試)</button>
+        <button class="ghost" id="btnTwnRemote">▶ 開給別人(轉發+改IP)</button>
+        <button class="danger" id="btnTwnStop">■ 關</button>
+        <span class="muted" id="twnstate"></span>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <label>連到</label><input id="cliip" class="n" value="127.0.0.1" title="本機測試=127.0.0.1;連別人=對方對外IP">
+        <button class="act" id="btnClient">▶ 啟動客端(台服)</button>
+        <button class="ghost" id="btnPlayerPack">產生啟動器</button>
+        <button class="ghost" id="btnPlayerZip">打包成一個 zip(客端+啟動器)</button>
+        <span class="muted" id="clistate"></span>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <button class="ghost" id="btnTwnUnlockC">解鎖槍械/造型上架</button>
+        <button class="ghost" id="btnTwnUnlockA">解鎖全部</button>
+        <span class="muted" id="twnunlock"></span>
+      </div>
+      <div class="muted" id="twnnote">把 zip 解到 <code>D:\sf2_project\twn_server\</code>(要有 <code>server\server.py</code>)。本機測試:開server→啟動客端(127.0.0.1)。開給別人:轉發 28080(大廳)+28082(對戰,P2P 主機),防火牆要開這兩個埠;clan 28081 不提供。商店/造槍自動用它的 17,429 台服道具。</div>
+    </div>
+    <div class="card">
+      <h3>遊戲伺服器(SFOffline 路線 · 備用)</h3>
+      <div class="row">
+        <button class="act" id="btnStart">▶ 開伺服器</button>
+        <button class="danger" id="btnStop">■ 關伺服器</button>
+        <button class="ghost" id="btnRefresh">↻ 重整狀態</button>
+        <span class="muted" id="srvstate"></span>
+      </div>
+      <div class="muted" id="srvports"></div>
+    </div>
+    <div class="card">
+      <h3>給玩家的連線參數 <span class="pill">複製給朋友</span></h3>
+      <div class="big" id="playerargs">(開伺服器後顯示)</div>
+      <div class="row" style="margin-top:8px">
+        <button class="ghost" id="btnCopy">複製參數</button>
+        <span class="muted">玩家用 <code>sf2_unpacked.exe -language=EUR -STARTFROMLAUNCHER -SUBLANGUAGE=twn &lt;參數&gt;</code> 啟動</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>伺服器 Log <button class="ghost" id="btnLog" style="float:right">↻</button></h3>
+      <pre id="srvlog">(尚無)</pre>
+    </div>
+  </section>
+
+  <!-- 資料庫 -->
+  <section id="s-db">
+    <div class="card">
+      <h3>save.db</h3>
+      <div class="row"><input id="dbpath" placeholder="save.db 路徑(空白=預設 LocalAppData)" style="flex:1;min-width:220px">
+        <button class="act" id="btnOpenDb">開啟 / 建立</button><span class="muted" id="dbstate"></span></div>
+      <div class="row"><label>新帳號</label><input id="nlogin" placeholder="login" class="n"><input id="npw" placeholder="password" class="n">
+        <label><input type="checkbox" id="nseed"> 給新手道具</label><button class="ghost" id="btnCreate">建立</button></div>
+    </div>
+    <div class="card"><h3>帳號</h3><div id="acctbl" class="muted">先開啟 save.db</div></div>
+  </section>
+
+  <!-- 商店 -->
+  <section id="s-shop">
+    <div class="card">
+      <h3>一鍵解鎖(鎖定道具上架)</h3>
+      <div class="row">
+        <button class="act" id="btnUnlockContent">解鎖武器+角色+塗裝(1771)</button>
+        <button class="ghost" id="btnUnlockAll">解鎖全部(3210)</button>
+        <span class="muted" id="unlockstate"></span>
+      </div>
+      <div class="muted" id="unlocknote">台服在跑時:改 catalog.json 後<b>重啟台服 server</b> 生效。SFOffline 路線則到 <b>Build</b> 重打包。</div>
+    </div>
+    <div class="card">
+      <h3>道具搜尋 / 改價</h3>
+      <div class="row"><input id="shopq" placeholder="搜尋 id / code / 名稱" style="flex:1;min-width:200px">
+        <label><input type="checkbox" id="shoponly"> 只看未上架</label></div>
+      <div id="shoptbl" class="muted">載入中…</div>
+    </div>
+  </section>
+
+  <!-- 造槍 -->
+  <section id="s-weapon">
+    <div class="card">
+      <h3>造槍（以現有槍為底 → 新名字/價格/數值，即時預覽）</h3>
+      <div class="row">
+        <label>底槍</label><select id="wbase" style="min-width:230px"></select>
+        <label>類型</label><span class="pill" id="wtype">-</span>
+      </div>
+      <div class="row">
+        <label>名稱</label><input id="wname" placeholder="例：M4A1 Phantom" style="min-width:180px">
+        <label>代碼</label><input id="wcode" class="n" placeholder="自動">
+        <label>SP</label><input id="wsp" class="n" value="3000">
+        <label>現金</label><input id="wcash" class="n" value="0">
+      </div>
+    </div>
+    <div class="row" style="align-items:stretch;gap:14px">
+      <div class="card" style="flex:1;min-width:280px">
+        <h3>數值</h3>
+        <div id="wstats"></div>
+      </div>
+      <div class="card" style="flex:1;min-width:280px;display:flex;flex-direction:column;align-items:center">
+        <h3 style="align-self:flex-start">預覽</h3>
+        <svg id="wradar" width="260" height="240" viewBox="0 0 260 240"></svg>
+        <div id="wcard" style="text-align:center;margin-top:6px"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row"><button class="act" id="btnGen">⚙ 生成這把槍</button><span class="muted" id="genstate"></span></div>
+      <div class="muted">生成＝在商店加一把新槍（用底槍的模型＋你的名字/價格），到 <b>Build</b> 重打包生效。
+        外觀換皮用 umodel 改底槍貼圖；細部彈道數值在武器類別檔（進階）。</div>
+      <div id="wlist" class="muted" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h3>換皮（umodel 匯出底槍貼圖 → 你改 → 同尺寸注入）</h3>
+      <div class="row">
+        <button class="ghost" id="btnFindPkg">① 找底槍貼圖包</button>
+        <select id="rpkg" style="min-width:230px"></select>
+        <button class="ghost" id="btnExport">② 匯出貼圖(umodel)</button>
+      </div>
+      <div class="muted" id="rfind"></div>
+      <div id="rpngs" class="muted" style="margin-top:6px"></div>
+      <div class="row" style="margin-top:10px">
+        <input id="rref" placeholder="匯出的某張 PNG 路徑(當範本尺寸)" style="flex:1;min-width:220px">
+        <input id="rgrid" class="n" value="64" title="格線間距px">
+        <button class="ghost" id="btnTemplate">匯出空白範本(同尺寸+格線)</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <input id="rdds" placeholder="改好的 PNG 或 DDS 完整路徑(同尺寸)" style="flex:1;min-width:240px">
+        <input id="rat" class="n" placeholder="--at(可留空)">
+        <button class="ghost" id="btnRList">列貼圖槽</button>
+        <button class="act" id="btnRApply">③ 注入(自動備份)</button>
+      </div>
+      <pre id="rout" style="max-height:220px">設計皮膚流程：① 找包 → ② 匯出貼圖(當參考/範本) → 在 PNG 上畫你的設計(維持同尺寸) → ③ 直接丟 PNG 進去注入(自動轉 DDS、先備份 .upk.bak、改客端免打包)。不用 DDS 外掛。</pre>
+      <div class="muted">只需要 umodel.exe(gildor.org,匯出用)。注入吃 PNG 或 DDS，自動選 DXT1/DXT5。只支援同尺寸換皮。</div>
+    </div>
+  </section>
+
+  <!-- 封包/扭蛋 -->
+  <section id="s-pkg">
+    <div class="card"><h3>扭蛋機率 (gacha)</h3><pre id="gachabox">載入中…</pre></div>
+    <div class="card"><h3>封包內容 (packages)</h3><div id="pkgtbl" class="muted">載入中…</div></div>
+  </section>
+
+  <!-- 階級 -->
+  <section id="s-rank">
+    <div class="card"><h3>階級升級經驗</h3>
+      <div class="row"><label>全表 ×</label><input id="rkscale" class="n" placeholder="例 0.5"><button class="ghost" id="btnScale">套用倍率並儲存</button></div>
+      <div id="ranktbl" class="muted">載入中…</div></div>
+  </section>
+
+  <!-- Config -->
+  <section id="s-cfg">
+    <div class="card">
+      <h3>客端設定檔(解密編輯,存檔自動重加密)</h3>
+      <div class="row"><select id="cfgsel" style="min-width:240px"></select>
+        <button class="ghost" id="btnCfgLoad">載入</button>
+        <button class="act" id="btnCfgSave">存檔(重加密)</button>
+        <span class="muted" id="cfgstate"></span></div>
+      <div class="muted">武器數值=DefaultWeapon/SFWeapon,PVE 波次=DefaultAIWave。存檔會先備份 .bak。</div>
+    </div>
+    <div class="card"><textarea id="cfgtext" placeholder="選一個檔→載入"></textarea></div>
+  </section>
+
+  <!-- 測試 -->
+  <section id="s-test">
+    <div class="card"><h3>連線自我測試</h3>
+      <div class="row"><label>port</label><input id="testport" class="n" placeholder="28000">
+        <button class="act" id="btnTest">測試連線</button></div>
+      <pre id="testout">(對運行中的伺服器做 greeting + login 檢查)</pre></div>
+  </section>
+
+  <!-- Build -->
+  <section id="s-build">
+    <div class="card"><h3>產生 SFOffline.exe(套用商店/封包/階級修改)</h3>
+      <div class="row"><button class="act" id="btnBuild">重打包 Build</button><span class="muted" id="buildstate"></span></div>
+      <pre id="buildout">(需要 pip install pefile dnfile)</pre></div>
+  </section>
+
+  <!-- 設定 -->
+  <section id="s-settings">
+    <div class="card"><h3>路徑 / 埠口 設定</h3><div id="settings"></div>
+      <button class="act" id="btnSaveCtrl" style="margin-top:10px">儲存設定</button><span class="muted" id="setstate"></span></div>
+  </section>
+</main>
+<div class="toast" id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const api=(u,m,b)=>fetch(u,m?{method:m,headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})}:undefined).then(r=>r.json());
+function toast(m,bad){const t=$('#toast');t.textContent=m;t.style.borderLeftColor=bad?'var(--bad)':'var(--accent)';t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
+const TABS=[["server","伺服器"],["db","資料庫"],["shop","商店"],["weapon","造槍"],["pkg","封包/扭蛋"],["rank","階級"],["cfg","Config"],["test","測試"],["build","Build"],["settings","設定"]];
+const nav=$('#nav');
+TABS.forEach(([k,l])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>show(k,b);nav.appendChild(b);if(k==='server')b.classList.add('on');});
+function show(k,btn){document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));$('#s-'+k).classList.add('on');
+  [...nav.children].forEach(x=>x.classList.toggle('on',x===btn));loaders[k]&&loaders[k]();}
+
+// ---- server ----
+async function srvStatus(){const s=await api('/api/server/status');
+  $('#srvdot').classList.toggle('on',s.running);$('#srvtxt').textContent=s.running?'伺服器運行中':'伺服器未啟動';
+  $('#srvstate').textContent=s.running?('內部埠 '+(s.ports||[]).join('/')):'';
+  $('#srvports').innerHTML=`對外埠(防火牆要開):<b>${(s.ext_ports||[]).join(', ')} TCP</b> · LAN IP: ${s.lan_ip} · 對外 IP: ${s.advertise}`;
+  $('#playerargs').textContent=s.player_args||'(開伺服器後顯示)';$('#testport').value=(s.ext_ports||[28000])[0];}
+$('#btnStart').onclick=async()=>{toast('啟動中…');const r=await api('/api/server/start','POST');r.error?toast(r.error,1):toast('已啟動');srvStatus();srvLog();};
+$('#btnStop').onclick=async()=>{await api('/api/server/stop','POST');toast('已關閉');srvStatus();};
+$('#btnRefresh').onclick=srvStatus;
+$('#btnLog').onclick=srvLog;
+async function srvLog(){const r=await api('/api/server/log');$('#srvlog').textContent=r.log||'(尚無)';}
+$('#btnCopy').onclick=()=>{navigator.clipboard.writeText($('#playerargs').textContent).then(()=>toast('已複製'));};
+// ---- TWN full server ----
+async function twnStatus(){const s=await api('/api/twn/status');
+  $('#twnavail').textContent=s.available?(s.running?'運行中':'就緒'):'未安裝';
+  $('#twnavail').style.color=s.available?(s.running?'var(--good)':'var(--dim)'):'var(--bad)';
+  $('#twnstate').textContent=s.available?(s.running?`運行中 · 本機 127.0.0.1:28080 · 對外 ${s.advertise}:${s.ext_port}`:'就緒,可啟動'):'把 zip 解到 twn_server\\';}
+$('#btnTwnLocal').onclick=async()=>{toast('啟動台服 server(本機)…');const r=await api('/api/twn/start','POST',{remote:false});r.error?toast(r.error,1):toast('台服 server 已啟動');twnStatus();};
+$('#btnTwnRemote').onclick=async()=>{toast('啟動台服 server(對外)…');const r=await api('/api/twn/start','POST',{remote:true});r.error?toast(r.error,1):toast('已開給別人(轉發+改IP)');twnStatus();srvStatus();};
+$('#btnTwnStop').onclick=async()=>{await api('/api/twn/stop','POST');toast('台服 server 已關');twnStatus();};
+$('#btnClient').onclick=async()=>{$('#clistate').textContent='啟動客端中…';const r=await api('/api/client/launch','POST',{ip:$('#cliip').value.trim()||'127.0.0.1'});
+  $('#clistate').textContent=r.error?r.error:'客端已啟動,連 '+($('#cliip').value||'127.0.0.1');toast(r.error||'客端已啟動',!!r.error);};
+$('#btnPlayerPack').onclick=async()=>{const ip=$('#cliip').value.trim();
+  const r=await api('/api/player/pack','POST',{ip:ip==='127.0.0.1'?'':ip});
+  if(r.error){toast(r.error,1);return;}
+  $('#clistate').innerHTML=`啟動器已生成 → ${r.dir}（IP:${r.ip}）<br>只有啟動器+說明,無伺服器檔。`;toast('啟動器已生成');};
+$('#btnPlayerZip').onclick=async()=>{const ip=$('#cliip').value.trim();
+  const r=await api('/api/player/zip','POST',{ip:ip==='127.0.0.1'?'':ip});
+  if(r.error){toast(r.error,1);$('#clistate').textContent=r.error;return;}
+  $('#clistate').innerHTML=`打包中(開了 PowerShell 視窗,客端幾 GB 要幾分鐘)…<br>完成後:${r.out}`;toast('開始打包,看 PowerShell 視窗');};
+$('#btnTwnUnlockC').onclick=()=>twnUnlock('content');
+$('#btnTwnUnlockA').onclick=()=>twnUnlock('all');
+async function twnUnlock(which){$('#twnunlock').textContent='處理中…';const r=await api('/api/twn/unlock','POST',{which});
+  $('#twnunlock').textContent=r.error?r.error:`已開放 ${r.opened} 項上架(重啟 server 生效)`;toast(r.error||'已解鎖，重啟台服 server 生效',!!r.error);}
+
+// ---- db ----
+$('#btnOpenDb').onclick=async()=>{const r=await api('/api/open','POST',{path:$('#dbpath').value.trim()});
+  r.error?toast(r.error,1):($('#dbstate').textContent=(r.created?'已建立 ':'已開啟 ')+r.path,loadAccts());};
+$('#btnCreate').onclick=async()=>{const r=await api('/api/account/create','POST',{login:$('#nlogin').value,password:$('#npw').value,seed:$('#nseed').checked});
+  r.error?toast(r.error,1):(toast('帳號 #'+r.id),loadAccts());};
+async function loadAccts(){const a=await api('/api/accounts');if(a.error)return $('#acctbl').textContent=a.error;
+  let h='<table><tr><th>id</th><th>login</th><th>代號</th><th>SP</th><th>Cash</th><th>經驗</th><th></th></tr>';
+  a.forEach(x=>h+=`<tr><td>${x.id}</td><td>${x.login}</td><td>${x.codename||''}</td>
+   <td><input class="n sp" value="${x.sp}" data-id="${x.id}" data-f="sp"></td>
+   <td><input class="n cash" value="${x.cash}" data-id="${x.id}" data-f="cash"></td>
+   <td><input class="n" value="${x.experience}" data-id="${x.id}" data-f="experience"></td>
+   <td><button class="ghost" onclick="saveAcct(${x.id})">存</button></td></tr>`);
+  $('#acctbl').innerHTML=h+'</table>';}
+window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"]`).forEach(i=>f[i.dataset.f]=+i.value);
+  await api('/api/account/update','POST',{id,fields:f});toast('已存 #'+id);};
+
+// ---- shop ----
+let CAT=null;
+async function loadCat(){if(CAT)return CAT;CAT=await api('/api/catalogue');return CAT;}
+$('#btnUnlockContent').onclick=()=>doUnlock('content');
+$('#btnUnlockAll').onclick=()=>doUnlock('all');
+async function doUnlock(which){$('#unlockstate').textContent='套用中…';
+  const st=await api('/api/twn/status');
+  if(st&&st.available){const r=await api('/api/twn/unlock','POST',{which});
+    $('#unlockstate').textContent=r.error?r.error:`已開放 ${r.opened} 項上架(重啟台服 server 生效)`;toast(r.error||'已解鎖，重啟台服 server 生效',!!r.error);return;}
+  const r=await api('/api/unlock','POST',{which});
+  $('#unlockstate').textContent=r.error?r.error:`已上架 ${r.shop_fields} 項 → 去 Build 重打包`;toast(r.error||'已套用，去 Build 重打包',!!r.error);}
+async function loadShop(){await loadCat();renderShop();}
+['#shopq','#shoponly'].forEach(s=>document.addEventListener('input',e=>{if(e.target.matches(s))renderShop();}));
+function renderShop(){if(!CAT)return;const q=$('#shopq').value.toLowerCase(),only=$('#shoponly').checked;
+  let rows=CAT.filter(c=>(!only||!c.selling)&&(!q||(''+c.id).includes(q)||(c.code||'').toLowerCase().includes(q)||(c.name||'').toLowerCase().includes(q))).slice(0,250);
+  let h='<table><tr><th>id</th><th>code</th><th>名稱</th><th>SP</th><th>Cash</th><th>上架</th></tr>';
+  rows.forEach(c=>h+=`<tr><td>${c.id}</td><td>${c.code||''}</td><td>${c.name||''}</td>
+   <td class="sp">${c.sp>=99999999?'🔒':c.sp}</td><td class="cash">${c.cash>=99999999?'🔒':c.cash}</td>
+   <td>${c.selling?'✅':'—'}</td></tr>`);
+  $('#shoptbl').innerHTML=h+'</table>'+(CAT.length>250?'<div class="muted">（搜尋縮小範圍看更多）</div>':'');}
+
+// ---- pkg/gacha ----
+async function loadPkg(){const g=await api('/api/content/gacha');$('#gachabox').textContent=JSON.stringify(g,null,1);
+  const p=await api('/api/content/packages');if(p.error)return $('#pkgtbl').textContent=p.error;
+  let h='<table><tr><th>封包</th><th>內容(sub×count)</th></tr>';
+  p.forEach(e=>h+=`<tr><td>${e.pkg}</td><td class="muted">${e.items.map(i=>i.sub+'×'+i.count).join(' , ')}</td></tr>`);
+  $('#pkgtbl').innerHTML=h+'</table>';}
+
+// ---- rank ----
+let RANK=null;
+async function loadRank(){RANK=await api('/api/content/ranks');if(RANK.error)return $('#ranktbl').textContent=RANK.error;
+  let h='<table><tr><th>Rank</th><th>Real</th><th>升級經驗</th></tr>';
+  RANK.ranks.forEach(r=>h+=`<tr><td>${r.rank}</td><td>${r.real}</td><td>${r.exp.toLocaleString()}</td></tr>`);
+  $('#ranktbl').innerHTML=h+'</table>';}
+$('#btnScale').onclick=async()=>{const f=parseFloat($('#rkscale').value);if(!f||f<=0)return toast('輸入倍率',1);
+  await api('/api/content/ranks','POST',{ranks:[],sp:[],scale:f});toast('已套用 ×'+f);loadRank();};
+
+// ---- config ----
+async function loadCfgList(){const l=await api('/api/cfg/list');const s=$('#cfgsel');s.innerHTML='';
+  if(l.error){$('#cfgstate').textContent=l.error;return;}
+  l.forEach(f=>{const o=document.createElement('option');o.value=f.name;o.textContent=f.name+' ('+(f.size/1024|0)+'KB)';s.appendChild(o);});}
+$('#btnCfgLoad').onclick=async()=>{const r=await api('/api/cfg/read?name='+encodeURIComponent($('#cfgsel').value));
+  if(r.error)return toast(r.error,1);$('#cfgtext').value=r.text;$('#cfgstate').textContent='已載入 '+r.name;};
+$('#btnCfgSave').onclick=async()=>{const r=await api('/api/cfg/write','POST',{name:$('#cfgsel').value,text:$('#cfgtext').value});
+  r.error?toast(r.error,1):(toast('已存 '+r.bytes+'B'),$('#cfgstate').textContent='已重加密存檔');};
+
+// ---- test ----
+$('#btnTest').onclick=async()=>{$('#testout').textContent='測試中…';const r=await api('/api/test','POST',{port:+$('#testport').value||undefined});
+  $('#testout').innerHTML=`<span class="${r.ok?'ok':'err'}">${r.ok?'✅ 通過':'❌ 失敗'}</span>  ${r.msg||''}\n`+
+   `greeting: ${r.greeting||'-'}\nlogin: ${r.login||'-'}`;};
+
+// ---- build ----
+$('#btnBuild').onclick=async()=>{$('#buildstate').textContent='打包中…';$('#buildout').textContent='…';
+  const r=await api('/api/content/build','POST');$('#buildstate').textContent=r.ok?'完成':'失敗';$('#buildout').textContent=r.out||JSON.stringify(r);};
+
+// ---- settings ----
+async function loadSettings(){const c=await api('/api/ctrl');const cf=await api('/api/config');const fields=[
+  ['sfoffline','SFOffline.exe 路徑',c],['data','伺服器 data 夾',c],['config_dir','客端 Config 夾',c],
+  ['lobby','大廳對外埠',c],['messenger','通訊對外埠',c],['clan','克蘭對外埠',c],['advertise','對外 IP(空白=自動)',c],
+  ['cooked_dir','客端 CookedPCConsole 夾',c],['umodel','umodel.exe 路徑',c],['reskin_dir','換皮匯出夾',c],
+  ['twn_dir','台服 server 夾(含 server.py)',c],['twn_python','台服 python 路徑',c],['client_exe','客端 exe(啟動用)',c],
+  ['exe','(打包)原 exe',cf],['out','(打包)輸出 exe',cf],['resdir','(打包)resources 夾',cf]];
+  let h='';fields.forEach(([k,l,src])=>h+=`<div class="row"><label style="width:140px">${l}</label><input id="set_${k}" value="${src[k]??''}" style="flex:1;min-width:220px"></div>`);
+  $('#settings').innerHTML=h;}
+$('#btnSaveCtrl').onclick=async()=>{const c={},cf={};
+  ['sfoffline','data','config_dir','advertise','cooked_dir','umodel','reskin_dir','twn_dir','twn_python','client_exe'].forEach(k=>c[k]=$('#set_'+k).value);
+  ['lobby','messenger','clan'].forEach(k=>c[k]=+$('#set_'+k).value);
+  ['exe','out','resdir'].forEach(k=>cf[k]=$('#set_'+k).value);
+  await api('/api/ctrl','POST',c);await api('/api/config','POST',cf);$('#setstate').textContent='已儲存';toast('設定已存');};
+
+// ---- weapon creator ----
+const WSTATS=[["damage","傷害"],["rate","射速"],["accuracy","精準"],["mobility","機動"],["range","射程"],["reload","換彈"]];
+const WPRESET={"步槍":[60,65,65,60,65,60],"狙擊":[95,25,90,40,95,35],"衝鋒":[45,85,50,80,40,70],
+  "手槍":[40,60,60,90,35,80],"霰彈":[85,35,40,55,25,45],"機槍":[70,80,45,35,70,30]};
+let WBASES=null;
+async function loadWeapon(){
+  if(!$('#wstats').children.length){ // build sliders once
+    let h='';WSTATS.forEach(([k,l])=>h+=`<div class="row"><label style="width:48px">${l}</label>
+      <input type="range" min="0" max="100" value="60" id="ws_${k}" style="flex:1" oninput="wUpd()">
+      <span id="wv_${k}" class="pill" style="width:34px;text-align:center">60</span></div>`);
+    $('#wstats').innerHTML=h;}
+  if(!WBASES){WBASES=await api('/api/weapon/bases');const s=$('#wbase');s.innerHTML='';
+    if(WBASES.error){$('#genstate').textContent=WBASES.error;return;}
+    WBASES.forEach(b=>{const o=document.createElement('option');o.value=b.id;o.dataset.type=b.type;o.dataset.img=b.img||'';o.dataset.name=b.name;
+      o.textContent=`[${b.type}] ${b.name}`;s.appendChild(o);});
+    s.onchange=()=>{applyPreset();};applyPreset();}
+  wUpd();wList();
+}
+function applyPreset(){const o=$('#wbase').selectedOptions[0];if(!o)return;const t=o.dataset.type;$('#wtype').textContent=t;
+  const pre=WPRESET[t]||[60,60,60,60,60,60];WSTATS.forEach(([k],i)=>{$('#ws_'+k).value=pre[i];});
+  if(!$('#wname').value) $('#wname').value=o.dataset.name+' Custom';wUpd();}
+function wVals(){const v={};WSTATS.forEach(([k])=>v[k]=+$('#ws_'+k).value);return v;}
+function wUpd(){const v=wVals();WSTATS.forEach(([k])=>$('#wv_'+k).textContent=v[k]);drawRadar(v);
+  const o=$('#wbase').selectedOptions[0];
+  $('#wcard').innerHTML=`<div style="font-size:15px;font-weight:600">${$('#wname').value||'(未命名)'}</div>
+   <div class="muted">${$('#wtype').textContent} · 底:${o?o.dataset.name:'-'}</div>
+   <div style="margin-top:4px"><span class="sp">${$('#wsp').value} SP</span>${+$('#wcash').value?` · <span class="cash">${$('#wcash').value} 現</span>`:''}</div>`;}
+function drawRadar(v){const S=WSTATS.map(([k])=>v[k]);const cx=130,cy=115,R=88,N=6;
+  const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/N;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];};
+  let g='';for(const ring of [0.33,0.66,1]){let p=S.map((_,i)=>pt(i,R*ring).join(',')).join(' ');
+    g+=`<polygon points="${p}" fill="none" stroke="#283241" stroke-width="1"/>`;}
+  S.forEach((_,i)=>{const[x,y]=pt(i,R);g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#283241"/>`;});
+  const poly=S.map((val,i)=>pt(i,R*val/100).join(',')).join(' ');
+  g+=`<polygon points="${poly}" fill="rgba(255,122,47,.28)" stroke="#ff7a2f" stroke-width="2"/>`;
+  WSTATS.forEach(([k,l],i)=>{const[x,y]=pt(i,R+16);g+=`<text x="${x}" y="${y}" fill="#8a97a8" font-size="11" text-anchor="middle" dominant-baseline="middle">${l}</text>`;});
+  $('#wradar').innerHTML=g;}
+['wname','wsp','wcash'].forEach(id=>document.addEventListener('input',e=>{if(e.target.id===id)wUpd();}));
+$('#btnGen').onclick=async()=>{const o=$('#wbase').selectedOptions[0];if(!o)return toast('先選底槍',1);
+  $('#genstate').textContent='生成中…';
+  const r=await api('/api/weapon/create','POST',{base_id:+o.value,name:$('#wname').value,code:$('#wcode').value,
+    type:o.dataset.type,sp:+$('#wsp').value,cash:+$('#wcash').value,img:o.dataset.img,stats:wVals()});
+  if(r.error){$('#genstate').textContent=r.error;toast(r.error,1);return;}
+  $('#genstate').textContent=`已生成 #${r.item_id} ${r.name} → 去 Build`;toast('已生成 '+r.name);wList();};
+async function wList(){const s=await api('/api/weapon/specs');if(s.error||!s.length){$('#wlist').textContent=s.length===0?'(尚未生成任何槍)':'';return;}
+  let h='<b>已生成:</b><table><tr><th>id</th><th>名稱</th><th>類型</th><th>SP</th><th>底槍id</th></tr>';
+  s.forEach(x=>h+=`<tr><td>${x.item_id}</td><td>${x.name}</td><td>${x.type}</td><td class="sp">${x.sp}</td><td class="muted">${x.base_id}</td></tr>`);
+  $('#wlist').innerHTML=h+'</table>';}
+
+// ---- reskin ----
+$('#btnFindPkg').onclick=async()=>{const o=$('#wbase').selectedOptions[0];if(!o)return toast('先選底槍',1);
+  $('#rfind').textContent='搜尋中…';const r=await api('/api/reskin/find?base='+o.value);
+  if(r.error)return $('#rfind').textContent=r.error;
+  const s=$('#rpkg');s.innerHTML='';(r.candidates||[]).forEach(c=>{const op=document.createElement('option');op.value=c.pkg;op.textContent=`${c.pkg} (${(c.size/1048576).toFixed(1)}MB)`;s.appendChild(op);});
+  $('#rfind').textContent=`底:${r.base} · 關鍵字 ${(r.tokens||[]).join('/')} · 找到 ${(r.candidates||[]).length} 個候選(選最大那個通常是貼圖包)`;};
+$('#btnExport').onclick=async()=>{const pkg=$('#rpkg').value;if(!pkg)return toast('先找包',1);
+  $('#rout').textContent='匯出中(umodel)…';const r=await api('/api/reskin/export','POST',{pkg});
+  if(r.error){$('#rout').textContent=r.error;return;}
+  $('#rpngs').innerHTML='<b>匯出 '+r.count+' 張 → '+r.out_dir+'</b><br>'+(r.pngs||[]).slice(0,40).join('<br>');
+  $('#rout').textContent=r.log||'(done)';};
+$('#btnTemplate').onclick=async()=>{const ref=$('#rref').value.trim();if(!ref)return toast('填一張匯出的 PNG 當尺寸範本',1);
+  $('#rout').textContent='產生範本中…';const r=await api('/api/reskin/template','POST',{ref,grid:+$('#rgrid').value||64});
+  if(r.error){$('#rout').textContent=r.error;return;}
+  $('#rout').textContent=`空白範本(${r.size})已產生：\n${r.out_png}\n在這張上畫你的設計，存成 PNG，再用下面「注入」。`;toast('範本已產生 '+r.size);};
+$('#btnRList').onclick=async()=>{const pkg=$('#rpkg').value;if(!pkg)return toast('先找包',1);
+  $('#rout').textContent='掃描中…';const r=await api('/api/reskin/list','POST',{pkg});$('#rout').textContent=r.out||r.error;};
+$('#btnRApply').onclick=async()=>{const pkg=$('#rpkg').value,dds=$('#rdds').value.trim();if(!pkg||!dds)return toast('填包+DDS路徑',1);
+  $('#rout').textContent='注入中…';const r=await api('/api/reskin/apply','POST',{pkg,dds,at:$('#rat').value?+$('#rat').value:undefined});
+  $('#rout').textContent=r.out||r.error;toast(r.ok?'注入完成(已備份)':'未寫入,看訊息',!r.ok);};
+
+const loaders={server:()=>{srvStatus();srvLog();twnStatus();},db:loadAccts,shop:loadShop,weapon:loadWeapon,pkg:loadPkg,rank:loadRank,cfg:loadCfgList,settings:loadSettings};
+srvStatus();srvLog();twnStatus();setInterval(()=>{if($('#s-server').classList.contains('on')){srvStatus();twnStatus();}},5000);
+</script>
+</body>
+</html>

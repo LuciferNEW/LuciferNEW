@@ -1,0 +1,248 @@
+<!doctype html><html><head><meta charset="utf-8"><title>SF2 Admin</title><style>
+:root{--bg:#0f1115;--fg:#e6e6e6;--mut:#8a94a6;--acc:#5cc8ff;--ok:#6ee7a0;--line:#262b33;--card:#161a21}
+body{font:14px system-ui,'Segoe UI',sans-serif;background:var(--bg);color:var(--fg);margin:0}
+header{padding:10px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input,select,button{font:inherit;background:#1c2129;color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+button{cursor:pointer}button.pri{background:var(--acc);color:#04202e;border:none;font-weight:600}
+button.danger{color:#ff8a8a;border-color:#5a2a2a}button.sm{padding:3px 7px}
+.mode{padding:7px 14px;border-radius:7px;cursor:pointer;color:var(--mut);border:1px solid transparent}
+.mode.on{background:var(--card);color:var(--fg);border-color:var(--line)}
+.wrap{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 53px)}
+.col{overflow:auto;padding:12px}.col.left{border-right:1px solid var(--line)}
+.full{grid-column:1/3;overflow:auto;padding:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse}td,th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--mut);font-weight:600;font-size:12px}
+.acct{padding:8px;border:1px solid var(--line);border-radius:6px;margin-bottom:6px;cursor:pointer}.acct.sel{border-color:var(--acc);background:#13202a}
+.mut{color:var(--mut)}.ok{color:var(--ok)}.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}
+.tabs{display:flex;gap:6px;margin-bottom:8px}.tab{padding:6px 10px;border-radius:6px;cursor:pointer;color:var(--mut)}.tab.on{background:var(--card);color:var(--fg);border:1px solid var(--line)}
+input.num{width:84px}input.n6{width:64px}h3{margin:4px 0 8px}
+.pill{font-size:12px;padding:1px 6px;border-radius:10px;background:#1c2129;color:var(--mut)}
+#cat tr,#shop tr{cursor:default}pre{white-space:pre-wrap;background:#0b0d11;padding:8px;border-radius:6px;max-height:280px;overflow:auto}
+</style></head><body>
+<header><strong>SF2 Admin</strong>
+ <span class="mode on" data-m="db" onclick="mode('db')">資料庫</span>
+ <span class="mode" data-m="content" onclick="mode('content')">伺服器內容 / 商店 / 扭蛋</span>
+ <span id="stat" class="mut" style="margin-left:auto"></span>
+</header>
+
+<!-- ============ DATABASE ============ -->
+<div id="m_db">
+ <div style="padding:8px 16px;border-bottom:1px solid var(--line)" class="row">
+  <input id="dbpath" style="width:360px" placeholder="save.db path (空白=預設 LocalAppData)">
+  <button class="pri" onclick="openDb()">Open / Create</button><span id="dbstat" class="mut"></span></div>
+ <div class="wrap">
+  <div class="col left"><div class="card"><h3>Accounts</h3><div id="accts"></div>
+   <div class="row"><input id="nlogin" placeholder="login" style="width:100px"><input id="npass" placeholder="password" style="width:100px">
+    <label class="mut"><input type="checkbox" id="nseed"> seed</label><button class="pri" onclick="newAcct()">Create</button></div></div></div>
+  <div class="col"><div class="tabs">
+    <div class="tab on" data-t="edit" onclick="dtab('edit')">Account</div>
+    <div class="tab" data-t="inv" onclick="dtab('inv')">Inventory</div>
+    <div class="tab" data-t="shop" onclick="dtab('shop')">道具查詢</div></div>
+   <div id="p_edit" class="pane"></div><div id="p_inv" class="pane" style="display:none"></div>
+   <div id="p_shop" class="pane" style="display:none">
+    <div class="row"><input id="q" placeholder="搜尋 id/code/名稱" style="width:240px" oninput="renderCat()">
+     <label class="mut"><input type="checkbox" id="sellonly" onchange="renderCat()"> 只看上架</label><span class="mut" id="catn"></span></div>
+    <div class="card" style="max-height:calc(100vh - 185px);overflow:auto"><table><thead><tr><th>ItemId</th><th>Code</th><th>Name</th><th>SP</th><th>Cash</th><th>Sell</th></tr></thead><tbody id="cat"></tbody></table></div></div>
+  </div></div>
+</div>
+
+<!-- ============ CONTENT ============ -->
+<div id="m_content" style="display:none">
+ <div class="full">
+  <div class="tabs">
+   <div class="tab on" data-c="shop" onclick="ctab('shop')">商店(改價/上架/新增)</div>
+   <div class="tab" data-c="pkg" onclick="ctab('pkg')">封包 / 扭蛋內容</div>
+   <div class="tab" data-c="seed" onclick="ctab('seed')">新手道具</div>
+   <div class="tab" data-c="rank" onclick="ctab('rank')">階級(升級經驗)</div>
+   <div class="tab" data-c="build" onclick="ctab('build')">產生 SFOffline.exe</div></div>
+
+  <div id="c_shop" class="cpane">
+   <div class="card"><div class="row"><input id="sq" placeholder="搜尋 id/code/名稱" style="width:240px" oninput="renderShop()">
+    <label class="mut"><input type="checkbox" id="ssell" onchange="renderShop()"> 只看上架</label>
+    <span class="mut" id="shopn"></span><button class="pri" style="margin-left:auto" onclick="saveShop()">儲存商店</button></div>
+    <div class="mut">改完按「儲存商店」寫回資源檔,再到「產生 SFOffline.exe」重打包。價格/上架是伺服器端,玩家不用下載。</div></div>
+   <div class="card" style="max-height:calc(100vh - 320px);overflow:auto"><table><thead><tr><th>ItemId</th><th>Code</th><th>Name</th><th>SP</th><th>Cash</th><th>TP</th><th>Resell</th><th>上架</th><th>可賣</th></tr></thead><tbody id="shop"></tbody></table></div>
+   <div class="card"><h3>新增道具(從既有道具複製,僅限 client 已有的類別)</h3><div class="row">
+    <label class="mut">複製範本 ItemId <input id="aT" class="num"></label>
+    <label class="mut">新 ItemId <input id="aId" class="num"></label>
+    <label class="mut">Code <input id="aCode" style="width:90px"></label>
+    <label class="mut">Name <input id="aName" style="width:160px"></label>
+    <label class="mut">SP <input id="aSp" class="n6" value="0"></label>
+    <label class="mut">Cash <input id="aCash" class="n6" value="0"></label>
+    <label class="mut"><input type="checkbox" id="aSell" checked> 上架</label>
+    <button class="pri" onclick="addItem()">加入(待儲存)</button></div></div>
+  </div>
+
+  <div id="c_pkg" class="cpane" style="display:none">
+   <div class="card"><div class="row"><b>封包 / 扭蛋</b>
+    <span class="mut">pkg_itemid = 封包/扭蛋道具本身;開啟後會得到清單內「全部」內容物(本伺服器無機率抽獎)。</span>
+    <button class="pri" style="margin-left:auto" onclick="savePkg()">儲存封包</button></div>
+    <div class="row"><input id="npkg" class="num" placeholder="新封包 ItemId"><button class="sm" onclick="addPkg()">+ 新封包</button></div></div>
+   <div id="pkgs"></div>
+  </div>
+
+  <div id="c_seed" class="cpane" style="display:none">
+   <div class="card"><div class="row"><b>新手道具(每個新帳號自動取得)</b><button class="pri" style="margin-left:auto" onclick="saveSeed()">儲存新手道具</button></div>
+    <div class="row"><input id="seId" class="num" placeholder="ItemId"><input id="seC" class="n6" placeholder="count" value="1"><input id="seCls" placeholder="class" style="width:150px"><input id="seNm" placeholder="name" style="width:150px"><button class="sm" onclick="addSeed()">+ 新增</button></div></div>
+   <div class="card" style="max-height:calc(100vh - 280px);overflow:auto"><table><thead><tr><th>ItemId</th><th>count</th><th>class</th><th>name</th><th></th></tr></thead><tbody id="seed"></tbody></table></div>
+  </div>
+
+  <div id="c_rank" class="cpane" style="display:none">
+   <div class="card"><div class="row"><b>階級經驗表</b>
+    <span class="mut">RankExp = 升到該階所需總經驗。數字調小 = 升級更快。</span>
+    <label class="mut" style="margin-left:auto">全部 ×<input id="rkScale" class="n6" placeholder="0.5" style="width:60px"></label>
+    <button class="sm" onclick="scaleRank()">套用倍率</button>
+    <button class="pri" onclick="saveRank()">儲存階級</button></div></div>
+   <div class="card" style="max-height:calc(100vh - 300px);overflow:auto"><table><thead><tr><th>Rank</th><th>RealRank</th><th>RankExp</th></tr></thead><tbody id="rankt"></tbody></table></div>
+   <div class="card"><b>SP 計量(每階加 SP)</b><table><thead><tr><th>Rank</th><th>SPGage</th><th>AddSP</th></tr></thead><tbody id="spt"></tbody></table></div>
+  </div>
+
+  <div id="c_build" class="cpane" style="display:none">
+   <div class="card"><h3>套用線上 Console 的變更</h3>
+    <div class="mut">在手機/線上版「SF2 Server Console」改完後按「複製變更」,把內容貼在這裡按套用,就會寫回資源檔(接著按下面 Build 重打包)。</div>
+    <div class="row"><textarea id="csin" placeholder='貼上 changeset JSON（{"_tool":"sf2-console",...}）' style="width:100%;height:90px;font-family:monospace"></textarea></div>
+    <div class="row"><button class="pri" onclick="applyCs()">套用變更</button><span id="csout" class="mut"></span></div>
+   </div>
+   <div class="card"><h3>產生修改後的 SFOffline.exe</h3>
+    <div class="row"><label class="mut" style="width:100%">原始(乾淨)SFOffline.exe<br><input id="bExe" style="width:520px"></label></div>
+    <div class="row"><label class="mut" style="width:100%">資源資料夾(編輯寫回這裡)<br><input id="bRes" style="width:520px"></label></div>
+    <div class="row"><label class="mut" style="width:100%">輸出 SFOffline.exe<br><input id="bOut" style="width:520px"></label></div>
+    <div class="row"><button class="sm" onclick="saveCfg()">儲存路徑</button>
+     <button class="pri" onclick="doBuild()">重打包 Build</button>
+     <span class="mut">※ 需先 <code>pip install pefile dnfile</code>。永遠從「乾淨」的原始 exe 重打包。</span></div>
+    <div class="mut">完成後:用新的 SFOffline.exe <code>--server-only</code> 開服即可,玩家連上就看到新商店,<b>不用下載</b>。</div>
+    <pre id="buildlog" class="mut">(尚未執行)</pre></div>
+  </div>
+ </div>
+</div>
+
+<script>
+let CAT=[],ACCTS=[],SEL=null,DTAB='edit',CTAB='shop',CFG={};
+let SHOP=[],SHOPCH={},SHOPADD=[],PKG=[],SEED=[];
+const EDIT=["codename","creation_level","sp","cash","tp","lucky_points","selected_unit","selected_set","experience","kills","deaths","assists","headshots","games_played","games_won","playtime","sp_gauge"];
+const api=async(p,b)=>(await fetch(p,{method:b?'POST':'GET',headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):null})).json();
+function mode(m){document.querySelectorAll('.mode').forEach(e=>e.classList.toggle('on',e.dataset.m==m));
+ document.getElementById('m_db').style.display=m=='db'?'':'none';document.getElementById('m_content').style.display=m=='content'?'':'none';
+ if(m=='content'){loadCfg();if(CTAB=='shop')loadShop();}}
+// ---- DB ----
+function dtab(t){DTAB=t;document.querySelectorAll('#m_db .tab').forEach(e=>e.classList.toggle('on',e.dataset.t==t));
+ ['edit','inv','shop'].forEach(x=>document.getElementById('p_'+x).style.display=x==t?'':'none');if(t=='inv')renderInv();if(t=='shop'&&!CAT.length)loadCat();}
+async function openDb(){const r=await api('/api/open',{path:document.getElementById('dbpath').value.trim()});
+ if(r.error){document.getElementById('dbstat').textContent='⚠ '+r.error;return;}
+ document.getElementById('dbstat').textContent=(r.created?'created ':'opened ')+r.path;loadAccts();if(!CAT.length)loadCat();}
+async function loadAccts(){ACCTS=await api('/api/accounts');const d=document.getElementById('accts');d.innerHTML='';
+ ACCTS.forEach(a=>{const e=document.createElement('div');e.className='acct'+(SEL==a.id?' sel':'');
+  e.innerHTML=`<b>${a.login}</b> <span class=mut>#${a.id}</span><br><span class=mut>${a.codename||'(no codename)'} · cash ${a.cash} · sp ${a.sp}</span>`;
+  e.onclick=()=>{SEL=a.id;loadAccts();renderEdit();if(DTAB=='inv')renderInv();};d.appendChild(e);});}
+const acct=()=>ACCTS.find(a=>a.id==SEL);
+function renderEdit(){const a=acct(),p=document.getElementById('p_edit');if(!a){p.innerHTML='<span class=mut>選一個帳號</span>';return;}
+ let h=`<div class=card><h3>${a.login} <span class=pill>#${a.id}</span></h3><div class=row>`;
+ EDIT.forEach(k=>h+=`<label class=mut style="width:150px">${k}<br><input class=num id="f_${k}" value="${a[k]??0}"></label>`);
+ h+=`</div><div class=row><button class=pri onclick="saveAcct()">Save</button><button class=danger onclick="delAcct()">Delete</button><span class=mut>created ${a.created_at}</span></div></div>`;p.innerHTML=h;}
+async function saveAcct(){const f={};EDIT.forEach(k=>{const v=document.getElementById('f_'+k).value;f[k]=k=='codename'?v:parseInt(v||'0');});
+ await api('/api/account/update',{id:SEL,fields:f});await loadAccts();renderEdit();}
+async function newAcct(){const l=document.getElementById('nlogin').value.trim(),p=document.getElementById('npass').value;if(!l||!p){alert('login+password');return;}
+ const r=await api('/api/account/create',{login:l,password:p,seed:document.getElementById('nseed').checked});if(r.error){alert(r.error);return;}SEL=r.id;loadAccts();renderEdit();}
+async function delAcct(){if(!confirm('Delete #'+SEL+'?'))return;await api('/api/account/delete',{id:SEL});SEL=null;loadAccts();renderEdit();}
+async function renderInv(){const p=document.getElementById('p_inv'),a=acct();if(!a){p.innerHTML='<span class=mut>選一個帳號</span>';return;}
+ const its=await api('/api/items?account='+SEL),by={};CAT.forEach(c=>by[c.id]=c);
+ let h=`<div class=card><h3>發道具</h3><div class=row><input class=num id=gi placeholder=ItemId>
+  <select id=gt><option value=1>active 單件</option><option value=0>inactive 堆疊</option></select>
+  <label class=mut>count <input class=num id=gc value=1></label><label class=mut>到期天(0永久) <input class=num id=ge value=0></label>
+  <button class=pri onclick=grant()>Add</button></div><div class=mut>可到「道具查詢」點選帶入 ItemId。</div></div>
+  <div class=card><h3>Inventory (${its.length})</h3><table><thead><tr><th>sn</th><th>ItemId</th><th>Name</th><th>act</th><th>cnt</th><th>expires</th><th></th></tr></thead><tbody>`;
+ its.forEach(i=>h+=`<tr><td>${i.sn}</td><td>${i.item_id}</td><td>${by[i.item_id]?by[i.item_id].name:''}</td><td>${i.active}</td><td>${i.count}</td><td>${i.expires_at||'∞'}</td><td><button class="danger sm" onclick=rm(${i.sn})>x</button></td></tr>`);
+ h+='</tbody></table></div>';
+ const units=await api('/api/units?account='+SEL),ws=await api('/api/wsets?account='+SEL);
+ h+=`<div class=card><h3>角色 units (gear 11 個逗號數字)</h3><table><thead><tr><th>unit_sn</th><th>gear</th><th></th></tr></thead><tbody>`;
+ units.forEach(u=>h+=`<tr><td>${u.unit_sn}</td><td><input value="${u.gear}" style="width:260px" id="ug_${u.unit_sn}"><button class="sm" onclick="saveUnit(${u.unit_sn})">存</button></td><td><button class="danger sm" onclick="delUnit(${u.unit_sn})">x</button></td></tr>`);
+ h+=`</tbody></table><div class=mut>unit_sn 必須是已擁有的角色道具 sn(先在上面發一個角色道具,它才會有 sn)。</div></div>`;
+ h+=`<div class=card><h3>武器組 weapon_set</h3><table><thead><tr><th>armory_sn</th><th>main</th><th>sub</th><th>grenade</th><th>flash</th><th>smoke</th><th>special</th><th></th></tr></thead><tbody>`;
+ const wf=(w,k)=>`<input class=n6 id="w_${w.armory_sn}_${k}" value="${w[k]}">`;
+ ws.forEach(w=>h+=`<tr><td>${w.armory_sn}</td><td>${wf(w,'main')}</td><td>${wf(w,'sub')}</td><td>${wf(w,'grenade')}</td><td>${wf(w,'flash')}</td><td>${wf(w,'smoke')}</td><td>${wf(w,'special')}</td><td><button class="sm" onclick="saveWset(${w.armory_sn})">存</button> <button class="danger sm" onclick="delWset(${w.armory_sn})">x</button></td></tr>`);
+ h+=`<tr><td><input class=n6 id="wnew" placeholder="新 armory_sn"></td><td colspan=6></td><td><button class="sm" onclick="addWset()">+ 新增</button></td></tr>`;
+ h+='</tbody></table></div>';
+ p.innerHTML=h;}
+async function saveUnit(sn){await api('/api/unit/save',{account:SEL,unit_sn:sn,gear:document.getElementById('ug_'+sn).value});setStat('unit 已存');}
+async function delUnit(sn){await api('/api/unit/delete',{unit_sn:sn});renderInv();}
+function wsVals(a){const g=k=>+document.getElementById(`w_${a}_${k}`).value||0;return {armory_sn:a,main:g('main'),sub:g('sub'),grenade:g('grenade'),flash:g('flash'),smoke:g('smoke'),special:g('special')};}
+async function saveWset(a){const r=await api('/api/wset/save',{account:SEL,w:wsVals(a)});if(r.error)return setStat('⚠ '+r.error);setStat('武器組已存');}
+async function delWset(a){await api('/api/wset/delete',{account:SEL,armory_sn:a});renderInv();}
+async function addWset(){const a=+document.getElementById('wnew').value;if(!a)return;const r=await api('/api/wset/save',{account:SEL,w:{armory_sn:a,main:0,sub:0,grenade:0,flash:0,smoke:0,special:0}});if(r.error)return setStat('⚠ '+r.error);renderInv();}
+async function grant(){const id=document.getElementById('gi').value;if(!id)return alert('ItemId');
+ await api('/api/item/add',{account:SEL,item_id:+id,active:document.getElementById('gt').value=='1',count:+document.getElementById('gc').value||1,expire_days:+document.getElementById('ge').value||0});renderInv();loadAccts();}
+async function rm(sn){await api('/api/item/remove',{sn});renderInv();}
+async function loadCat(){CAT=await api('/api/catalogue');renderCat();}
+function renderCat(){const q=(document.getElementById('q').value||'').toLowerCase(),so=document.getElementById('sellonly').checked;
+ let r=CAT.filter(c=>(!so||c.selling)&&(!q||(''+c.id).includes(q)||c.code.toLowerCase().includes(q)||c.name.toLowerCase().includes(q)));
+ document.getElementById('catn').textContent=r.length+' items';const b=document.getElementById('cat');b.innerHTML='';
+ r.slice(0,500).forEach(c=>{const tr=document.createElement('tr');tr.style.cursor='pointer';
+  tr.innerHTML=`<td>${c.id}</td><td>${c.code}</td><td>${c.name}</td><td>${c.sp}</td><td>${c.cash}</td><td>${c.selling?'✓':''}</td>`;
+  tr.onclick=()=>{dtab('inv');setTimeout(()=>{const g=document.getElementById('gi');if(g)g.value=c.id;},40);};b.appendChild(tr);});}
+// ---- CONTENT ----
+async function loadCfg(){CFG=await api('/api/config');bExe.value=CFG.exe;bRes.value=CFG.resdir;bOut.value=CFG.out;}
+async function saveCfg(){CFG={...CFG,exe:bExe.value,resdir:bRes.value,out:bOut.value};await api('/api/config',CFG);setStat('路徑已儲存');}
+function ctab(t){CTAB=t;document.querySelectorAll('#m_content .tab').forEach(e=>e.classList.toggle('on',e.dataset.c==t));
+ ['shop','pkg','seed','build'].forEach(x=>document.getElementById('c_'+x).style.display=x==t?'':'none');
+ if(t=='shop'&&!SHOP.length)loadShop();if(t=='pkg')loadPkg();if(t=='seed')loadSeed();if(t=='rank')loadRank();}
+let RANK=null;
+async function loadRank(){const r=await api('/api/content/ranks');if(r.error)return setStat('⚠ '+r.error);RANK=r;renderRank();}
+function renderRank(){const b=document.getElementById('rankt');b.innerHTML='';
+ RANK.ranks.forEach((x,i)=>{const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${x.rank}</td><td>${x.real}</td><td><input class=num value="${x.exp}" onchange="RANK.ranks[${i}].exp=+this.value"></td>`;b.appendChild(tr);});
+ const s=document.getElementById('spt');s.innerHTML='';
+ RANK.sp.forEach((x,i)=>{const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${x.rank}</td><td><input class=n6 value="${x.gage}" onchange="RANK.sp[${i}].gage=+this.value"></td><td><input class=n6 value="${x.addsp}" onchange="RANK.sp[${i}].addsp=+this.value"></td>`;s.appendChild(tr);});}
+function scaleRank(){const f=parseFloat(document.getElementById('rkScale').value);if(!f||f<=0)return;
+ RANK.ranks.forEach(x=>x.exp=Math.max(0,Math.round(x.exp*f)));renderRank();setStat('已套用 ×'+f+'(記得按儲存)');}
+async function saveRank(){const r=await api('/api/content/ranks',{ranks:RANK.ranks.map(x=>({rank:x.rank,exp:x.exp})),sp:RANK.sp.map(x=>({rank:x.rank,gage:x.gage,addsp:x.addsp})),scale:0});
+ if(r.error)return setStat('⚠ '+r.error);setStat('階級表已儲存');}
+function setStat(m){const s=document.getElementById('stat');s.textContent=m;s.className='ok';setTimeout(()=>s.className='mut',2500);}
+async function loadShop(){const r=await api('/api/content/shop');if(r.error){setStat('⚠ '+r.error);return;}SHOP=r;SHOPCH={};SHOPADD=[];renderShop();}
+function renderShop(){const q=(document.getElementById('sq').value||'').toLowerCase(),so=document.getElementById('ssell').checked;
+ let r=SHOP.filter(c=>(!so||c.selling)&&(!q||(''+c.id).includes(q)||c.code.toLowerCase().includes(q)||c.name.toLowerCase().includes(q)));
+ document.getElementById('shopn').textContent=r.length+' / '+SHOP.length+' 件';const b=document.getElementById('shop');b.innerHTML='';
+ r.slice(0,400).forEach(c=>{const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${c.id}</td><td>${c.code}</td><td>${c.name}</td>
+   <td><input class=n6 value="${c.sp}" onchange="chg(${c.id},'SP_Price',this.value)"></td>
+   <td><input class=n6 value="${c.cash}" onchange="chg(${c.id},'Cash_Price',this.value)"></td>
+   <td><input class=n6 value="${c.tp}" onchange="chg(${c.id},'TP_Price',this.value)"></td>
+   <td><input class=n6 value="${c.resell}" onchange="chg(${c.id},'ResellPrice',this.value)"></td>
+   <td><input type=checkbox ${c.selling?'checked':''} onchange="chg(${c.id},'IsSelling',this.checked)"></td>
+   <td><input type=checkbox ${c.canResell?'checked':''} onchange="chg(${c.id},'CanResell',this.checked)"></td>`;b.appendChild(tr);});}
+function chg(id,field,v){SHOPCH[id+'|'+field]={id,field,value:v};setStat('已標記變更 '+Object.keys(SHOPCH).length);}
+function addItem(){const o={ItemId:+aId.value,ItemCode:aCode.value,ItemName:aName.value,SP_Price:+aSp.value||0,Cash_Price:+aCash.value||0,IsSelling:aSell.checked};
+ if(!aT.value||!aId.value)return alert('範本 ItemId + 新 ItemId');SHOPADD.push({template:+aT.value,overrides:o});setStat('待新增 '+SHOPADD.length+' 件(按儲存商店)');}
+async function saveShop(){const r=await api('/api/content/shop',{changes:Object.values(SHOPCH),adds:SHOPADD});
+ if(r.error)return setStat('⚠ '+r.error);setStat('商店已儲存');loadShop();}
+async function loadPkg(){const r=await api('/api/content/packages');if(r.error)return setStat('⚠ '+r.error);PKG=r;renderPkg();}
+function renderPkg(){const d=document.getElementById('pkgs');d.innerHTML='';
+ PKG.forEach((p,pi)=>{let h=`<div class=card><div class=row><b>封包 ${p.pkg}</b><button class="danger sm" onclick="delPkg(${pi})">刪封包</button>
+  <span class=mut>sub_itemid, count</span></div>`;
+  p.items.forEach((it,ii)=>h+=`<div class=row><input class=num value="${it.sub}" onchange="PKG[${pi}].items[${ii}].sub=+this.value">
+   <input class=n6 value="${it.count}" onchange="PKG[${pi}].items[${ii}].count=+this.value"><button class="sm" onclick="delSub(${pi},${ii})">x</button></div>`);
+  h+=`<div class=row><button class="sm" onclick="addSub(${pi})">+ 內容物</button></div></div>`;d.innerHTML+=h;});}
+function addPkg(){const id=+document.getElementById('npkg').value;if(!id)return;PKG.push({pkg:id,items:[]});renderPkg();}
+function delPkg(i){PKG.splice(i,1);renderPkg();}
+function addSub(i){PKG[i].items.push({sub:0,count:1});renderPkg();}
+function delSub(i,j){PKG[i].items.splice(j,1);renderPkg();}
+async function savePkg(){const r=await api('/api/content/packages',{model:PKG});if(r.error)return setStat('⚠ '+r.error);setStat('封包已儲存');}
+async function loadSeed(){const r=await api('/api/content/seed');if(r.error)return setStat('⚠ '+r.error);SEED=r;renderSeed();}
+function renderSeed(){const b=document.getElementById('seed');b.innerHTML='';
+ SEED.forEach((s,i)=>{const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input class=num value="${s.id}" onchange="SEED[${i}].id=+this.value"></td>
+   <td><input class=n6 value="${s.count}" onchange="SEED[${i}].count=+this.value"></td>
+   <td><input value="${s.cls||''}" style="width:160px" onchange="SEED[${i}].cls=this.value"></td>
+   <td><input value="${(s.name||'').replace(/"/g,'&quot;')}" style="width:160px" onchange="SEED[${i}].name=this.value"></td>
+   <td><button class="danger sm" onclick="SEED.splice(${i},1);renderSeed()">x</button></td>`;b.appendChild(tr);});}
+function addSeed(){SEED.unshift({id:+seId.value||0,count:+seC.value||1,cls:seCls.value,name:seNm.value});renderSeed();}
+async function saveSeed(){const r=await api('/api/content/seed',{rows:SEED});if(r.error)return setStat('⚠ '+r.error);setStat('新手道具已儲存 ('+SEED.length+')');}
+async function applyCs(){const o=document.getElementById('csout');let cs;
+ try{cs=JSON.parse(document.getElementById('csin').value);}catch(e){o.textContent='⚠ JSON 格式錯誤';return;}
+ const r=await api('/api/content/apply',{changeset:cs});
+ if(r.error){o.textContent='⚠ '+r.error;return;}
+ o.textContent=`已套用:商店欄位 ${r.shop_fields}、新增道具 ${r.added_items}`+(r.packages?'、封包':'')+(r.gacha?'、扭蛋':'')+(r.seed?'、新手':'')+(r.ranks?'、階級':'')+' —— 記得按下面 Build 重打包';setStat('變更已套用');}
+async function doBuild(){const lg=document.getElementById('buildlog');lg.textContent='building...';
+ await saveCfg();const r=await api('/api/content/build',{});lg.textContent=r.out||JSON.stringify(r);lg.className=r.ok?'ok':'';if(r.ok)setStat('Build 完成');}
+</script></body></html>
