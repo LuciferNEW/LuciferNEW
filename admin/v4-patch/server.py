@@ -148,11 +148,13 @@ class Lobby:
         # with native AI; it does not invent peers or change account ownership.
         if number is not None:
             count=self.db.execute('SELECT COUNT(*) FROM members WHERE room=?',(number,)).fetchone()[0]
-            # PATCH(multiplayer): more than one real human in the room -> this is
-            # a genuine PvP room, not a solo-vs-AI room. Do not raise and do not
-            # fill the empty slots with bots; let the humans take the slots.
+            # PATCH(multiplayer): more than one real human in the room. Do not
+            # raise (the original forbade a second human) and do not re-balance.
+            # Keep the bots the room was created with: battle.py's command 114
+            # refuses to start a match with zero bots, so leaving at least the
+            # creation-time bots in place lets two humans start a live match
+            # together (humans take their slots; bots fill the rest).
             if count>1:
-                room.update(red_ai=0,blue_ai=0)
                 return
         half=max(1,room['capacity']//2)
         # Ordinary balanced-room slots alternate red/blue. This mirrors the
@@ -234,6 +236,24 @@ class Lobby:
             except Exception:
                 logging.exception('roster push failed for usn=%s',member)
 
+    def broadcast_frame(self, number, frame, exclude=None):
+        # PATCH(match): push one already-encoded frame (e.g. the 509 match-start
+        # event that carries the host's match address) to every other member of
+        # a room, so a guest learns a match started and where to connect. The
+        # "127.0.0.1" inside the frame is rewritten to the host's advertise IP by
+        # the panel forwarder on the way out, exactly as it is for the host.
+        # Best effort; a dead peer never takes the server down.
+        if not frame:return
+        members=[r['usn'] for r in self.db.execute('SELECT usn FROM members WHERE room=?',(number,)).fetchall()]
+        for member in members:
+            if member==exclude:continue
+            entry=self.connections.get(member)
+            if not entry:continue
+            writer,_enc=entry
+            try:writer.write(frame)
+            except Exception:
+                logging.exception('match push failed for usn=%s',member)
+
     def cancel_pending_leave(self, usn):
         # PATCH(reconnect): a live connection for this player is back, so drop
         # any grace-period removal scheduled when an earlier socket closed.
@@ -282,7 +302,16 @@ class Lobby:
         if practice_packets is not None:return practice_packets,usn
         battle_packets=self.battle.handle(command,reader,usn,profile,encrypted)
         if battle_packets is not None:
-            if command==114:self.practice.active.pop(usn,None)
+            if command==114:
+                self.practice.active.pop(usn,None)
+                # PATCH(match): the host just started the match; battle returns
+                # [ack, 509-match-start-event]. Forward that 509 to the other
+                # room members so a guest learns the match address and joins,
+                # instead of only the host receiving it. Score/end events (181/
+                # 115/180 -> 510) stay host-only; the client polls 182 for those.
+                number=self.membership(usn)
+                if number is not None and len(battle_packets)>=2:
+                    self.broadcast_frame(number,battle_packets[-1],exclude=usn)
             return battle_packets,usn
         if command==156:
             # End-of-match challenge updates expect a reward transaction header,
