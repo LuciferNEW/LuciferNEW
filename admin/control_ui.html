@@ -118,9 +118,16 @@ textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace
       <div class="muted" id="unlocknote">台服在跑時:改 catalog.json 後<b>重啟台服 server</b> 生效。SFOffline 路線則到 <b>Build</b> 重打包。</div>
     </div>
     <div class="card">
-      <h3>道具搜尋 / 改價</h3>
+      <h3>道具搜尋 / 上架 / 改價</h3>
       <div class="row"><input id="shopq" placeholder="搜尋 id / code / 名稱" style="flex:1;min-width:200px">
         <label><input type="checkbox" id="shoponly"> 只看未上架</label></div>
+      <div class="row">
+        <button class="ghost" id="btnShopOnAll">搜尋結果全部上架</button>
+        <button class="ghost" id="btnShopOffAll">全部下架</button>
+        <button class="act" id="btnShopSave">儲存變更</button>
+        <span class="muted" id="shopstate"></span>
+      </div>
+      <div class="muted">勾「上架」決定商店是否販售；SP/Cash 欄可直接改價（填 SP 走 SP、SP 留 0 改填 Cash 走 Cash）。改完按<b>儲存變更</b>，再<b>重啟台服 server</b> 生效。</div>
       <div id="shoptbl" class="muted">載入中…</div>
     </div>
   </section>
@@ -302,15 +309,32 @@ async function doUnlock(which){$('#unlockstate').textContent='套用中…';
     $('#unlockstate').textContent=r.error?r.error:`已開放 ${r.opened} 項上架(重啟台服 server 生效)`;toast(r.error||'已解鎖，重啟台服 server 生效',!!r.error);return;}
   const r=await api('/api/unlock','POST',{which});
   $('#unlockstate').textContent=r.error?r.error:`已上架 ${r.shop_fields} 項 → 去 Build 重打包`;toast(r.error||'已套用，去 Build 重打包',!!r.error);}
-async function loadShop(){await loadCat();renderShop();}
+async function loadShop(){CAT=null;await loadCat();renderShop();}
 ['#shopq','#shoponly'].forEach(s=>document.addEventListener('input',e=>{if(e.target.matches(s))renderShop();}));
-function renderShop(){if(!CAT)return;const q=$('#shopq').value.toLowerCase(),only=$('#shoponly').checked;
-  let rows=CAT.filter(c=>(!only||!c.selling)&&(!q||(''+c.id).includes(q)||(c.code||'').toLowerCase().includes(q)||(c.name||'').toLowerCase().includes(q))).slice(0,250);
+function shopFiltered(){if(!CAT)return [];const q=$('#shopq').value.toLowerCase(),only=$('#shoponly').checked;
+  return CAT.filter(c=>(!only||!c.selling)&&(!q||(''+c.id).includes(q)||(c.code||'').toLowerCase().includes(q)||(c.name||'').toLowerCase().includes(q)));}
+function renderShop(){if(!CAT)return;const all=shopFiltered(),rows=all.slice(0,250);
   let h='<table><tr><th>id</th><th>code</th><th>名稱</th><th>SP</th><th>Cash</th><th>上架</th></tr>';
   rows.forEach(c=>h+=`<tr><td>${c.id}</td><td>${c.code||''}</td><td>${c.name||''}</td>
-   <td class="sp">${c.sp>=99999999?'🔒':c.sp}</td><td class="cash">${c.cash>=99999999?'🔒':c.cash}</td>
-   <td>${c.selling?'✅':'—'}</td></tr>`);
-  $('#shoptbl').innerHTML=h+'</table>'+(CAT.length>250?'<div class="muted">（搜尋縮小範圍看更多）</div>':'');}
+   <td><input class="n shop-sp" data-id="${c.id}" value="${c.sp>=99999999?'':c.sp}"></td>
+   <td><input class="n shop-cash" data-id="${c.id}" value="${c.cash>=99999999?'':c.cash}"></td>
+   <td><input type="checkbox" class="shop-sell" data-id="${c.id}" ${c.selling?'checked':''}></td></tr>`);
+  $('#shoptbl').innerHTML=h+'</table>'+(all.length>250?`<div class="muted">（顯示前 250／共 ${all.length} 項；搜尋縮小範圍逐項編輯，或用上方批次鈕套用全部 ${all.length} 項）</div>`:'');}
+function shopCollectVisible(){const out={};
+  document.querySelectorAll('.shop-sp').forEach(i=>{out[i.dataset.id]=out[i.dataset.id]||{id:+i.dataset.id};out[i.dataset.id].sp=i.value.trim();});
+  document.querySelectorAll('.shop-cash').forEach(i=>{out[i.dataset.id]=out[i.dataset.id]||{id:+i.dataset.id};out[i.dataset.id].cash=i.value.trim();});
+  document.querySelectorAll('.shop-sell').forEach(i=>{out[i.dataset.id]=out[i.dataset.id]||{id:+i.dataset.id};out[i.dataset.id].selling=i.checked;});
+  return Object.values(out);}
+async function shopSave(changes,msg){$('#shopstate').textContent='儲存中…';
+  const r=await api('/api/shop/save','POST',{changes});
+  if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
+  $('#shopstate').textContent=`${msg||'已儲存'} ${r.saved} 項，重啟台服 server 生效`;toast('已儲存，重啟 server 生效');
+  CAT=null;await loadCat();renderShop();}
+document.addEventListener('click',e=>{
+  if(e.target.id==='btnShopSave')shopSave(shopCollectVisible(),'已存');
+  if(e.target.id==='btnShopOnAll'){const a=shopFiltered();if(a.length>500&&!confirm(`要把 ${a.length} 項全部上架嗎？`))return;shopSave(a.map(c=>({id:c.id,selling:true})),'已上架');}
+  if(e.target.id==='btnShopOffAll'){const a=shopFiltered();if(a.length>500&&!confirm(`要把 ${a.length} 項全部下架嗎？`))return;shopSave(a.map(c=>({id:c.id,selling:false})),'已下架');}
+});
 
 // ---- pkg/gacha ----
 async function loadPkg(){const g=await api('/api/content/gacha');$('#gachabox').textContent=JSON.stringify(g,null,1);

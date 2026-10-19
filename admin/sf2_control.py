@@ -448,6 +448,34 @@ def twn_unlock(ctrl, which="content"):
     json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
     return {"ok": True, "opened": n, "note": "重啟台服 server 生效（它啟動時讀 catalog.json）"}
 
+def twn_shop_save(ctrl, changes):
+    """Per-item shop control for the TWN catalog: toggle on-sale and set price.
+    changes = [{id, selling?(bool), sp?/cash?/tp?(price in that currency)}]."""
+    p = twn_catalog_path(ctrl)
+    if not os.path.exists(p): return {"error": "找不到 catalog.json"}
+    cat = json.load(open(p, encoding="utf-8"))
+    byid = {}
+    for c in cat:
+        try: byid[int(c.get("id"))] = c
+        except (TypeError, ValueError): pass
+    n = 0
+    for ch in (changes or []):
+        try: c = byid[int(ch.get("id"))]
+        except (TypeError, ValueError, KeyError): continue
+        if "selling" in ch:
+            c["shop_selling"] = bool(ch["selling"])
+        # One currency+price per item; first provided wins.
+        for cur, key in (("SP", "sp"), ("CASH", "cash"), ("TP", "tp")):
+            if ch.get(key) not in (None, ""):
+                try: c["price"] = int(ch[key]); c["currency"] = cur
+                except (TypeError, ValueError): pass
+                break
+        n += 1
+    if not os.path.exists(p + ".bak"):
+        open(p + ".bak", "w", encoding="utf-8").write(json.dumps(cat, ensure_ascii=False))
+    json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+    return {"ok": True, "saved": n, "note": "已存 catalog.json；重啟台服 server 生效"}
+
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
 def twn_db_path(ctrl):
     # Explicit override wins; else find the active DB. The V4 pack keeps it in
@@ -759,6 +787,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/start": return self._s(twn_start(load_ctrl(), b.get("remote", False)))
             if self.path == "/api/twn/stop": return self._s(twn_stop(ctrl))
             if self.path == "/api/twn/unlock": return self._s(twn_unlock(ctrl, b.get("which", "content")))
+            if self.path == "/api/shop/save" and twn_available(ctrl): return self._s(twn_shop_save(ctrl, b.get("changes", [])))
             if self.path == "/api/client/launch": return self._s(client_launch(ctrl, b.get("ip", "127.0.0.1")))
             if self.path == "/api/player/pack": return self._s(make_player_pack(ctrl, b.get("ip", "")))
             if self.path == "/api/player/zip": return self._s(make_player_zip(ctrl, b.get("ip", "")))
