@@ -488,8 +488,18 @@ def twn_account_update(ctrl, usn, fields):
         pr = json.loads(row[0]) if row[0] else {}
         for k, v in (fields or {}).items():
             if k in _TWN_FLD:
-                try: pr[_TWN_FLD[k]] = int(v)
-                except Exception: pr[_TWN_FLD[k]] = v
+                # NEVER store a non-integer into a numeric profile field: a blank
+                # or garbage input would make the client's profile packet (cmd 122)
+                # fail to pack, which breaks the shop/inventory. Skip bad input.
+                try: pr[_TWN_FLD[k]] = int(str(v).strip())
+                except (TypeError, ValueError): continue
+        # Self-heal: coerce every known numeric field back to a valid int, in case
+        # an earlier edit (or another tool) left a string/blank there.
+        for _fld in ("SP", "Cash", "Exp", "TP", "Rank", "LuckyPoint", "LadderPoint",
+                     "Kills", "Deaths", "HeadShots", "Assists"):
+            if _fld in pr:
+                try: pr[_fld] = int(pr[_fld])
+                except (TypeError, ValueError): pr[_fld] = 0
         c.execute("UPDATE accounts SET profile=? WHERE usn=?", (json.dumps(pr, ensure_ascii=False), usn)); c.commit()
     finally: c.close()
     return {"ok": True, "warn": ("台服 server 運行中：若該玩家正登入，登出會覆蓋你的修改——先關 server 或確定已登出再改" if running else "")}
