@@ -37,6 +37,21 @@ pre{background:#0a0d11;border:1px solid var(--line);border-radius:8px;padding:10
 .pill{font-size:11px;padding:2px 8px;border-radius:12px;background:var(--panel2);color:var(--dim)}
 textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
 .toast{position:fixed;right:16px;bottom:16px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:10px 14px;font-size:13px;display:none;z-index:9}
+/* --- polish --- */
+h1 b{letter-spacing:.3px}
+.nav button{transition:background .12s,color .12s}
+.nav button:hover:not(.on){color:var(--ink);border-color:#3a4759}
+.card{box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.card h3{padding-bottom:8px;border-bottom:1px solid var(--line);color:var(--ink)}
+button.act,button.ghost,button.danger{transition:filter .12s,background .12s}
+button.act:hover,button.ghost:hover,button.danger:hover{filter:brightness(1.12)}
+/* compact action buttons inside tables (account row has many) */
+td button{padding:4px 9px;font-size:12px;margin:1px 1px;border-radius:6px}
+td .danger{background:#3a1b20}
+tbody tr:hover td{background:#182029}
+#acctbl,#shoptbl,#roomtbl{overflow:auto;max-height:62vh}
+#acctbl th,#shoptbl th,#roomtbl th{position:sticky;top:0;background:var(--panel);z-index:1}
+input.n{width:84px}
 </style>
 </head>
 <body>
@@ -274,7 +289,7 @@ textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace
 const $=s=>document.querySelector(s);
 const api=(u,m,b)=>fetch(u,m?{method:m,headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})}:undefined).then(r=>r.json());
 function toast(m,bad){const t=$('#toast');t.textContent=m;t.style.borderLeftColor=bad?'var(--bad)':'var(--accent)';t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
-const TABS=[["server","伺服器"],["db","資料庫"],["shop","商店"],["weapon","造槍"],["pkg","封包/扭蛋"],["rank","階級"],["cfg","Config"],["test","測試"],["build","Build"],["settings","設定"]];
+const TABS=[["server","伺服器"],["db","帳號 / GM"],["shop","商店"],["weapon","造槍"],["test","測試"],["settings","設定"]];
 const nav=$('#nav');
 TABS.forEach(([k,l])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>show(k,b);nav.appendChild(b);if(k==='server')b.classList.add('on');});
 function show(k,btn){document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));$('#s-'+k).classList.add('on');
