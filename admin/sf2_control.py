@@ -437,8 +437,12 @@ def twn_start(ctrl, remote=False):
     if remote:
         # 28080: lobby/game -> emulator (rewrite advertised 127.0.0.1 -> your IP)
         threading.Thread(target=_forwarder, args=(ctrl["twn_ext"], internal, adv, TWN), daemon=True).start()
-        # 28082: in-game MATCH is hosted by the host player's own client on 28082 (P2P) -> relay to local client
-        threading.Thread(target=_forwarder, args=(28082, 28082, None, TWN), daemon=True).start()
+        # 28082 (MATCH / P2P): do NOT relay. Forwarding 0.0.0.0:28082 -> 127.0.0.1:28082
+        # points the relay at itself (same host, same port), which spins up an
+        # unbounded self-connection loop (thousands of 127.0.0.1->127.0.0.1:28082
+        # ESTABLISHED sockets) and never provides a real match endpoint. Over a
+        # VPN like Radmin both machines share a virtual LAN, so a guest reaches
+        # the host's match port directly by IP; no loopback relay is needed.
     return twn_status(ctrl)
 def twn_stop(ctrl):
     TWN["stop"] = True
