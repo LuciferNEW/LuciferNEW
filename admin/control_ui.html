@@ -178,6 +178,7 @@ input.n{width:84px}
       <div class="row">
         <label>精簡商店：只留</label><input id="shoplimit" class="n" value="300" style="width:70px"><label>把有圖槍</label>
         <button class="ghost" id="btnShopCurate">精簡商店（最有效治卡）</button>
+        <button class="ghost" id="btnShopRestoreFunc">恢復扭蛋/卡片上架</button>
         <span class="muted" id="shopstate"></span>
       </div>
       <div class="muted">勾「上架」決定商店是否販售；SP/Cash 欄可直接改價（填 SP 走 SP、SP 留 0 改填 Cash 走 Cash）。改完按<b>儲存變更</b>，再<b>重啟台服 server</b> 生效。</div>
@@ -491,7 +492,13 @@ document.addEventListener('click',async e=>{if(e.target.id!=='btnShopCurate')ret
   $('#shopstate').textContent='精簡中…';
   const r=await api('/api/shop/curate','POST',{limit});
   if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
-  $('#shopstate').textContent=`已精簡成 ${r.on} 項上架，重啟 server 商城就順`;toast('已精簡，重啟 server 生效');
+  $('#shopstate').textContent=`已精簡成 ${r.on} 把槍＋保留扭蛋/卡片，重啟 server 生效`;toast('已精簡，重啟 server 生效');
+  CAT=null;await loadCat();renderShop();});
+document.addEventListener('click',async e=>{if(e.target.id!=='btnShopRestoreFunc')return;
+  $('#shopstate').textContent='恢復中…';
+  const r=await api('/api/shop/restorefunc','POST',{});
+  if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
+  $('#shopstate').textContent=`已恢復 ${r.on} 個扭蛋/卡片上架，重啟 server 扭蛋就會顯示`;toast('已恢復，重啟 server 生效');
   CAT=null;await loadCat();renderShop();});
 
 // ---- pkg/gacha ----

@@ -511,21 +511,59 @@ def twn_shop_dedup(ctrl, key="icon"):
     return {"ok": True, "off": off, "kept": kept,
             "note": f"已把重複的 {off} 項下架，保留 {kept} 個不重複上架。重啟台服 server 生效，商城就不卡了。"}
 
+def _twn_func_ids(ctrl):
+    """Purchasable functional items (gacha capsules, SP cards, crafting mats) —
+    they must stay on sale or the gacha/card shop goes blank."""
+    eco = twn_load_economy(ctrl); out = set()
+    for k in ((eco or {}).get("items") or {}):
+        try: out.add(int(k))
+        except (TypeError, ValueError): pass
+    return out
+
 def twn_shop_curate(ctrl, limit=500):
-    """Slim the shop right down: take everything off sale, then put on sale only
-    up to `limit` distinct cooked weapons that have an icon. Fewer on-sale items
-    means the client's shop packet (278) is small, so the in-game shop opens fast."""
+    """Slim the shop: take weapons off sale, then put on sale up to `limit`
+    distinct cooked weapons with an icon. Functional items (gacha/cards/mats)
+    are always KEPT on sale so the gacha store still works."""
     try: limit = max(1, min(int(limit), 17429))
     except (TypeError, ValueError): limit = 500
     cat = twn_load_catalog(ctrl)
+    func = _twn_func_ids(ctrl)
+    byid = {}
     for c in cat:
-        if c.get("shop_selling"): c["shop_selling"] = False
+        try: byid[int(c["id"])] = c
+        except (TypeError, ValueError): pass
+    # turn everything off EXCEPT functional items
+    for c in cat:
+        if c.get("shop_selling") and int(c.get("id", -1)) not in func:
+            c["shop_selling"] = False
     on = 0
     for c in _twn_weapon_pool(cat, "icon")[:limit]:
         c["shop_selling"] = True; on += 1
+    # make sure functional items (gacha/cards) are on
+    fon = 0
+    for i in func:
+        c = byid.get(i)
+        if c and not c.get("shop_selling"): c["shop_selling"] = True; fon += 1
     twn_save_catalog(ctrl, cat)
-    return {"ok": True, "on": on,
-            "note": f"已把商店精簡成 {on} 項（去重·有圖的槍），其餘全部下架。重啟 server，商城就順了。"}
+    return {"ok": True, "on": on, "func": fon,
+            "note": f"已精簡成 {on} 把槍上架（去重有圖）＋保留 {len(func)} 個扭蛋/卡片。重啟 server 生效。"}
+
+def twn_shop_restore_func(ctrl):
+    """Re-enable all gacha/card/material items on sale (fixes a blank gacha store
+    after an over-aggressive curate)."""
+    cat = twn_load_catalog(ctrl)
+    func = _twn_func_ids(ctrl)
+    byid = {}
+    for c in cat:
+        try: byid[int(c["id"])] = c
+        except (TypeError, ValueError): pass
+    n = 0
+    for i in func:
+        c = byid.get(i)
+        if c and not c.get("shop_selling"): c["shop_selling"] = True; n += 1
+    twn_save_catalog(ctrl, cat)
+    return {"ok": True, "on": n,
+            "note": f"已把 {n} 個扭蛋/卡片/材料重新上架（共 {len(func)} 個）。重啟 server，扭蛋店就會顯示了。"}
 
 def _twn_weapon_pool(cat, scope):
     """Weapons the client can render (cooked), excluding functional/common items,
@@ -1184,6 +1222,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/shop/save" and twn_available(ctrl): return self._s(twn_shop_save(ctrl, b.get("changes", [])))
             if self.path == "/api/shop/dedup" and twn_available(ctrl): return self._s(twn_shop_dedup(ctrl))
             if self.path == "/api/shop/curate" and twn_available(ctrl): return self._s(twn_shop_curate(ctrl, b.get("limit", 500)))
+            if self.path == "/api/shop/restorefunc" and twn_available(ctrl): return self._s(twn_shop_restore_func(ctrl))
             if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
             if self.path == "/api/twn/give" and twn_available(ctrl): return self._s(twn_item_give(ctrl, int(b["usn"]), b["item_id"], b.get("count", 1)))
             if self.path == "/api/twn/clearbag" and twn_available(ctrl): return self._s(twn_clear_inventory(ctrl, int(b["usn"]), b.get("scope", "bag")))
