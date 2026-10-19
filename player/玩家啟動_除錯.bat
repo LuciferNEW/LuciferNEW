@@ -1,22 +1,18 @@
 @echo off
 cd /d "%~dp0"
-echo === SF2 Launcher - DEBUG (errors will show below) ===
+echo === SF2 Launcher - DEBUG ===
 echo.
 if exist "%~dp0python\python.exe" (
-  echo [OK] found bundled python
-  "%~dp0python\python.exe" "%~dp0玩家啟動器.py"
+  "%~dp0python\python.exe" "%~dp0SF2.py"
   goto done
 )
 where python >nul 2>&1
 if %errorlevel%==0 (
-  echo [OK] found system python
-  python "%~dp0玩家啟動器.py"
+  python "%~dp0SF2.py"
   goto done
 )
-echo [ERROR] No Python found.
-echo The "python" folder must sit NEXT TO this .bat (copy it from the pack),
-echo or install Python from python.org.
+echo [ERROR] No Python found. Put the "python" folder next to this .bat.
 :done
 echo.
-echo === done. If you see a red Traceback above, screenshot the whole thing. ===
+echo === done. If a red Traceback shows above, screenshot it. ===
 pause
