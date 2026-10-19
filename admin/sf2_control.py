@@ -565,6 +565,45 @@ def twn_shop_restore_func(ctrl):
     return {"ok": True, "on": n,
             "note": f"已把 {n} 個扭蛋/卡片/材料重新上架（共 {len(func)} 個）。重啟 server，扭蛋店就會顯示了。"}
 
+def twn_shop_stock(ctrl, weapons=300):
+    """Stock every in-game tab: N weapons (武器) + all cooked+icon gear (裝備) +
+    functional/items (道具) + characters (角色). The client files each into its
+    tab by the item's class automatically."""
+    try: weapons = max(0, min(int(weapons), 5000))
+    except (TypeError, ValueError): weapons = 300
+    cat = twn_load_catalog(ctrl)
+    def is_unit(c): return str(c.get("code", ""))[:3] in ("ECU", "PCU", "RCU")
+    def dedup(items):
+        seen, out = set(), []
+        for c in items:
+            k = c.get("icon") or c.get("code")
+            if k and k not in seen: seen.add(k); out.append(c)
+        return out
+    for c in cat:
+        if c.get("shop_selling"): c["shop_selling"] = False
+    ci = [c for c in cat if c.get("cooked") and c.get("icon")]
+    weap = dedup([c for c in ci if not str(c.get("class", "")).startswith(("SFCItem_Func", "SFCItem_Common"))
+                  and not is_unit(c) and not c.get("is_pmc")])[:weapons]
+    common = dedup([c for c in ci if str(c.get("class", "")).startswith("SFCItem_Common")])
+    func = dedup([c for c in ci if str(c.get("class", "")).startswith("SFCItem_Func")])
+    units = dedup([c for c in ci if is_unit(c) or c.get("is_pmc")])
+    cnt = {}
+    for name, grp in (("武器", weap), ("裝備", common), ("道具", func), ("角色", units)):
+        for c in grp: c["shop_selling"] = True
+        cnt[name] = len(grp)
+    # make sure every purchasable gacha/card (economy item) is on sale too
+    func_ids = _twn_func_ids(ctrl); byid = {}
+    for c in cat:
+        try: byid[int(c["id"])] = c
+        except (TypeError, ValueError): pass
+    for i in func_ids:
+        c = byid.get(i)
+        if c and not c.get("shop_selling"): c["shop_selling"] = True
+    twn_save_catalog(ctrl, cat)
+    total = sum(cnt.values())
+    return {"ok": True, "counts": cnt,
+            "note": f"已分類上架：武器{cnt['武器']}、裝備{cnt['裝備']}、道具{cnt['道具']}、角色{cnt['角色']}（共 {total}）。重啟 server 生效。"}
+
 def _twn_weapon_pool(cat, scope):
     """Weapons the client can render (cooked), excluding functional/common items,
     characters and units. scope: 'icon' = distinct by icon (all have art),
@@ -1223,6 +1262,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/shop/dedup" and twn_available(ctrl): return self._s(twn_shop_dedup(ctrl))
             if self.path == "/api/shop/curate" and twn_available(ctrl): return self._s(twn_shop_curate(ctrl, b.get("limit", 500)))
             if self.path == "/api/shop/restorefunc" and twn_available(ctrl): return self._s(twn_shop_restore_func(ctrl))
+            if self.path == "/api/shop/stock" and twn_available(ctrl): return self._s(twn_shop_stock(ctrl, b.get("weapons", 300)))
             if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
             if self.path == "/api/twn/give" and twn_available(ctrl): return self._s(twn_item_give(ctrl, int(b["usn"]), b["item_id"], b.get("count", 1)))
             if self.path == "/api/twn/clearbag" and twn_available(ctrl): return self._s(twn_clear_inventory(ctrl, int(b["usn"]), b.get("scope", "bag")))

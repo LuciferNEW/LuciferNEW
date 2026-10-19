@@ -178,6 +178,7 @@ input.n{width:84px}
       <div class="row">
         <label>精簡商店：只留</label><input id="shoplimit" class="n" value="300" style="width:70px"><label>把有圖槍</label>
         <button class="ghost" id="btnShopCurate">精簡商店（最有效治卡）</button>
+        <button class="act" id="btnShopStock">各類別上架（武器+裝備+道具+角色）</button>
         <button class="ghost" id="btnShopRestoreFunc">恢復扭蛋/卡片上架</button>
         <span class="muted" id="shopstate"></span>
       </div>
@@ -493,6 +494,14 @@ document.addEventListener('click',async e=>{if(e.target.id!=='btnShopCurate')ret
   const r=await api('/api/shop/curate','POST',{limit});
   if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
   $('#shopstate').textContent=`已精簡成 ${r.on} 把槍＋保留扭蛋/卡片，重啟 server 生效`;toast('已精簡，重啟 server 生效');
+  CAT=null;await loadCat();renderShop();});
+document.addEventListener('click',async e=>{if(e.target.id!=='btnShopStock')return;
+  const weapons=+$('#shoplimit').value||300;
+  if(!confirm(`各類別上架：武器留 ${weapons} 把，裝備/道具/角色全上（去重有圖）。其餘下架。要執行嗎？`))return;
+  $('#shopstate').textContent='分類上架中…';
+  const r=await api('/api/shop/stock','POST',{weapons});
+  if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
+  $('#shopstate').textContent=r.note;toast('已分類上架，重啟 server 生效');
   CAT=null;await loadCat();renderShop();});
 document.addEventListener('click',async e=>{if(e.target.id!=='btnShopRestoreFunc')return;
   $('#shopstate').textContent='恢復中…';
