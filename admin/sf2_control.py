@@ -725,6 +725,76 @@ def twn_rooms(ctrl):
     finally: con.close()
     return {"rooms": out, "in_rooms": total}
 
+# ---------------- TWN economy / gacha pools (economy-data.json) ----------------
+def twn_economy_path(ctrl): return os.path.join(ctrl["twn_dir"], "economy-data.json")
+_TWN_ECO = {"path": None, "mtime": 0, "data": None}
+def twn_load_economy(ctrl):
+    p = twn_economy_path(ctrl)
+    try: mt = os.path.getmtime(p)
+    except OSError: return None
+    if _TWN_ECO["path"] == p and _TWN_ECO["mtime"] == mt and _TWN_ECO["data"] is not None:
+        return _TWN_ECO["data"]
+    data = json.load(open(p, encoding="utf-8"))
+    _TWN_ECO.update(path=p, mtime=mt, data=data)
+    return data
+def twn_save_economy(ctrl, data):
+    p = twn_economy_path(ctrl)
+    if not os.path.exists(p + ".bak") and os.path.exists(p):
+        try: open(p + ".bak", "wb").write(open(p, "rb").read())
+        except Exception: pass
+    json.dump(data, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    try: _TWN_ECO.update(path=p, data=data, mtime=os.path.getmtime(p))
+    except OSError: pass
+
+def twn_pools(ctrl):
+    eco = twn_load_economy(ctrl)
+    if not eco: return {"error": "找不到 economy-data.json"}
+    out = []
+    for code, prizes in (eco.get("pools") or {}).items():
+        out.append({"code": code, "count": len(prizes),
+                    "weight": sum(p.get("weight", 0) for p in prizes)})
+    out.sort(key=lambda x: x["code"])
+    return out
+
+def twn_pool_get(ctrl, code):
+    eco = twn_load_economy(ctrl)
+    if not eco: return {"error": "找不到 economy-data.json"}
+    prizes = (eco.get("pools") or {}).get(code)
+    if prizes is None: return {"error": f"找不到獎池 {code}"}
+    cat = twn_load_catalog(ctrl); byid = {}
+    for c in cat:
+        try: byid[int(c.get("id"))] = c
+        except (TypeError, ValueError): pass
+    total = sum(p.get("weight", 0) for p in prizes) or 1
+    out = []
+    for p in prizes:
+        c = byid.get(p.get("id"), {})
+        w = p.get("weight", 0)
+        out.append({"id": p.get("id"), "name": c.get("name", ""), "code": c.get("code", ""),
+                    "weight": w, "rare": bool(p.get("rare")), "pct": round(w * 100.0 / total, 2)})
+    return {"code": code, "total": total, "prizes": out}
+
+def twn_pool_save(ctrl, code, prizes):
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再存"}
+    eco = twn_load_economy(ctrl)
+    if not eco: return {"error": "找不到 economy-data.json"}
+    pools = eco.get("pools")
+    if not isinstance(pools, dict) or code not in pools:
+        return {"error": f"找不到獎池 {code}"}
+    new = []
+    for p in (prizes or []):
+        try: iid = int(p.get("id")); w = int(p.get("weight", 0))
+        except (TypeError, ValueError): continue
+        if w <= 0: continue
+        new.append({"id": iid, "weight": w, "rare": bool(p.get("rare")), "source": "custom"})
+    if not new: return {"error": "獎池至少要留一個權重>0的獎品"}
+    pools[code] = new
+    twn_save_economy(ctrl, eco)
+    total = sum(p["weight"] for p in new)
+    warn = "" if total == 10000 else f"⚠ 總權重是 {total}，建議湊成 10000（抽獎機率才精準）。"
+    return {"ok": True, "count": len(new), "total": total, "note": "已存 economy-data.json，重啟台服 server 生效。" + warn}
+
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
 def twn_db_path(ctrl):
     # Explicit override wins; else find the active DB. The V4 pack keeps it in
@@ -1048,6 +1118,9 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/giveall" and twn_available(ctrl): return self._s(twn_give_all(ctrl, b["item_id"], b.get("count", 1)))
             if self.path == "/api/twn/bag" and twn_available(ctrl): return self._s(twn_inventory_list(ctrl, int(b["usn"])))
             if self.path == "/api/twn/rooms" and twn_available(ctrl): return self._s(twn_rooms(ctrl))
+            if self.path == "/api/twn/pools" and twn_available(ctrl): return self._s(twn_pools(ctrl))
+            if self.path == "/api/twn/pool" and twn_available(ctrl): return self._s(twn_pool_get(ctrl, b["code"]))
+            if self.path == "/api/twn/pool/save" and twn_available(ctrl): return self._s(twn_pool_save(ctrl, b["code"], b.get("prizes", [])))
             if self.path == "/api/client/launch": return self._s(client_launch(ctrl, b.get("ip", "127.0.0.1")))
             if self.path == "/api/player/pack": return self._s(make_player_pack(ctrl, b.get("ip", "")))
             if self.path == "/api/player/zip": return self._s(make_player_zip(ctrl, b.get("ip", "")))

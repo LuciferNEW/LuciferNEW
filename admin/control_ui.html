@@ -237,6 +237,30 @@ input.n{width:84px}
     </div>
   </section>
 
+  <!-- 扭蛋（台服 economy-data.json 獎池）-->
+  <section id="s-gacha">
+    <div class="card">
+      <h3>扭蛋獎池編輯</h3>
+      <div class="row">
+        <label>獎池</label>
+        <select id="poolsel" style="min-width:160px"></select>
+        <button class="ghost" id="btnPoolReload">重新整理清單</button>
+        <span class="muted" id="poolstate"></span>
+      </div>
+      <div class="muted">選一個獎池 → 下方改每個獎品的<b>權重 weight</b>（機率＝權重/總和）、<b>稀有</b>、<b>刪除</b>，或<b>新增獎品</b>（填道具 id）。總權重建議湊 <b>10000</b>。改完按<b>儲存獎池</b>，<b>重啟台服 server</b> 生效。</div>
+    </div>
+    <div class="card">
+      <div class="row">
+        <label>新增獎品 id</label><input id="prizeid" class="n" placeholder="道具 id">
+        <label>權重</label><input id="prizew" class="n" value="1000" style="width:80px">
+        <button class="ghost" id="btnPrizeAdd">加入清單</button>
+        <button class="act" id="btnPoolSave">儲存獎池</button>
+        <span class="muted" id="pooltotal"></span>
+      </div>
+      <div id="pooltbl" class="muted">先選一個獎池</div>
+    </div>
+  </section>
+
   <!-- 封包/扭蛋 -->
   <section id="s-pkg">
     <div class="card"><h3>扭蛋機率 (gacha)</h3><pre id="gachabox">載入中…</pre></div>
@@ -289,7 +313,7 @@ input.n{width:84px}
 const $=s=>document.querySelector(s);
 const api=(u,m,b)=>fetch(u,m?{method:m,headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})}:undefined).then(r=>r.json());
 function toast(m,bad){const t=$('#toast');t.textContent=m;t.style.borderLeftColor=bad?'var(--bad)':'var(--accent)';t.style.display='block';setTimeout(()=>t.style.display='none',2600);}
-const TABS=[["server","伺服器"],["db","帳號 / GM"],["shop","商店"],["weapon","造槍"],["test","測試"],["settings","設定"]];
+const TABS=[["server","伺服器"],["db","帳號 / GM"],["shop","商店"],["weapon","造槍"],["gacha","扭蛋"],["test","測試"],["settings","設定"]];
 const nav=$('#nav');
 TABS.forEach(([k,l])=>{const b=document.createElement('button');b.textContent=l;b.onclick=()=>show(k,b);nav.appendChild(b);if(k==='server')b.classList.add('on');});
 function show(k,btn){document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));$('#s-'+k).classList.add('on');
@@ -567,7 +591,43 @@ $('#btnRApply').onclick=async()=>{const pkg=$('#rpkg').value,dds=$('#rdds').valu
   $('#rout').textContent='注入中…';const r=await api('/api/reskin/apply','POST',{pkg,dds,at:$('#rat').value?+$('#rat').value:undefined});
   $('#rout').textContent=r.out||r.error;toast(r.ok?'注入完成(已備份)':'未寫入,看訊息',!r.ok);};
 
-const loaders={server:()=>{srvStatus();srvLog();twnStatus();},db:loadAccts,shop:loadShop,weapon:loadWeapon,pkg:loadPkg,rank:loadRank,cfg:loadCfgList,settings:loadSettings};
+// ---- gacha (扭蛋獎池) ----
+let POOL=null;
+async function loadGacha(){const r=await api('/api/twn/pools','POST',{});
+  const sel=$('#poolsel');
+  if(r.error){$('#poolstate').textContent=r.error;return;}
+  sel.innerHTML=r.map(p=>`<option value="${p.code}">${p.code}（${p.count}項/權重${p.weight}）</option>`).join('');
+  $('#poolstate').textContent=`共 ${r.length} 個獎池`;
+  if(r.length)openPool(sel.value);}
+$('#btnPoolReload')&&($('#btnPoolReload').onclick=loadGacha);
+document.addEventListener('change',e=>{if(e.target.id==='poolsel')openPool(e.target.value);});
+async function openPool(code){const r=await api('/api/twn/pool','POST',{code});
+  if(r.error){$('#pooltbl').textContent=r.error;return;}
+  POOL=r;renderPool();}
+function renderPool(){if(!POOL)return;
+  let h='<table><tr><th>id</th><th>code</th><th>名稱</th><th>權重</th><th>機率</th><th>稀有</th><th></th></tr>';
+  POOL.prizes.forEach((p,i)=>h+=`<tr><td>${p.id}</td><td>${p.code||''}</td><td>${p.name||''}</td>
+   <td><input class="n pz-w" data-i="${i}" value="${p.weight}" style="width:80px"></td>
+   <td class="sp">${p.pct}%</td>
+   <td><input type="checkbox" class="pz-r" data-i="${i}" ${p.rare?'checked':''}></td>
+   <td><button class="danger" onclick="prizeDel(${i})">刪</button></td></tr>`);
+  $('#pooltbl').innerHTML=h+'</table>';
+  const tot=POOL.prizes.reduce((s,p)=>s+(+p.weight||0),0);
+  $('#pooltotal').textContent='總權重 '+tot+(tot===10000?' ✓':'（建議 10000）');}
+window.prizeDel=i=>{collectPool();POOL.prizes.splice(i,1);renderPool();};
+function collectPool(){if(!POOL)return;
+  document.querySelectorAll('.pz-w').forEach(x=>POOL.prizes[+x.dataset.i].weight=+x.value||0);
+  document.querySelectorAll('.pz-r').forEach(x=>POOL.prizes[+x.dataset.i].rare=x.checked);}
+$('#btnPrizeAdd')&&($('#btnPrizeAdd').onclick=()=>{if(!POOL)return toast('先選獎池',1);
+  const id=+$('#prizeid').value,w=+$('#prizew').value||1000;
+  if(!id)return toast('填道具 id',1);
+  collectPool();POOL.prizes.push({id,code:'',name:'(新)',weight:w,rare:false,pct:0});renderPool();$('#prizeid').value='';});
+$('#btnPoolSave')&&($('#btnPoolSave').onclick=async()=>{if(!POOL)return;collectPool();
+  $('#poolstate').textContent='儲存中…';
+  const r=await api('/api/twn/pool/save','POST',{code:POOL.code,prizes:POOL.prizes});
+  $('#poolstate').textContent=r.error?r.error:r.note;toast(r.error||'已存獎池',!!r.error);if(!r.error)openPool(POOL.code);});
+
+const loaders={server:()=>{srvStatus();srvLog();twnStatus();},db:loadAccts,shop:loadShop,weapon:loadWeapon,gacha:loadGacha,pkg:loadPkg,rank:loadRank,cfg:loadCfgList,settings:loadSettings};
 srvStatus();srvLog();twnStatus();setInterval(()=>{if($('#s-server').classList.contains('on')){srvStatus();twnStatus();}},5000);
 </script>
 </body>
