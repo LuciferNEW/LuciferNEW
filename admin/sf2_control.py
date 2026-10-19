@@ -608,6 +608,123 @@ def twn_clear_inventory(ctrl, usn, scope="bag"):
     finally: con.close()
     return {"ok": True, "removed": n, "note": f"已清除 {n} 件（{scope}）。重啟 server 登入生效。"}
 
+def _twn_schema(ctrl):
+    try: return json.load(open(os.path.join(ctrl["twn_dir"], "profile-schema.json"), encoding="utf-8"))
+    except Exception: return []
+
+def twn_account_create(ctrl, login, codename=None):
+    """Create a fresh account directly in the DB (no in-game login needed), with
+    a clean schema-correct profile and maxed wallet. Starter items are added by
+    the server's own ensure_account on first login."""
+    import sqlite3
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再建帳號"}
+    login = str(login or "").strip()
+    if not login or len(login) > 64: return {"error": "login 不合法（1~64 字）"}
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(os.path.dirname(dbp)): os.makedirs(os.path.dirname(dbp), exist_ok=True)
+    schema = _twn_schema(ctrl)
+    if not schema: return {"error": "找不到 profile-schema.json，無法建乾淨帳號"}
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        con.execute("CREATE TABLE IF NOT EXISTS accounts(usn INTEGER PRIMARY KEY, login TEXT UNIQUE NOT NULL, profile TEXT NOT NULL)")
+        if con.execute("SELECT 1 FROM accounts WHERE login=?", (login,)).fetchone():
+            return {"error": f"login「{login}」已存在"}
+        usn = con.execute("SELECT COALESCE(MAX(usn),100000)+1 FROM accounts").fetchone()[0]
+        pr = {f["name"]: ("" if f["type"] == "string" else 0) for f in schema}
+        pr.update(USN=usn, CodeName=(codename or login)[:32], Rank=1,
+                  SP=2000000000, TP=99999, Age=20, Cash=2000000000)
+        con.execute("INSERT INTO accounts(usn,login,profile) VALUES(?,?,?)",
+                    (usn, login, json.dumps(pr, ensure_ascii=False)))
+        con.commit()
+    finally: con.close()
+    return {"ok": True, "usn": usn, "note": f"已建帳號 #{usn}（login={login}）。登入密碼在遊戲第一次登入時綁定；重啟 server 後用此 login 登入。"}
+
+def twn_account_delete(ctrl, usn):
+    import sqlite3
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再刪帳號"}
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立"}
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        if con.execute("SELECT 1 FROM accounts WHERE usn=?", (usn,)).fetchone() is None:
+            return {"error": f"找不到帳號 usn={usn}"}
+        for t in ("inventory", "weapon_sets", "unit_equipment", "members"):
+            try: con.execute(f"DELETE FROM {t} WHERE usn=?", (usn,))
+            except Exception: pass
+        con.execute("DELETE FROM accounts WHERE usn=?", (usn,))
+        con.commit()
+    finally: con.close()
+    return {"ok": True, "note": f"已刪除帳號 #{usn} 及其道具。"}
+
+def twn_maxout(ctrl, usn, rank=None):
+    """One-click max: SP/Cash/TP full, optionally set Rank."""
+    fields = {"sp": 2000000000, "cash": 2000000000, "tp": 99999}
+    if rank not in (None, ""):
+        fields["rank"] = rank
+    return twn_account_update(ctrl, usn, fields)
+
+def twn_give_all(ctrl, item_id, count=1):
+    """Give one item to EVERY account (events / compensation)."""
+    import sqlite3
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再執行"}
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立"}
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        usns = [r[0] for r in con.execute("SELECT usn FROM accounts")]
+    finally: con.close()
+    ok = 0; err = None
+    for usn in usns:
+        r = twn_item_give(ctrl, usn, item_id, count)
+        if r.get("ok"): ok += 1
+        else: err = r.get("error")
+    return {"ok": True, "accounts": ok, "note": f"已發給 {ok}/{len(usns)} 個帳號。" + (f"（部分失敗：{err}）" if err else "")}
+
+def twn_inventory_list(ctrl, usn):
+    """What's in an account's bag, with item names from the catalog."""
+    import sqlite3
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立"}
+    cat = twn_load_catalog(ctrl)
+    byid = {}
+    for c in cat:
+        try: byid[int(c.get("id"))] = c
+        except (TypeError, ValueError): pass
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        rows = con.execute("SELECT item_id, used, COUNT(*) qty FROM inventory WHERE usn=? "
+                           "GROUP BY item_id, used ORDER BY used, item_id", (usn,)).fetchall()
+    finally: con.close()
+    out = []
+    for item_id, used, qty in rows:
+        c = byid.get(item_id, {})
+        out.append({"id": item_id, "code": c.get("code", ""), "name": c.get("name", ""),
+                    "qty": qty, "used": bool(used)})
+    return out
+
+def twn_rooms(ctrl):
+    """Current rooms and who is in them (from the live DB tables)."""
+    import sqlite3
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立"}
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        out = []
+        try: rooms = con.execute("SELECT number, owner, data FROM rooms ORDER BY number").fetchall()
+        except Exception: rooms = []
+        for number, owner, data in rooms:
+            try: d = json.loads(data)
+            except Exception: d = {}
+            cnt = con.execute("SELECT COUNT(*) FROM members WHERE room=?", (number,)).fetchone()[0]
+            out.append({"number": number, "name": d.get("name", ""), "owner": owner,
+                        "players": cnt, "capacity": d.get("capacity", 0), "playing": bool(d.get("playing"))})
+        total = con.execute("SELECT COUNT(*) FROM members").fetchone()[0]
+    finally: con.close()
+    return {"rooms": out, "in_rooms": total}
+
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
 def twn_db_path(ctrl):
     # Explicit override wins; else find the active DB. The V4 pack keeps it in
@@ -925,6 +1042,12 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
             if self.path == "/api/twn/give" and twn_available(ctrl): return self._s(twn_item_give(ctrl, int(b["usn"]), b["item_id"], b.get("count", 1)))
             if self.path == "/api/twn/clearbag" and twn_available(ctrl): return self._s(twn_clear_inventory(ctrl, int(b["usn"]), b.get("scope", "bag")))
+            if self.path == "/api/twn/acct/create" and twn_available(ctrl): return self._s(twn_account_create(ctrl, b.get("login"), b.get("codename")))
+            if self.path == "/api/twn/acct/delete" and twn_available(ctrl): return self._s(twn_account_delete(ctrl, int(b["usn"])))
+            if self.path == "/api/twn/maxout" and twn_available(ctrl): return self._s(twn_maxout(ctrl, int(b["usn"]), b.get("rank")))
+            if self.path == "/api/twn/giveall" and twn_available(ctrl): return self._s(twn_give_all(ctrl, b["item_id"], b.get("count", 1)))
+            if self.path == "/api/twn/bag" and twn_available(ctrl): return self._s(twn_inventory_list(ctrl, int(b["usn"])))
+            if self.path == "/api/twn/rooms" and twn_available(ctrl): return self._s(twn_rooms(ctrl))
             if self.path == "/api/client/launch": return self._s(client_launch(ctrl, b.get("ip", "127.0.0.1")))
             if self.path == "/api/player/pack": return self._s(make_player_pack(ctrl, b.get("ip", "")))
             if self.path == "/api/player/zip": return self._s(make_player_zip(ctrl, b.get("ip", "")))

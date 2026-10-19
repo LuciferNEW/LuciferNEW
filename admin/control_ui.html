@@ -117,10 +117,22 @@ textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace
       <div class="row">
         <label>發指定道具 id</label><input id="giveid" class="n" placeholder="例 1010010">
         <label>數量</label><input id="givecount" class="n" value="1" style="width:64px">
-        <span class="muted">（角色 ECU/PCU/RCU 會自動啟用，數量固定 1）</span>
+        <button class="ghost" id="btnGiveAll">發給所有帳號</button>
+        <span class="muted">（角色 ECU/PCU/RCU 自動啟用，數量固定 1）</span>
       </div>
-      <div class="muted">在下方帳號列：<b>GM給槍</b>=整池武器；<b>給道具</b>=上面那個 id；<b>清背包</b>=清掉未裝備道具。<b>執行前先在「伺服器」分頁關掉 server</b>，執行後重啟 server 再登入。數量越多登入越慢；先用「去重·有圖」。</div>
+      <div class="row">
+        <label>建台服帳號 login</label><input id="newtwnlogin" class="n" placeholder="login">
+        <label>暱稱</label><input id="newtwncode" class="n" placeholder="暱稱(可空)">
+        <button class="act" id="btnNewTwn">建帳號(滿錢)</button>
+        <span class="muted">密碼在遊戲第一次登入綁定</span>
+      </div>
+      <div class="muted">帳號列按鈕：<b>GM給槍</b>整池武器／<b>給道具</b>上面的 id／<b>清背包</b>／<b>看背包</b>／<b>拉滿</b>錢+軍銜／<b>刪除</b>。<b>執行前先關 server</b>，之後重啟再登入。</div>
       <div class="muted" id="gmstate"></div>
+    </div>
+    <div class="card">
+      <h3>房間 / 在線</h3>
+      <div class="row"><button class="ghost" id="btnRooms">重新整理房間</button><span class="muted" id="roomstate"></span></div>
+      <div id="roomtbl" class="muted">按上面查看目前房間</div>
     </div>
     <div class="card"><h3>帳號</h3><div id="acctbl" class="muted">先開啟 save.db</div></div>
   </section>
@@ -309,16 +321,21 @@ $('#btnOpenDb').onclick=async()=>{const r=await api('/api/open','POST',{path:$('
 $('#btnCreate').onclick=async()=>{const r=await api('/api/account/create','POST',{login:$('#nlogin').value,password:$('#npw').value,seed:$('#nseed').checked});
   r.error?toast(r.error,1):(toast('帳號 #'+r.id),loadAccts());};
 async function loadAccts(){const a=await api('/api/accounts');if(a.error)return $('#acctbl').textContent=a.error;
-  let h='<table><tr><th>id</th><th>login</th><th>代號</th><th>SP</th><th>Cash</th><th>經驗</th><th></th></tr>';
+  let h='<table><tr><th>id</th><th>login</th><th>代號</th><th>SP</th><th>Cash</th><th>經驗</th><th>軍銜</th><th>TP</th><th></th></tr>';
   a.forEach(x=>h+=`<tr><td>${x.id}</td><td>${x.login}</td>
-   <td><input value="${(x.codename||'').replace(/"/g,'&quot;')}" data-id="${x.id}" data-f="codename" data-type="str" style="width:110px"></td>
+   <td><input value="${(x.codename||'').replace(/"/g,'&quot;')}" data-id="${x.id}" data-f="codename" data-type="str" style="width:100px"></td>
    <td><input class="n sp" value="${x.sp}" data-id="${x.id}" data-f="sp"></td>
    <td><input class="n cash" value="${x.cash}" data-id="${x.id}" data-f="cash"></td>
    <td><input class="n" value="${x.experience}" data-id="${x.id}" data-f="experience"></td>
+   <td><input value="${x.rank}" data-id="${x.id}" data-f="rank" style="width:54px"></td>
+   <td><input value="${x.tp}" data-id="${x.id}" data-f="tp" style="width:70px"></td>
    <td><button class="ghost" onclick="saveAcct(${x.id})">存</button>
+       <button class="ghost" onclick="maxOut(${x.id})">拉滿</button>
        <button class="ghost" onclick="gmGrant(${x.id})">GM給槍</button>
        <button class="ghost" onclick="giveItem(${x.id})">給道具</button>
-       <button class="ghost" onclick="clearBag(${x.id})">清背包</button></td></tr>`);
+       <button class="ghost" onclick="viewBag(${x.id})">看背包</button>
+       <button class="ghost" onclick="clearBag(${x.id})">清背包</button>
+       <button class="danger" onclick="delAcct(${x.id})">刪除</button></td></tr>`);
   $('#acctbl').innerHTML=h+'</table>';}
 window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"][data-f]`).forEach(i=>f[i.dataset.f]=i.dataset.type==='str'?i.value:+i.value);
   const r=await api('/api/account/update','POST',{id,fields:f});toast(r&&r.error?r.error:'已存 #'+id,!!(r&&r.error));loadAccts();};
@@ -332,10 +349,44 @@ window.giveItem=async id=>{const item_id=$('#giveid').value.trim(),count=+$('#gi
   $('#gmstate').textContent='發送中…';
   const r=await api('/api/twn/give','POST',{usn:id,item_id,count});
   $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||'已發道具',!!r.error);};
-window.clearBag=async id=>{const all=confirm(`清帳號 #${id} 的背包。\n按「確定」只清未裝備（背包）；按「取消」則不動。\n（要連裝備一起清請用全清，見下方提示）`);
+window.clearBag=async id=>{const all=confirm(`清帳號 #${id} 的背包。\n按「確定」只清未裝備（背包）；按「取消」則不動。`);
   if(!all)return;$('#gmstate').textContent='清除中…';
   const r=await api('/api/twn/clearbag','POST',{usn:id,scope:'bag'});
   $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||`已清 ${r.removed} 件`,!!r.error);};
+window.maxOut=async id=>{const rk=prompt('軍銜要設多少？(留空=只拉滿錢，不改軍銜)','');
+  $('#gmstate').textContent='處理中…';
+  const r=await api('/api/twn/maxout','POST',{usn:id,rank:rk});
+  $('#gmstate').textContent=r.error?r.error:'已拉滿 #'+id+(r.warn?(' · '+r.warn):'');toast(r.error||'已拉滿',!!r.error);loadAccts();};
+window.delAcct=async id=>{if(!confirm(`確定刪除帳號 #${id} 及其全部道具？不可復原。\n請先關 server。`))return;
+  const r=await api('/api/twn/acct/delete','POST',{usn:id});
+  $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||'已刪除',!!r.error);loadAccts();};
+window.viewBag=async id=>{$('#gmstate').textContent='讀取背包…';
+  const r=await api('/api/twn/bag','POST',{usn:id});
+  if(r.error){$('#gmstate').textContent=r.error;return;}
+  if(!r.length){$('#gmstate').textContent=`#${id} 背包是空的`;return;}
+  const bag=r.filter(i=>!i.used),eq=r.filter(i=>i.used);
+  let h=`<b>#${id} 背包</b>（背包 ${bag.length} 種 / 已裝備 ${eq.length} 種）<br>`;
+  h+=r.slice(0,300).map(i=>`${i.used?'🔧':'🎒'} ${i.id} ${i.code} ${i.name}${i.qty>1?' ×'+i.qty:''}`).join('<br>');
+  if(r.length>300)h+=`<br>…(${r.length-300} 更多)`;
+  $('#gmstate').innerHTML=h;};
+$('#btnGiveAll').onclick=async()=>{const item_id=$('#giveid').value.trim(),count=+$('#givecount').value||1;
+  if(!item_id)return toast('先填道具 id',1);
+  if(!confirm(`把道具 ${item_id} ×${count} 發給「所有帳號」？請先關 server。`))return;
+  $('#gmstate').textContent='發送中…';
+  const r=await api('/api/twn/giveall','POST',{item_id,count});
+  $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||'已群發',!!r.error);};
+$('#btnNewTwn').onclick=async()=>{const login=$('#newtwnlogin').value.trim(),codename=$('#newtwncode').value.trim();
+  if(!login)return toast('填 login',1);
+  const r=await api('/api/twn/acct/create','POST',{login,codename});
+  $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||('已建 #'+r.usn),!!r.error);loadAccts();};
+$('#btnRooms').onclick=async()=>{$('#roomstate').textContent='讀取中…';
+  const r=await api('/api/twn/rooms','POST',{});
+  if(r.error){$('#roomstate').textContent=r.error;$('#roomtbl').textContent='';return;}
+  $('#roomstate').textContent=`目前 ${r.rooms.length} 間房、${r.in_rooms} 人在房內`;
+  if(!r.rooms.length){$('#roomtbl').textContent='（沒有房間）';return;}
+  let h='<table><tr><th>房號</th><th>房名</th><th>房主</th><th>人數</th><th>狀態</th></tr>';
+  r.rooms.forEach(x=>h+=`<tr><td>${x.number}</td><td>${x.name||''}</td><td>${x.owner}</td><td>${x.players}/${x.capacity}</td><td>${x.playing?'遊戲中':'等待'}</td></tr>`);
+  $('#roomtbl').innerHTML=h+'</table>';};
 
 // ---- shop ----
 let CAT=null;
