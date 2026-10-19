@@ -114,7 +114,12 @@ textarea{width:100%;min-height:360px;font-family:ui-monospace,Consolas,monospace
         </select>
         <label><input type="checkbox" id="gmmoney" checked> 同時拉滿 SP/Cash/TP</label>
       </div>
-      <div class="muted">在下方帳號列按「GM給槍」把整池武器塞進該帳號背包。<b>執行前先在「伺服器」分頁關掉 server</b>，執行後重啟 server 再登入。數量越多登入越慢；先用「去重·有圖」。</div>
+      <div class="row">
+        <label>發指定道具 id</label><input id="giveid" class="n" placeholder="例 1010010">
+        <label>數量</label><input id="givecount" class="n" value="1" style="width:64px">
+        <span class="muted">（角色 ECU/PCU/RCU 會自動啟用，數量固定 1）</span>
+      </div>
+      <div class="muted">在下方帳號列：<b>GM給槍</b>=整池武器；<b>給道具</b>=上面那個 id；<b>清背包</b>=清掉未裝備道具。<b>執行前先在「伺服器」分頁關掉 server</b>，執行後重啟 server 再登入。數量越多登入越慢；先用「去重·有圖」。</div>
       <div class="muted" id="gmstate"></div>
     </div>
     <div class="card"><h3>帳號</h3><div id="acctbl" class="muted">先開啟 save.db</div></div>
@@ -310,7 +315,9 @@ async function loadAccts(){const a=await api('/api/accounts');if(a.error)return 
    <td><input class="n cash" value="${x.cash}" data-id="${x.id}" data-f="cash"></td>
    <td><input class="n" value="${x.experience}" data-id="${x.id}" data-f="experience"></td>
    <td><button class="ghost" onclick="saveAcct(${x.id})">存</button>
-       <button class="ghost" onclick="gmGrant(${x.id})">GM給槍</button></td></tr>`);
+       <button class="ghost" onclick="gmGrant(${x.id})">GM給槍</button>
+       <button class="ghost" onclick="giveItem(${x.id})">給道具</button>
+       <button class="ghost" onclick="clearBag(${x.id})">清背包</button></td></tr>`);
   $('#acctbl').innerHTML=h+'</table>';}
 window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"][data-f]`).forEach(i=>f[i.dataset.f]=+i.value);
   await api('/api/account/update','POST',{id,fields:f});toast('已存 #'+id);};
@@ -319,6 +326,15 @@ window.gmGrant=async id=>{const scope=$('#gmscope').value,maxmoney=$('#gmmoney')
   $('#gmstate').textContent='處理中…（數量多會跑幾秒）';
   const r=await api('/api/twn/gm','POST',{usn:id,scope,maxmoney});
   $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||`已給 ${r.added} 把槍`,!!r.error);loadAccts();};
+window.giveItem=async id=>{const item_id=$('#giveid').value.trim(),count=+$('#givecount').value||1;
+  if(!item_id)return toast('先填上面的道具 id',1);
+  $('#gmstate').textContent='發送中…';
+  const r=await api('/api/twn/give','POST',{usn:id,item_id,count});
+  $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||'已發道具',!!r.error);};
+window.clearBag=async id=>{const all=confirm(`清帳號 #${id} 的背包。\n按「確定」只清未裝備（背包）；按「取消」則不動。\n（要連裝備一起清請用全清，見下方提示）`);
+  if(!all)return;$('#gmstate').textContent='清除中…';
+  const r=await api('/api/twn/clearbag','POST',{usn:id,scope:'bag'});
+  $('#gmstate').textContent=r.error?r.error:r.note;toast(r.error||`已清 ${r.removed} 件`,!!r.error);};
 
 // ---- shop ----
 let CAT=null;

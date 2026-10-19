@@ -354,10 +354,30 @@ def reskin_template(ctrl, ref_png, grid=64):
 # ---------------- TWN full server (the recovered Python emulator) ----------------
 TWN = {"proc": None, "forwarders": [], "stop": False, "ready": None, "advertise": ""}
 def twn_catalog_path(ctrl): return os.path.join(ctrl["twn_dir"], "catalog.json")
+# Cache the 6.4MB catalog in memory so clicking 商店 / saving doesn't re-parse it
+# every time (that was the source of the lag). Invalidated by file mtime.
+_TWN_CAT = {"path": None, "mtime": 0, "data": None}
+def twn_load_catalog(ctrl):
+    p = twn_catalog_path(ctrl)
+    try: mt = os.path.getmtime(p)
+    except OSError: return []
+    if _TWN_CAT["path"] == p and _TWN_CAT["mtime"] == mt and _TWN_CAT["data"] is not None:
+        return _TWN_CAT["data"]
+    data = json.load(open(p, encoding="utf-8"))
+    _TWN_CAT.update(path=p, mtime=mt, data=data)
+    return data
+def twn_save_catalog(ctrl, cat):
+    p = twn_catalog_path(ctrl)
+    if not os.path.exists(p + ".bak") and os.path.exists(p):
+        try: open(p + ".bak", "wb").write(open(p, "rb").read())   # true original
+        except Exception: pass
+    json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+    try: _TWN_CAT.update(path=p, data=cat, mtime=os.path.getmtime(p))
+    except OSError: pass
 def twn_available(ctrl): return os.path.exists(os.path.join(ctrl["twn_dir"], "server.py")) and os.path.exists(twn_catalog_path(ctrl))
 def twn_catalog_adapted(ctrl):
     """Map the TWN server's catalog.json into the UI's shop/weapon shape."""
-    cat = json.load(open(twn_catalog_path(ctrl), encoding="utf-8"))
+    cat = twn_load_catalog(ctrl)
     out = []
     for c in cat:
         cur = (c.get("currency") or "").upper(); price = c.get("price", 0) or 0
@@ -435,7 +455,7 @@ def twn_unlock(ctrl, which="content"):
     """Open the TWN shop by flipping shop_selling=True on locked items in catalog.json (server reads it on start)."""
     p = twn_catalog_path(ctrl)
     if not os.path.exists(p): return {"error": "找不到 twn catalog.json"}
-    cat = json.load(open(p, encoding="utf-8")); n = 0
+    cat = twn_load_catalog(ctrl); n = 0
     for c in cat:
         if not c.get("shop_selling"):
             cls = (c.get("class", "") + c.get("code", "")).lower()
@@ -444,8 +464,7 @@ def twn_unlock(ctrl, which="content"):
                 c["shop_selling"] = True
                 if not c.get("price"): c["price"] = 1000
                 n += 1
-    if not os.path.exists(p + ".bak"): open(p + ".bak", "w", encoding="utf-8").write(json.dumps(cat, ensure_ascii=False))
-    json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+    twn_save_catalog(ctrl, cat)
     return {"ok": True, "opened": n, "note": "重啟台服 server 生效（它啟動時讀 catalog.json）"}
 
 def twn_shop_save(ctrl, changes):
@@ -453,7 +472,7 @@ def twn_shop_save(ctrl, changes):
     changes = [{id, selling?(bool), sp?/cash?/tp?(price in that currency)}]."""
     p = twn_catalog_path(ctrl)
     if not os.path.exists(p): return {"error": "找不到 catalog.json"}
-    cat = json.load(open(p, encoding="utf-8"))
+    cat = twn_load_catalog(ctrl)
     byid = {}
     for c in cat:
         try: byid[int(c.get("id"))] = c
@@ -471,9 +490,7 @@ def twn_shop_save(ctrl, changes):
                 except (TypeError, ValueError): pass
                 break
         n += 1
-    if not os.path.exists(p + ".bak"):
-        open(p + ".bak", "w", encoding="utf-8").write(json.dumps(cat, ensure_ascii=False))
-    json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+    twn_save_catalog(ctrl, cat)
     return {"ok": True, "saved": n, "note": "已存 catalog.json；重啟台服 server 生效"}
 
 def _twn_weapon_pool(cat, scope):
@@ -506,7 +523,7 @@ def twn_gm_grant(ctrl, usn, scope="icon", maxmoney=True):
         return {"error": "請先在面板「關伺服器」再執行（避免與執行中的存檔衝突）"}
     dbp = twn_db_path(ctrl)
     if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立（先進遊戲登入一次建立帳號）"}
-    cat = json.load(open(p, encoding="utf-8"))
+    cat = twn_load_catalog(ctrl)
     pool = _twn_weapon_pool(cat, scope)
     con = sqlite3.connect(dbp, timeout=10)
     try:
@@ -534,6 +551,62 @@ def twn_gm_grant(ctrl, usn, scope="icon", maxmoney=True):
     return {"ok": True, "added": added, "pool": len(pool),
             "note": f"已加 {added} 把槍到背包（範圍 {scope}，池 {len(pool)} 項）。重啟台服 server 後登入生效。"
                     + ("" if added <= 2500 else " ⚠ 數量很多，登入可能變慢，若卡住請改用較小範圍或刪帳號重來。")}
+
+def twn_item_give(ctrl, usn, item_id, count=1):
+    """Give one specific catalog item (gun / character / anything) to an account's
+    bag. Units (ECU/PCU/RCU) are inserted activated with a unit_equipment row,
+    like inventory.py's add()."""
+    import sqlite3
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再執行"}
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立（先進遊戲登入一次）"}
+    cat = twn_load_catalog(ctrl)
+    byid = {}
+    for c in cat:
+        try: byid[int(c.get("id"))] = c
+        except (TypeError, ValueError): pass
+    try: iid = int(item_id)
+    except (TypeError, ValueError): return {"error": "道具 id 不是數字"}
+    it = byid.get(iid)
+    if not it: return {"error": f"catalog 沒有道具 id={iid}"}
+    code = str(it.get("code", "")); is_unit = code[:3] in ("ECU", "PCU", "RCU")
+    n = max(1, min(int(count or 1), 500))
+    if is_unit: n = 1
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        if con.execute("SELECT 1 FROM accounts WHERE usn=?", (usn,)).fetchone() is None:
+            return {"error": f"找不到帳號 usn={usn}"}
+        for _ in range(n):
+            serial = con.execute("INSERT INTO inventory(usn,item_id,used) VALUES(?,?,?)",
+                                 (usn, iid, 1 if is_unit else 0)).lastrowid
+            if is_unit:
+                con.execute("INSERT OR IGNORE INTO unit_equipment VALUES(?,?,?)",
+                            (usn, code, json.dumps([serial] + [0] * 15)))
+        con.commit()
+    finally: con.close()
+    return {"ok": True, "note": f"已給 {n} 個「{it.get('name', iid)}」給 #{usn}（重啟 server 登入生效）"
+                                + ("" if it.get("cooked") else " ⚠ 此道具客端無資源，可能顯示空白")}
+
+def twn_clear_inventory(ctrl, usn, scope="bag"):
+    """Clear an account's items. scope 'bag' = backpack (unused) only;
+    'all' = everything incl. equipped loadouts and units."""
+    import sqlite3
+    if TWN["proc"] and TWN["proc"].poll() is None:
+        return {"error": "請先在面板「關伺服器」再執行"}
+    dbp = twn_db_path(ctrl)
+    if not os.path.exists(dbp): return {"error": "台服資料庫還沒建立"}
+    con = sqlite3.connect(dbp, timeout=10)
+    try:
+        if scope == "all":
+            n = con.execute("DELETE FROM inventory WHERE usn=?", (usn,)).rowcount
+            con.execute("DELETE FROM weapon_sets WHERE usn=?", (usn,))
+            con.execute("DELETE FROM unit_equipment WHERE usn=?", (usn,))
+        else:
+            n = con.execute("DELETE FROM inventory WHERE usn=? AND used=0", (usn,)).rowcount
+        con.commit()
+    finally: con.close()
+    return {"ok": True, "removed": n, "note": f"已清除 {n} 件（{scope}）。重啟 server 登入生效。"}
 
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
 def twn_db_path(ctrl):
@@ -603,8 +676,7 @@ def twn_account_update(ctrl, usn, fields):
     return {"ok": True, "warn": ("台服 server 運行中：若該玩家正登入，登出會覆蓋你的修改——先關 server 或確定已登出再改" if running else "")}
 def twn_weapon_create(ctrl, spec):
     import copy
-    p = twn_catalog_path(ctrl)
-    cat = json.loads(open(p, encoding="utf-8").read())
+    cat = twn_load_catalog(ctrl)
     byid = {c["id"]: c for c in cat}
     base = byid.get(int(spec["base_id"]))
     if not base: return {"error": f"找不到底槍 id={spec.get('base_id')}"}
@@ -617,8 +689,7 @@ def twn_weapon_create(ctrl, spec):
     elif spec.get("tp"): nw["currency"] = "TP"; nw["price"] = int(spec["tp"])
     nw["shop_selling"] = True; nw["original_selling"] = True
     cat = [c for c in cat if c["id"] != nid] + [nw]
-    if not os.path.exists(p + ".bak"): open(p + ".bak", "w", encoding="utf-8").write(json.dumps(cat, ensure_ascii=False))
-    json.dump(cat, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+    twn_save_catalog(ctrl, cat)
     return {"ok": True, "item_id": nid, "name": nw.get("name", ""), "base_id": base["id"],
             "note": "已複製底槍為新槍加入台服商店（沿用底槍模型/圖示，新 id/名字/價格）。重啟台服 server 生效。"}
 def _client_lang(ctrl):
@@ -848,6 +919,8 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/unlock": return self._s(twn_unlock(ctrl, b.get("which", "content")))
             if self.path == "/api/shop/save" and twn_available(ctrl): return self._s(twn_shop_save(ctrl, b.get("changes", [])))
             if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
+            if self.path == "/api/twn/give" and twn_available(ctrl): return self._s(twn_item_give(ctrl, int(b["usn"]), b["item_id"], b.get("count", 1)))
+            if self.path == "/api/twn/clearbag" and twn_available(ctrl): return self._s(twn_clear_inventory(ctrl, int(b["usn"]), b.get("scope", "bag")))
             if self.path == "/api/client/launch": return self._s(client_launch(ctrl, b.get("ip", "127.0.0.1")))
             if self.path == "/api/player/pack": return self._s(make_player_pack(ctrl, b.get("ip", "")))
             if self.path == "/api/player/zip": return self._s(make_player_zip(ctrl, b.get("ip", "")))
