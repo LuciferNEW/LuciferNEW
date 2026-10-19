@@ -1,13 +1,22 @@
 @echo off
-chcp 65001 >nul
 cd /d "%~dp0"
-echo === SF2 啟動器 · 除錯模式（會顯示錯誤訊息）===
+echo === SF2 Launcher - DEBUG (errors will show below) ===
 echo.
 if exist "%~dp0python\python.exe" (
+  echo [OK] found bundled python
   "%~dp0python\python.exe" "%~dp0玩家啟動器.py"
-) else (
-  where python >nul 2>&1 && ( python "%~dp0玩家啟動器.py" ) || ( echo [錯誤] 找不到 Python。請把整合包的 python 資料夾放到本檔旁邊，或在電腦裝 Python。 )
+  goto done
 )
+where python >nul 2>&1
+if %errorlevel%==0 (
+  echo [OK] found system python
+  python "%~dp0玩家啟動器.py"
+  goto done
+)
+echo [ERROR] No Python found.
+echo The "python" folder must sit NEXT TO this .bat (copy it from the pack),
+echo or install Python from python.org.
+:done
 echo.
-echo === 已結束。若上面出現紅字 Traceback 錯誤，整段截圖給我 ===
+echo === done. If you see a red Traceback above, screenshot the whole thing. ===
 pause
