@@ -310,7 +310,8 @@ $('#btnCreate').onclick=async()=>{const r=await api('/api/account/create','POST'
   r.error?toast(r.error,1):(toast('帳號 #'+r.id),loadAccts());};
 async function loadAccts(){const a=await api('/api/accounts');if(a.error)return $('#acctbl').textContent=a.error;
   let h='<table><tr><th>id</th><th>login</th><th>代號</th><th>SP</th><th>Cash</th><th>經驗</th><th></th></tr>';
-  a.forEach(x=>h+=`<tr><td>${x.id}</td><td>${x.login}</td><td>${x.codename||''}</td>
+  a.forEach(x=>h+=`<tr><td>${x.id}</td><td>${x.login}</td>
+   <td><input value="${(x.codename||'').replace(/"/g,'&quot;')}" data-id="${x.id}" data-f="codename" data-type="str" style="width:110px"></td>
    <td><input class="n sp" value="${x.sp}" data-id="${x.id}" data-f="sp"></td>
    <td><input class="n cash" value="${x.cash}" data-id="${x.id}" data-f="cash"></td>
    <td><input class="n" value="${x.experience}" data-id="${x.id}" data-f="experience"></td>
@@ -319,8 +320,8 @@ async function loadAccts(){const a=await api('/api/accounts');if(a.error)return 
        <button class="ghost" onclick="giveItem(${x.id})">給道具</button>
        <button class="ghost" onclick="clearBag(${x.id})">清背包</button></td></tr>`);
   $('#acctbl').innerHTML=h+'</table>';}
-window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"][data-f]`).forEach(i=>f[i.dataset.f]=+i.value);
-  await api('/api/account/update','POST',{id,fields:f});toast('已存 #'+id);};
+window.saveAcct=async id=>{const f={};document.querySelectorAll(`[data-id="${id}"][data-f]`).forEach(i=>f[i.dataset.f]=i.dataset.type==='str'?i.value:+i.value);
+  const r=await api('/api/account/update','POST',{id,fields:f});toast(r&&r.error?r.error:'已存 #'+id,!!(r&&r.error));loadAccts();};
 window.gmGrant=async id=>{const scope=$('#gmscope').value,maxmoney=$('#gmmoney').checked;
   if(!confirm(`要把武器池(${scope})全部塞進帳號 #${id} 的背包嗎？\n請先關掉 server。`))return;
   $('#gmstate').textContent='處理中…（數量多會跑幾秒）';

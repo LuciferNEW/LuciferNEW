@@ -658,6 +658,10 @@ def twn_account_update(ctrl, usn, fields):
         if not row: return {"error": f"找不到帳號 usn={usn}"}
         pr = json.loads(row[0]) if row[0] else {}
         for k, v in (fields or {}).items():
+            if k == "codename":
+                name = str(v).strip()[:32]
+                if name: pr["CodeName"] = name   # in-game nickname (string field)
+                continue
             if k in _TWN_FLD:
                 # NEVER store a non-integer into a numeric profile field: a blank
                 # or garbage input would make the client's profile packet (cmd 122)
