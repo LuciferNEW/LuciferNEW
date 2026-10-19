@@ -439,7 +439,17 @@ def twn_unlock(ctrl, which="content"):
     return {"ok": True, "opened": n, "note": "重啟台服 server 生效（它啟動時讀 catalog.json）"}
 
 # ---------------- TWN player DB (local-lobby.sqlite3: SP/Cash/Exp/Rank live inside accounts.profile JSON) ----------------
-def twn_db_path(ctrl): return os.path.join(ctrl["twn_dir"], "local-lobby.sqlite3")
+def twn_db_path(ctrl):
+    # Explicit override wins; else find the active DB. The V4 pack keeps it in
+    # <pack>\save\ (sibling of server\), launched via --database save\...;
+    # older layouts keep it beside server.py in twn_dir.
+    if ctrl.get("twn_db"):
+        return ctrl["twn_db"]
+    cands = [os.path.join(os.path.dirname(ctrl["twn_dir"]), "save", "local-lobby.sqlite3"),
+             os.path.join(ctrl["twn_dir"], "local-lobby.sqlite3")]
+    for p in cands:
+        if os.path.exists(p): return p
+    return cands[0]
 def twn_db_ready(ctrl): return os.path.exists(twn_db_path(ctrl))
 _TWN_FLD = {"sp": "SP", "cash": "Cash", "experience": "Exp", "exp": "Exp", "tp": "TP", "rank": "Rank"}
 def twn_accounts(ctrl):
