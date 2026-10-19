@@ -9,7 +9,7 @@
   "twn_dir": "D:\\sf2_project\\twn_server\\server",
   "twn_python": "py",
   "client_exe": "C:\\MangoT5\\SpecialForce2\\Binaries\\Win32\\sf2.exe",
-  "client_lang": "TWN",
+  "client_lang": "auto",
   "lobby": 28000,
   "messenger": 28001,
   "clan": 28002

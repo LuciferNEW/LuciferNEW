@@ -474,29 +474,41 @@ def _client_lang(ctrl):
     EUR/TWN/INT -> whatever Startup_*.upk is present. D:\\sf is an EUR build (only
     Startup_EUR.upk), so forcing TWN makes UE3 fail to find package 'Startup'."""
     import glob
-    cooked = ctrl.get("cooked_dir", "")
-    def has_startup(l): return bool(l) and os.path.exists(os.path.join(cooked, f"Startup_{l}.upk"))
+    # Search the client's OWN CookedPCConsole (derived from the real exe) first,
+    # then the configured cooked_dir. The config may point at a different client.
+    cooked_dirs = []
+    try:
+        exe = _resolve_client_exe(ctrl.get("client_exe")) or ctrl.get("client_exe", "")
+        root = os.path.dirname(os.path.dirname(os.path.dirname(exe)))  # ...\Binaries\Win32\x -> client root
+        cooked_dirs.append(os.path.join(root, "SFGame", "CookedPCConsole"))
+    except Exception:
+        root = ""
+    if ctrl.get("cooked_dir"):
+        cooked_dirs.append(ctrl["cooked_dir"])
+    def has_startup(l):
+        return bool(l) and any(os.path.exists(os.path.join(c, f"Startup_{l}.upk")) for c in cooked_dirs)
     cands = []
     v = (ctrl.get("client_lang") or "").strip()
     if v and v.lower() != "auto": cands.append(v)
     try:
-        root = os.path.dirname(os.path.dirname(os.path.dirname(ctrl["client_exe"])))
         with open(os.path.join(root, "setting.ini"), encoding="utf-8", errors="ignore") as f:
             for line in f:
                 if line.strip().lower().startswith("localization") and "=" in line:
                     cands.append(line.split("=", 1)[1].strip())
     except Exception:
         pass
-    cands += ["EUR", "TWN", "INT"]
+    cands += ["TWN", "EUR", "INT"]
     for l in cands:
         if has_startup(l): return l
-    try:
-        hits = glob.glob(os.path.join(cooked, "Startup_*.upk"))
-        if hits:
-            b = os.path.basename(hits[0])
-            return b[len("Startup_"):-len(".upk")]
-    except Exception:
-        pass
+    # nothing matched a requested lang -> use whatever Startup_*.upk actually exists
+    for c in cooked_dirs:
+        try:
+            hits = glob.glob(os.path.join(c, "Startup_*.upk"))
+            if hits:
+                b = os.path.basename(hits[0])
+                return b[len("Startup_"):-len(".upk")]
+        except Exception:
+            pass
     return cands[0] if cands else "EUR"
 
 def _resolve_client_exe(raw):
@@ -535,8 +547,17 @@ def client_launch(ctrl, ip="127.0.0.1"):
         # and so it does not inherit this process' console (matches the proven
         # standalone launcher; avoids the XIGNCODE init issues seen otherwise).
         flags = 0x00000008 if os.name == "nt" else 0
-        subprocess.Popen(args, cwd=os.path.dirname(exe), creationflags=flags, close_fds=True)
-        return {"ok": True, "cmd": " ".join(args), "exe": exe}
+        proc = subprocess.Popen(args, cwd=os.path.dirname(exe), creationflags=flags, close_fds=True)
+        # If the client dies within a couple of seconds it never really booted
+        # (usually a -Language without a matching Startup_<LANG>.upk). Report it
+        # instead of claiming success.
+        time.sleep(2.0)
+        if proc.poll() is not None:
+            return {"error": f"客端開了就退（lang={lang}）。多半是語系對不上：確認 "
+                             f"{os.path.dirname(os.path.dirname(os.path.dirname(exe)))}\\SFGame\\CookedPCConsole "
+                             f"裡有 Startup_{lang}.upk；沒有的話在設定把 client_lang 改成實際存在的那個。",
+                    "exit_code": proc.returncode, "cmd": " ".join(args)}
+        return {"ok": True, "cmd": " ".join(args), "exe": exe, "lang": lang}
     except Exception as e:
         return {"error": f"啟動失敗：{e}"}
 PLAYER_BAT = r"""@echo off
