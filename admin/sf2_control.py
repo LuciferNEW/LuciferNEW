@@ -511,6 +511,22 @@ def twn_shop_dedup(ctrl, key="icon"):
     return {"ok": True, "off": off, "kept": kept,
             "note": f"已把重複的 {off} 項下架，保留 {kept} 個不重複上架。重啟台服 server 生效，商城就不卡了。"}
 
+def twn_shop_curate(ctrl, limit=500):
+    """Slim the shop right down: take everything off sale, then put on sale only
+    up to `limit` distinct cooked weapons that have an icon. Fewer on-sale items
+    means the client's shop packet (278) is small, so the in-game shop opens fast."""
+    try: limit = max(1, min(int(limit), 17429))
+    except (TypeError, ValueError): limit = 500
+    cat = twn_load_catalog(ctrl)
+    for c in cat:
+        if c.get("shop_selling"): c["shop_selling"] = False
+    on = 0
+    for c in _twn_weapon_pool(cat, "icon")[:limit]:
+        c["shop_selling"] = True; on += 1
+    twn_save_catalog(ctrl, cat)
+    return {"ok": True, "on": on,
+            "note": f"已把商店精簡成 {on} 項（去重·有圖的槍），其餘全部下架。重啟 server，商城就順了。"}
+
 def _twn_weapon_pool(cat, scope):
     """Weapons the client can render (cooked), excluding functional/common items,
     characters and units. scope: 'icon' = distinct by icon (all have art),
@@ -1128,6 +1144,7 @@ class H(BaseHTTPRequestHandler):
             if self.path == "/api/twn/unlock": return self._s(twn_unlock(ctrl, b.get("which", "content")))
             if self.path == "/api/shop/save" and twn_available(ctrl): return self._s(twn_shop_save(ctrl, b.get("changes", [])))
             if self.path == "/api/shop/dedup" and twn_available(ctrl): return self._s(twn_shop_dedup(ctrl))
+            if self.path == "/api/shop/curate" and twn_available(ctrl): return self._s(twn_shop_curate(ctrl, b.get("limit", 500)))
             if self.path == "/api/twn/gm" and twn_available(ctrl): return self._s(twn_gm_grant(ctrl, int(b["usn"]), b.get("scope", "icon"), b.get("maxmoney", True)))
             if self.path == "/api/twn/give" and twn_available(ctrl): return self._s(twn_item_give(ctrl, int(b["usn"]), b["item_id"], b.get("count", 1)))
             if self.path == "/api/twn/clearbag" and twn_available(ctrl): return self._s(twn_clear_inventory(ctrl, int(b["usn"]), b.get("scope", "bag")))

@@ -174,6 +174,10 @@ input.n{width:84px}
         <button class="ghost" id="btnShopOffAll">全部下架</button>
         <button class="ghost" id="btnShopDedup">上架去重（治商城卡）</button>
         <button class="act" id="btnShopSave">儲存變更</button>
+      </div>
+      <div class="row">
+        <label>精簡商店：只留</label><input id="shoplimit" class="n" value="300" style="width:70px"><label>把有圖槍</label>
+        <button class="ghost" id="btnShopCurate">精簡商店（最有效治卡）</button>
         <span class="muted" id="shopstate"></span>
       </div>
       <div class="muted">勾「上架」決定商店是否販售；SP/Cash 欄可直接改價（填 SP 走 SP、SP 留 0 改填 Cash 走 Cash）。改完按<b>儲存變更</b>，再<b>重啟台服 server</b> 生效。</div>
@@ -479,6 +483,14 @@ async function shopDedup(){$('#shopstate').textContent='去重中…';
   if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
   $('#shopstate').textContent=`已下架重複 ${r.off} 項，保留 ${r.kept} 個，重啟 server 生效`;toast('已去重，重啟 server 生效');
   CAT=null;await loadCat();renderShop();}
+document.addEventListener('click',async e=>{if(e.target.id!=='btnShopCurate')return;
+  const limit=+$('#shoplimit').value||300;
+  if(!confirm(`要把商店精簡成「只留 ${limit} 把有圖槍」上架嗎？其餘全部下架。`))return;
+  $('#shopstate').textContent='精簡中…';
+  const r=await api('/api/shop/curate','POST',{limit});
+  if(r.error){$('#shopstate').textContent=r.error;toast(r.error,1);return;}
+  $('#shopstate').textContent=`已精簡成 ${r.on} 項上架，重啟 server 商城就順`;toast('已精簡，重啟 server 生效');
+  CAT=null;await loadCat();renderShop();});
 
 // ---- pkg/gacha ----
 async function loadPkg(){const g=await api('/api/content/gacha');$('#gachabox').textContent=JSON.stringify(g,null,1);
