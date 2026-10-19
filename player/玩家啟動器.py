@@ -1,4 +1,4 @@
-"""風暴戰區 — 玩家端連線啟動器（純連線，無任何伺服器檔）。
+"""SF2 — 玩家端連線啟動器（純連線，無任何伺服器檔）。
 
 放在客端根目錄（與 Binaries\\Win32\\sf2.exe 同一層）。用整合包內的
 python\\pythonw.exe 執行，不需要玩家另外裝 Python。
@@ -55,7 +55,7 @@ class Launcher(tk.Tk):
     def __init__(self):
         super().__init__()
         self.cfg = load_cfg()
-        self.title("風暴戰區 連線啟動器")
+        self.title("SF2 連線啟動器")
         self.configure(bg=BG)
         self.resizable(False, False)
         w, h = 520, 400
@@ -67,7 +67,7 @@ class Launcher(tk.Tk):
         tk.Frame(self, bg=ACCENT, height=4).pack(fill="x")
         wrap = tk.Frame(self, bg=BG); wrap.pack(fill="both", expand=True, padx=26, pady=22)
 
-        tk.Label(wrap, text="風暴戰區", bg=BG, fg=INK,
+        tk.Label(wrap, text="SF2", bg=BG, fg=INK,
                  font=("Microsoft JhengHei UI", 24, "bold")).pack(anchor="w")
         tk.Label(wrap, text="SPECIAL FORCE 2 · 台服連線", bg=BG, fg=ACCENT,
                  font=("Consolas", 10, "bold")).pack(anchor="w", pady=(0, 16))
